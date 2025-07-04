@@ -31,12 +31,12 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: price * 100 }), // amount in paise
+      body: JSON.stringify({ amount: 1 }), // amount in paise
     }).then((r) => r.json())
 
     // Step 2: Open Razorpay checkout
     const rzp = new window.Razorpay({
-      key: "rzp_test_4AXuYqwqrgYed3",
+      key: "razor_pay_keyId",
       amount: order.amount,
       currency: order.currency,
       order_id: order.id,

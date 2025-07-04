@@ -4,8 +4,8 @@ import { NextRequest } from 'next/server';
 import Razorpay from 'razorpay';
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_4AXuYqwqrgYed3',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'TsYaT16geCx3Hsy0eZjbCjuT',
+  key_id: process.env.RAZORPAY_KEY_ID || 'razor_pay_keyId',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || 'KHg7LdD7MuzEnnAXh67fqI5g',
 });
 
 export async function POST(req: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
      const body = await req.json();
 
     const order = await razorpay.orders.create({
-      amount: body.amount * 85 , // ₹4.99 in paise
+      amount: 1 , // ₹4.99 in paise
       currency: 'INR',
       receipt: `rcptid_${Date.now()}`,
       payment_capture: true,

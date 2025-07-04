@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Razorpay from "razorpay";
 
 const razorpay = new Razorpay({
-  key_id: "rzp_test_4AXuYqwqrgYed3",       // server‑side secret
+  key_id: "razor_pay_keyId",       // server‑side secret
   key_secret: "TsYaT16geCx3Hsy0eZjbCjuT",
 });
 
