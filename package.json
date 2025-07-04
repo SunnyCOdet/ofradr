@@ -24,6 +24,7 @@
     "mongoose": "^8.16.1",
     "motion": "^12.19.2",
     "next": "14.2.5",
+    "razorpay": "^2.9.6",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.6.0",

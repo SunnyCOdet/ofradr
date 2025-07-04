@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const order = await razorpay.orders.create({
-      amount: 499 * 100,          // ₹4.99 in paise
-      currency: "INR",
+      amount: 4.9,          // ₹4.99 in paise
+      currency: "USD",
       receipt: `rcpt_${Date.now()}`,
       payment_capture: true,
     });

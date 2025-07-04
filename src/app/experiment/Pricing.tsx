@@ -19,7 +19,21 @@ const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
 })
 
+import { loadRazorpayScript } from "@/utils/loadRazorpay"
+import PaymentButton from "../PaymentButton"
+
+declare global {
+  interface Window {
+    Razorpay: any
+  }
+}
+
+interface PaymentButtonProps {
+  price: number // in rupees
+}
+
 export default function Component() {
+  
   const plans = [
     {
       name: "Free",
@@ -28,6 +42,7 @@ export default function Component() {
       description: "Perfect for individuals getting started",
       features: ["Up to 100 complitions", "Basic model", "Basic support","Only code support"],
       popular: false,
+      rate:0,
       buttonText: "Get Started",
     },
     {
@@ -45,6 +60,7 @@ export default function Component() {
         "Custom controls",
         
       ],
+      rate:1.99,
       popular: true,
       buttonText: "Get started",
     },
@@ -63,6 +79,7 @@ export default function Component() {
         "Custom controls",
         "Access to premium models"
       ],
+      rate:12.99,
       popular: false,
       buttonText: "Get started",
     },
@@ -322,16 +339,7 @@ export default function Component() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.8 + index * 0.2, duration: 0.5 }}
                     >
-                      <Button
-                        className={`w-full py-4 font-semibold transition-all duration-300 backdrop-blur-sm border 
-                        ${
-                          plan.popular
-                            ? "text-white group-hover:bg-gradient-to-r group-hover:from-[#ea3a59] group-hover:to-[#ff6b8a] group-hover:shadow-lg group-hover:shadow-[#ea3a59]/25 group-hover:border-[#ea3a59]/30 bg-white/5 border-white/20"
-                            : "bg-white/5 text-white border-white/20 hover:bg-white/10 hover:border-white/30"
-                        }`}
-                      >
-                        {plan.buttonText}
-                      </Button>
+                      <PaymentButton price={plan.rate} />
                     </motion.div>
                   </CardFooter>
                 </Card>

@@ -11,13 +11,13 @@ const razorpay = new Razorpay({
 export async function POST(req: NextRequest) {
   try {
     // Optional: You can extract data from the request if needed
-    // const body = await req.json();
+     const body = await req.json();
 
     const order = await razorpay.orders.create({
-      amount: 499 * 100, // ₹4.99 in paise
+      amount: body.amount * 85 , // ₹4.99 in paise
       currency: 'INR',
       receipt: `rcptid_${Date.now()}`,
-      payment_capture: 1,
+      payment_capture: true,
     });
 
     return new Response(JSON.stringify(order), {
