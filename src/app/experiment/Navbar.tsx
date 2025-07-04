@@ -1,9 +1,55 @@
 "use client"
 
-import { ShimmerButton } from "@/components/magicui/shimmer-button"
-import { Button } from "@/components/ui/button"
 import Image from 'next/image'; // ✅ Correct
 import Link from "next/link";
+
+
+import { cn } from "@/lib/utils"
+import { type ButtonHTMLAttributes, forwardRef } from "react"
+
+interface AuthShimmerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode
+  className?: string
+}
+
+const AuthShimmerButton = forwardRef<HTMLButtonElement, AuthShimmerButtonProps>(
+  ({ className, children, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(
+          "group relative w-full rounded-full overflow-hidden rounded-lg bg-gradient-to-r px-6 py-3 font-medium text-white transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-xl disabled:pointer-events-none disabled:opacity-50",
+          className,
+        )}
+        {...props}
+      >
+        {/* Shimmer light ring effect */}
+        <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 h-80 w-80 to-transparent" />
+
+        {/* Button content */}
+        <span className="relative z-10">{children}</span>
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(200%);
+            }
+          }
+          
+          .animate-shimmer {
+            animation: shimmer 2s infinite;
+          }
+        `}</style>
+      </button>
+    )
+  },
+)
+
+AuthShimmerButton.displayName = "AuthShimmerButton"
+
 interface GlassNavbarProps {
   transparency?: number // 0-100
   tintColor?: string // hex color or rgba color
@@ -85,40 +131,36 @@ export default function GlassNavbar({
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-white/50 text-sm hover:text-white transition-colors  tracking-tight duration-200">
+            <Link href="/" className="text-white/50 text-sm hover:text-white transition-colors  tracking-tight duration-200">
               Home
-            </a>
-            <a href="#" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
-              Integrations
-            </a>
-            <a href="#" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+            </Link>
+            <Link href="/about" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+              About
+            </Link>
+            <Link href="/contact" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+              Contact
+            </Link>
+            <Link href="" className="text-white/50 text-sm cursor-not-allowed hover:text-white transition-colors duration-200">
+              Usage
+            </Link>
+            <Link href="" className="text-white/50 cursor-not-allowed text-sm hover:text-white transition-colors duration-200">
               Pricing
-            </a>
-            <a href="#" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
-              Docs
-            </a>
-            <a href="#" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
-              Changelog
-            </a>
+            </Link>
           </div>
 </div>
           {/* Right Side Actions */}
-          <div className="absolute right-0 flex items-center space-x-4">
+          <div className="absolute right-0 flex cursor-not-allowed items-center space-x-4">
             
-            <Link href="/getin"><ShimmerButton shimmerSize="0.1rem" shimmerDuration="1.5s"  className="px-4 py-2">
-              <span className="text-sm font-medium">Sign in / Sign up</span>
-            </ShimmerButton></Link>
+            <Link href="/">
+             <AuthShimmerButton type="button" className="mt-2 bg-gradient-to-r ">
+              Create Account
+            </AuthShimmerButton>
+            </Link>
           </div>
           
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <button className="text-white/50 text-sm hover:text-white">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
+          
         </div>
       </div>
     </nav>

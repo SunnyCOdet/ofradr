@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, MessageSquare, Send, CheckCircle } from "lucide-react"
 import CenteredLottieNavbar from "@/sections/Header"
-import { Footer } from "@/sections/Footer"
+import { Footer } from "../experiment/Footer"
 import { TypingAnimation } from "@/components/magicui/typing-animation"
+import GlassNavbar from "../experiment/Navbar"
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
   weight: ["400", "700", "900"],
@@ -102,7 +103,7 @@ export default function ContactPage() {
   return (
     <div className="bg-black min-h-screen overflow-hidden flex flex-col">
 <div>
-    <CenteredLottieNavbar/>
+    <GlassNavbar/>
 </div>
       <div className="mt-36">
         <div className="flex-1 flex items-center  justify-center px-4 py-8">
@@ -110,7 +111,7 @@ export default function ContactPage() {
           {/* Header */}
           <motion.div className="text-center mb-12" variants={itemVariants}>
             <h1 className={`text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 ${bigShoulders.className}`}>
-             Lets <span className="text-[#FFFF00]">TALK</span>
+             Lets <span className="text-[#ea3a59]">TALK</span>
             </h1>
             <motion.div className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto" variants={itemVariants}>
              <TypingAnimation> 
@@ -121,7 +122,7 @@ export default function ContactPage() {
 
           {/* Contact Form */}
           <motion.div variants={itemVariants}>
-            <Card className="border border-[#FFFF00] shadow-2xl bg-gray-900/50 backdrop-blur-sm">
+            <Card className="border border-[#ea3a59] shadow-2xl bg-gray-900/50 backdrop-blur-sm">
               <CardContent className="p-6 md:p-8 lg:p-12">
                 {!isSubmitted ? (
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -130,7 +131,7 @@ export default function ContactPage() {
                       <motion.div className="space-y-2" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
                         <label
                           htmlFor="email"
-                          className={`block text-[#FFFF00] font-semibold ${bigShoulders.className} tracking-wide`}
+                          className={`block text-[#ea3a59] font-semibold ${bigShoulders.className} tracking-wide`}
                         >
                           <Mail className="inline w-4 h-4 mr-2" />
                           EMAIL ADDRESS
@@ -144,7 +145,7 @@ export default function ContactPage() {
                           onFocus={() => setFocusedField("email")}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#FFFF00] focus:outline-none transition-all duration-300"
+                          className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300"
                           placeholder="your.email@example.com"
                           whileFocus={{
                             scale: 1.02,
@@ -158,7 +159,7 @@ export default function ContactPage() {
                       <motion.div className="space-y-2" whileHover={{ scale: 1.02 }} transition={{ duration: 0.2 }}>
                         <label
                           htmlFor="subject"
-                          className={`block text-[#FFFF00] font-semibold ${bigShoulders.className} tracking-wide`}
+                          className={`block text-[#ea3a59] font-semibold ${bigShoulders.className} tracking-wide`}
                         >
                           <MessageSquare className="inline w-4 h-4 mr-2" />
                           SUBJECT
@@ -172,7 +173,7 @@ export default function ContactPage() {
                           onFocus={() => setFocusedField("subject")}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#FFFF00] focus:outline-none transition-all duration-300"
+                          className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300"
                           placeholder="What's this about?"
                           whileFocus={{
                             scale: 1.02,
@@ -187,7 +188,7 @@ export default function ContactPage() {
                     <motion.div className="space-y-2" whileHover={{ scale: 1.01 }} transition={{ duration: 0.2 }}>
                       <label
                         htmlFor="message"
-                        className={`block text-[#FFFF00] font-semibold ${bigShoulders.className} tracking-wide`}
+                        className={`block text-[#ea3a59] font-semibold ${bigShoulders.className} tracking-wide`}
                       >
                         YOUR MESSAGE
                       </label>
@@ -200,7 +201,7 @@ export default function ContactPage() {
                         onBlur={() => setFocusedField(null)}
                         required
                         rows={6}
-                        className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#FFFF00] focus:outline-none transition-all duration-300 resize-none"
+                        className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300 resize-none"
                         placeholder="Tell us what's on your mind..."
                         whileFocus={{
                           scale: 1.01,
@@ -239,11 +240,11 @@ export default function ContactPage() {
                         type="submit"
                         disabled={isSubmitting}
                         className={`
-                          bg-[#FFFF00] text-black font-bold px-8 py-3 rounded-lg
-                          hover:bg-[#FFFF00]/90 transition-all duration-300
+                          bg-[#ea3a59] text-black font-bold px-8 py-3 rounded-lg
+                          hover:bg-[#ea3a59]/90 transition-all duration-300
                           disabled:opacity-50 disabled:cursor-not-allowed
                           ${bigShoulders.className} tracking-wide text-lg
-                          shadow-lg hover:shadow-[#FFFF00]/50 relative overflow-hidden
+                          shadow-lg hover:shadow-[#ea3a59]/50 relative overflow-hidden
                         `}
                       >
                         {isSubmitting ? (
@@ -293,7 +294,7 @@ export default function ContactPage() {
                                   ease: "easeOut",
                                 }}
                               >
-                                <div className="w-2 h-2 bg-[#FFFF00] rounded-full blur-sm" />
+                                <div className="w-2 h-2 bg-[#ea3a59] rounded-full blur-sm" />
                               </motion.div>
                             )}
                             {/* Success particles */}
@@ -302,7 +303,7 @@ export default function ContactPage() {
                                 {[...Array(5)].map((_, i) => (
                                   <motion.div
                                     key={i}
-                                    className="absolute w-1 h-1 bg-[#FFFF00] rounded-full"
+                                    className="absolute w-1 h-1 bg-[#ea3a59] rounded-full"
                                     initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
                                     animate={{
                                       opacity: [0, 1, 0],
@@ -338,7 +339,7 @@ export default function ContactPage() {
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
                     >
-                      <CheckCircle className="w-16 h-16 text-[#FFFF00] mx-auto mb-4" />
+                      <CheckCircle className="w-16 h-16 text-[#ea3a59] mx-auto mb-4" />
                     </motion.div>
                     <h2 className={`text-3xl font-bold text-white mb-2 ${bigShoulders.className}`}>MESSAGE SENT!</h2>
                     <p className="text-gray-300 text-lg">Thanks for reaching out! We will get back to you soon.</p>
@@ -351,34 +352,34 @@ export default function ContactPage() {
           {/* Contact Info */}
           <motion.div className="grid md:grid-cols-3 gap-6 mt-12" variants={containerVariants}>
             <motion.div
-              className="text-center p-6 bg-gray-900/30 rounded-lg border border-[#FFFF00]/30"
+              className="text-center p-6 bg-gray-900/30 rounded-lg border border-[#ea3a59]/30"
               variants={itemVariants}
-              whileHover={{ scale: 1.05, borderColor: "#FFFF00" }}
+              whileHover={{ scale: 1.05, borderColor: "#ea3a59" }}
               transition={{ duration: 0.3 }}
             >
-              <Mail className="w-8 h-8 text-[#FFFF00] mx-auto mb-3" />
+              <Mail className="w-8 h-8 text-[#ea3a59] mx-auto mb-3" />
               <h3 className={`text-white font-bold mb-2 ${bigShoulders.className}`}>EMAIL US</h3>
               <p className="text-gray-300 text-sm">support@sunnyv5.com</p>
             </motion.div>
 
             <motion.div
-              className="text-center p-6 bg-gray-900/30 rounded-lg border border-[#FFFF00]/30"
+              className="text-center p-6 bg-gray-900/30 rounded-lg border border-[#ea3a59]/30"
               variants={itemVariants}
-              whileHover={{ scale: 1.05, borderColor: "#FFFF00" }}
+              whileHover={{ scale: 1.05, borderColor: "#ea3a59" }}
               transition={{ duration: 0.3 }}
             >
-              <MessageSquare className="w-8 h-8 text-[#FFFF00] mx-auto mb-3" />
+              <MessageSquare className="w-8 h-8 text-[#ea3a59] mx-auto mb-3" />
               <h3 className={`text-white font-bold mb-2 ${bigShoulders.className}`}>LIVE CHAT</h3>
               <p className="text-gray-300 text-sm">Available 24/7</p>
             </motion.div>
 
             <motion.div
-              className="text-center p-6 bg-gray-900/30 rounded-lg border border-[#FFFF00]/30"
+              className="text-center p-6 bg-gray-900/30 rounded-lg border border-[#ea3a59]/30"
               variants={itemVariants}
-              whileHover={{ scale: 1.05, borderColor: "#FFFF00" }}
+              whileHover={{ scale: 1.05, borderColor: "#ea3a59" }}
               transition={{ duration: 0.3 }}
             >
-              <Send className="w-8 h-8 text-[#FFFF00] mx-auto mb-3" />
+              <Send className="w-8 h-8 text-[#ea3a59] mx-auto mb-3" />
               <h3 className={`text-white font-bold mb-2 ${bigShoulders.className}`}>RESPONSE TIME</h3>
               <p className="text-gray-300 text-sm">Within 24 hours</p>
             </motion.div>

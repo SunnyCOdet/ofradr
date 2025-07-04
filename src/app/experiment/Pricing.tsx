@@ -168,7 +168,7 @@ export default function Component() {
   const isCardContainerInView = useInView(cardContainerRef, { once: false, amount: 0.1 })
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative  overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 overflow-hidden">
         <div

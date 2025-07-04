@@ -1,5 +1,5 @@
+"use client"
 import React from 'react'
-import Hero from './experiment/Hero'
 import GlassNavbar from './experiment/Navbar'
 import MainHero from './experiment/MainHero'
 import SpinningCircle from './experiment/Spinner'

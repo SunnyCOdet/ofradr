@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { AlertTriangle, Shield, Zap, Eye, Keyboard, Bot } from "lucide-react"
 import { Big_Shoulders_Display } from "next/font/google"
+import Image from "next/image"
+
 import { DotLottieReact } from "@lottiefiles/dotlottie-react"
-import { Footer } from "@/sections/Footer"
+import { Footer } from "../experiment/Footer"
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
   weight: ["400", "700", "900"],
@@ -45,17 +47,13 @@ export default function AboutPage() {
           viewport={{ once: true, amount: 0.3 }}
         >
           <h1 className={`text-5xl font-bold text-white ${bigShoulders.className}`}>About</h1>
-          <div className="w-40 h-40">
-            <DotLottieReact
-              src="https://lottie.host/bee4bcea-72dc-4f56-9e0a-01ba45a52487/rGPvCr5zNx.lottie"
-              loop
-              autoplay
-            />
-          </div>
+          
+ <div>
+      <Image src="/logo.png" alt="Logo" width={80} height={80} />
+    </div>
         </motion.div>
 
-
-        {/* What is SunnyV5 */}
+        {/* What is Ofradr */}
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -63,16 +61,16 @@ export default function AboutPage() {
           viewport={{ once: true, amount: 0.3 }}
           className="mb-12"
         >
-          <Card className="border border-[#FFFF00] shadow-lg bg-gray-900">
+          <Card className="border border-[#ea3a59] shadow-lg bg-gray-900">
             <CardHeader>
               <CardTitle className={`flex items-center gap-2 text-2xl text-white ${bigShoulders.className}`}>
-                <Bot className="h-6 w-6 text-[#FFFF00]" />
-                What is SunnyV5?
+                <Bot className="h-6 w-6 text-[#ea3a59]" />
+                What is Ofradr?
               </CardTitle>
             </CardHeader>
             <CardContent className="text-gray-300 leading-relaxed">
               <p className="mb-4">
-                SunnyV5 is an innovative coding assistant that operates as your invisible helper during technical
+                Ofradr is an innovative coding assistant that operates as your invisible helper during technical
                 assessments. Think of it as your secret weapon for coding tests - a sophisticated tool that combines AI
                 intelligence with stealth operation to provide coding assistance when you need it most.
               </p>
@@ -100,10 +98,10 @@ export default function AboutPage() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <Card className="border border-[#FFFF00] shadow-lg hover:shadow-xl hover:shadow-[#FFFF00]/20 transition-all duration-300 bg-gray-900">
+              <Card className="border border-[#ea3a59] shadow-lg hover:shadow-xl hover:shadow-[#ea3a59]/20 transition-all duration-300 bg-gray-900">
                 <CardHeader>
                   <CardTitle className={`flex items-center gap-2 text-white ${bigShoulders.className}`}>
-                    <Eye className="h-5 w-5 text-[#FFFF00]" />
+                    <Eye className="h-5 w-5 text-[#ea3a59]" />
                     Stealth Mode
                   </CardTitle>
                 </CardHeader>
@@ -121,10 +119,10 @@ export default function AboutPage() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <Card className="border border-[#FFFF00] shadow-lg hover:shadow-xl hover:shadow-[#FFFF00]/20 transition-all duration-300 bg-gray-900">
+              <Card className="border border-[#ea3a59] shadow-lg hover:shadow-xl hover:shadow-[#ea3a59]/20 transition-all duration-300 bg-gray-900">
                 <CardHeader>
                   <CardTitle className={`flex items-center gap-2 text-white ${bigShoulders.className}`}>
-                    <Keyboard className="h-5 w-5 text-[#FFFF00]" />
+                    <Keyboard className="h-5 w-5 text-[#ea3a59]" />
                     Keyboard Shortcuts
                   </CardTitle>
                 </CardHeader>
@@ -142,10 +140,10 @@ export default function AboutPage() {
               transition={{ duration: 0.5 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              <Card className="border border-[#FFFF00] shadow-lg hover:shadow-xl hover:shadow-[#FFFF00]/20 transition-all duration-300 bg-gray-900">
+              <Card className="border border-[#ea3a59] shadow-lg hover:shadow-xl hover:shadow-[#ea3a59]/20 transition-all duration-300 bg-gray-900">
                 <CardHeader>
                   <CardTitle className={`flex items-center gap-2 text-white ${bigShoulders.className}`}>
-                    <Zap className="h-5 w-5 text-[#FFFF00]" />
+                    <Zap className="h-5 w-5 text-[#ea3a59]" />
                     AI-Powered
                   </CardTitle>
                 </CardHeader>
@@ -167,14 +165,14 @@ export default function AboutPage() {
           viewport={{ once: true, amount: 0.3 }}
           className="mb-12"
         >
-          <Card className="border border-[#FFFF00] shadow-lg bg-gray-900">
+          <Card className="border border-[#ea3a59] shadow-lg bg-gray-900">
             <CardHeader>
               <CardTitle className={`text-2xl text-white ${bigShoulders.className}`}>How It Works</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <Badge variant="outline" className="mt-1 border-[#FFFF00] text-[#FFFF00]">
+                  <Badge variant="outline" className="mt-1 border-[#ea3a59] text-[#ea3a59]">
                     1
                   </Badge>
                   <div>
@@ -183,7 +181,7 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Badge variant="outline" className="mt-1 border-[#FFFF00] text-[#FFFF00]">
+                  <Badge variant="outline" className="mt-1 border-[#ea3a59] text-[#ea3a59]">
                     2
                   </Badge>
                   <div>
@@ -192,7 +190,7 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Badge variant="outline" className="mt-1 border-[#FFFF00] text-[#FFFF00]">
+                  <Badge variant="outline" className="mt-1 border-[#ea3a59] text-[#ea3a59]">
                     3
                   </Badge>
                   <div>
@@ -213,21 +211,21 @@ export default function AboutPage() {
           viewport={{ once: true, amount: 0.3 }}
           className="mb-12"
         >
-          <Card className="border border-[#FFFF00] shadow-lg bg-gray-900">
+          <Card className="border border-[#ea3a59] shadow-lg bg-gray-900">
             <CardHeader>
               <CardTitle className={`text-2xl text-white ${bigShoulders.className}`}>Operating Modes</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="p-4 bg-gray-800 border border-[#FFFF00]/30 rounded-lg">
-                  <h3 className={`font-semibold text-[#FFFF00] mb-2 ${bigShoulders.className}`}>Coding Exam Mode</h3>
+                <div className="p-4 bg-gray-800 border border-[#ea3a59]/30 rounded-lg">
+                  <h3 className={`font-semibold text-[#ea3a59] mb-2 ${bigShoulders.className}`}>Coding Exam Mode</h3>
                   <p className="text-gray-300">
                     Ultra-stealth mode for coding assessments. Completely invisible operation with keyboard-only
                     control.
                   </p>
                 </div>
-                <div className="p-4 bg-gray-800 border border-[#FFFF00]/30 rounded-lg">
-                  <h3 className={`font-semibold text-[#FFFF00] mb-2 ${bigShoulders.className}`}>
+                <div className="p-4 bg-gray-800 border border-[#ea3a59]/30 rounded-lg">
+                  <h3 className={`font-semibold text-[#ea3a59] mb-2 ${bigShoulders.className}`}>
                     Technical Interview Mode
                   </h3>
                   <p className="text-gray-300">
@@ -256,9 +254,9 @@ export default function AboutPage() {
             </CardHeader>
             <CardContent className="space-y-4 text-red-300">
               <div className="p-4 bg-red-900/50 border border-red-500/30 rounded-lg">
-                <h3 className={`font-semibold mb-2 text-[#FFFF00] ${bigShoulders.className}`}>Responsible Use Only</h3>
+                <h3 className={`font-semibold mb-2 text-[#ea3a59] ${bigShoulders.className}`}>Responsible Use Only</h3>
                 <p>
-                  SunnyV5 is intended for educational purposes, practice sessions, and legitimate technical preparation.
+                  Ofradr is intended for educational purposes, practice sessions, and legitimate technical preparation.
                   Users are strictly prohibited from using this software for:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
@@ -270,12 +268,12 @@ export default function AboutPage() {
               </div>
 
               <div className="p-4 bg-red-900/50 border border-red-500/30 rounded-lg">
-                <h3 className={`font-semibold mb-2 text-[#FFFF00] ${bigShoulders.className}`}>
+                <h3 className={`font-semibold mb-2 text-[#ea3a59] ${bigShoulders.className}`}>
                   Limitation of Liability
                 </h3>
                 <p>
                   <strong className="text-white">
-                    The developers and distributors of SunnyV5 are not responsible for any illegal, unethical, or
+                    The developers and distributors of Ofradr are not responsible for any illegal, unethical, or
                     inappropriate use of this software.
                   </strong>{" "}
                   Users assume full responsibility for their actions and any consequences that may arise from the use of
@@ -284,9 +282,9 @@ export default function AboutPage() {
               </div>
 
               <div className="p-4 bg-red-900/50 border border-red-500/30 rounded-lg">
-                <h3 className={`font-semibold mb-2 text-[#FFFF00] ${bigShoulders.className}`}>User Responsibility</h3>
+                <h3 className={`font-semibold mb-2 text-[#ea3a59] ${bigShoulders.className}`}>User Responsibility</h3>
                 <p>
-                  By using SunnyV5, you acknowledge that you understand and agree to use this software ethically and in
+                  By using Ofradr, you acknowledge that you understand and agree to use this software ethically and in
                   compliance with all applicable laws, regulations, and institutional policies. You are solely
                   responsible for ensuring your use of this software does not violate any terms of service, academic
                   policies, or legal requirements.
@@ -303,15 +301,15 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true, amount: 0.3 }}
         >
-          <Card className="border-2 border-[#FFFF00] bg-gray-900 shadow-lg">
+          <Card className="border-2 border-[#ea3a59] bg-gray-900 shadow-lg">
             <CardHeader>
-              <CardTitle className={`flex items-center gap-2 text-[#FFFF00] ${bigShoulders.className}`}>
+              <CardTitle className={`flex items-center gap-2 text-[#ea3a59] ${bigShoulders.className}`}>
                 <Shield className="h-6 w-6" />
                 Ethical Use Guidelines
               </CardTitle>
             </CardHeader>
             <CardContent className="text-gray-300">
-              <p className="mb-4">We encourage the responsible use of SunnyV5 for legitimate purposes such as:</p>
+              <p className="mb-4">We encourage the responsible use of Ofradr for legitimate purposes such as:</p>
               <ul className="list-disc list-inside space-y-2">
                 <li>Personal coding practice and skill development</li>
                 <li>Learning new programming concepts and techniques</li>
@@ -319,7 +317,7 @@ export default function AboutPage() {
                 <li>Educational exploration and experimentation</li>
                 <li>Debugging and understanding complex code structures</li>
               </ul>
-              <p className="mt-4 font-semibold text-[#FFFF00]">
+              <p className="mt-4 font-semibold text-[#ea3a59]">
                 Remember: True skill development comes from understanding and practice, not from shortcuts.
               </p>
             </CardContent>
