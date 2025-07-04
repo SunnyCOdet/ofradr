@@ -11,14 +11,18 @@ import { ArrowLeft, Shield, RefreshCw } from "lucide-react"
 
 interface OtpFormProps {
   email: string
+  username: string
+  password: string
+  geminiApiKey: string
   onOtpSuccess: () => void
   onBack: () => void
 }
 
-export default function OtpForm({ email, onOtpSuccess, onBack }: OtpFormProps) {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""])
+export default function OtpForm({ email, username, password, geminiApiKey, onOtpSuccess, onBack }: OtpFormProps) {
+  const [otp_hash, setOtp] = useState(["", "", "", "", "", ""])
   const [isLoading, setIsLoading] = useState(false)
   const [timeLeft, setTimeLeft] = useState(60)
+  const [error, setError] = useState("")
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   useEffect(() => {
@@ -31,7 +35,7 @@ export default function OtpForm({ email, onOtpSuccess, onBack }: OtpFormProps) {
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return
 
-    const newOtp = [...otp]
+    const newOtp = [...otp_hash]
     newOtp[index] = value
     setOtp(newOtp)
 
@@ -42,21 +46,44 @@ export default function OtpForm({ email, onOtpSuccess, onBack }: OtpFormProps) {
   }
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp_hash[index] && index > 0) {
       inputRefs.current[index - 1]?.focus()
     }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const otpCode = otp.join("")
-    if (otpCode.length !== 6) return
+    setError("")
+    const otp_hashCode = otp_hash.join("")
+    if (otp_hashCode.length !== 6) {
+      setError("Please enter the 6-digit code.")
+      return
+    }
 
     setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsLoading(false)
-    onOtpSuccess()
+    try {
+      const res = await fetch("https://zryasugsrbzcraasgolv.supabase.co/functions/v1/register-otptest", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWFzdWdzcmJ6Y3JhYXNnb2x2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDg3ODcsImV4cCI6MjA2NDA4NDc4N30.GHX3YhaqtueL0n2WulPS6TPaFSwfR3mf0sfakB0TjUE`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          password,
+          api_key: geminiApiKey,
+          mail: email,
+          user_otp: otp_hashCode,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Registration failed")
+      onOtpSuccess()
+    } catch (err: any) {
+      setError(err.message || "Registration failed")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleResend = () => {
@@ -99,7 +126,7 @@ export default function OtpForm({ email, onOtpSuccess, onBack }: OtpFormProps) {
               transition={{ delay: 0.3 }}
               className="flex justify-center gap-3"
             >
-              {otp.map((digit, index) => (
+              {otp_hash.map((digit, index) => (
                 <Input
                   key={index}
                   ref={(el) => { inputRefs.current[index] = el; }}
@@ -114,10 +141,14 @@ export default function OtpForm({ email, onOtpSuccess, onBack }: OtpFormProps) {
               ))}
             </motion.div>
 
+            {/* Error message */}
+            {error && (
+              <div className="text-red-400 text-center text-sm font-semibold">{error}</div>
+            )}
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
               <Button
                 type="submit"
-                disabled={isLoading || otp.join("").length !== 6}
+                disabled={isLoading || otp_hash.join("").length !== 6}
                 className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
               >
                 {isLoading ? (

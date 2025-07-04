@@ -2,22 +2,33 @@
 
 import { useState } from "react"
 import { AnimatePresence } from "framer-motion"
-import LoginForm from "./login"
+import LoginForm  from "./login"
 import SignupForm from "./signup"
 import OtpForm from "./otp"
 
 export default function AuthPage() {
   const [currentView, setCurrentView] = useState<"login" | "signup" | "otp">("login")
   const [userEmail, setUserEmail] = useState("")
+  const [userData, setUserData] = useState({
+    username: "",
+    password: "",
+    geminiApiKey: "",
+  })
 
-  const handleSignupSuccess = (email: string) => {
+  // Accepts all registration data
+  const handleSignupSuccess = (email: string, username?: string, password?: string, geminiApiKey?: string) => {
     setUserEmail(email)
+    setUserData({
+      username: username || "",
+      password: password || "",
+      geminiApiKey: geminiApiKey || "",
+    })
     setCurrentView("otp")
   }
 
   const handleOtpSuccess = () => {
-    // Handle successful OTP verification
-    console.log("OTP verified successfully")
+    // On successful OTP verification, go to login form
+    setCurrentView("login")
   }
 
   return (
@@ -37,13 +48,18 @@ export default function AuthPage() {
             <SignupForm
               key="signup"
               onSwitchToLogin={() => setCurrentView("login")}
-              onSignupSuccess={handleSignupSuccess}
+              onSignupSuccess={(email, username, password, geminiApiKey) =>
+                handleSignupSuccess(email, username, password, geminiApiKey)
+              }
             />
           )}
           {currentView === "otp" && (
             <OtpForm
               key="otp"
               email={userEmail}
+              username={userData.username}
+              password={userData.password}
+              geminiApiKey={userData.geminiApiKey}
               onOtpSuccess={handleOtpSuccess}
               onBack={() => setCurrentView("signup")}
             />

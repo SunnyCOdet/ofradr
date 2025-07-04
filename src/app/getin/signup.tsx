@@ -12,12 +12,13 @@ import { Eye, EyeOff, UserPlus, Key } from "lucide-react"
 
 interface SignupFormProps {
   onSwitchToLogin: () => void
-  onSignupSuccess: (email: string) => void
+  onSignupSuccess: (email: string, username: string, password: string, geminiApiKey: string) => void
 }
 
 export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupFormProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     username: "",
@@ -26,19 +27,45 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
     confirmPassword: "",
     geminiApiKey: "",
   })
+  const [error, setError] = useState("")
 
+
+
+  // Step 1: Send OTP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError("")
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!")
+      setError("Passwords do not match!")
       return
     }
-
+    if (!formData.email.endsWith("@gmail.com")) {
+      setError("A valid Gmail address is required.")
+      return
+    }
     setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsLoading(false)
-    onSignupSuccess(formData.email)
+    try {
+      const res = await fetch("https://zryasugsrbzcraasgolv.supabase.co/functions/v1/send-otp", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWFzdWdzcmJ6Y3JhYXNnb2x2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDg3ODcsImV4cCI6MjA2NDA4NDc4N30.GHX3YhaqtueL0n2WulPS6TPaFSwfR3mf0sfakB0TjUE`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.email }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed to send OTP")
+      onSignupSuccess(
+        formData.email,
+        formData.username,
+        formData.password,
+        formData.geminiApiKey
+      )
+    } catch (err: any) {
+      setError(err.message || "Failed to send OTP")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -66,6 +93,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
         </CardHeader>
         <CardContent className="space-y-6">
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -86,6 +114,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
               />
             </motion.div>
 
+            {/* Email */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -106,6 +135,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
               />
             </motion.div>
 
+            {/* Password */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -135,6 +165,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
               </div>
             </motion.div>
 
+            {/* Confirm Password */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -164,6 +195,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
               </div>
             </motion.div>
 
+            {/* Gemini API Key */}
             <motion.div
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -185,6 +217,12 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
               />
             </motion.div>
 
+            {/* Error message */}
+            {error && (
+              <div className="text-red-400 text-center text-sm font-semibold">{error}</div>
+            )}
+
+            {/* Submit Button */}
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }}>
               <Button
                 type="submit"

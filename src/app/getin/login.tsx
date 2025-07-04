@@ -12,18 +12,47 @@ import { Eye, EyeOff, LogIn } from "lucide-react"
 
 interface LoginFormProps {
   onSwitchToSignup: () => void
+  onLoginSuccess?: (user: { username: string; apiKey: string }) => void
 }
 
-export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
+const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({ username: "", password: "" })
+  const [error, setError] = useState("")
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError("")
     setIsLoading(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    setIsLoading(false)
+    try {
+      const res = await fetch("https://zryasugsrbzcraasgolv.supabase.co/functions/v1/login", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWFzdWdzcmJ6Y3JhYXNnb2x2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDg3ODcsImV4cCI6MjA2NDA4NDc4N30.GHX3YhaqtueL0n2WulPS6TPaFSwfR3mf0sfakB0TjUE",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "login", username: formData.username, password: formData.password }),
+      })
+      const data = await res.json()
+      if (!res.ok || !data.success) throw new Error(data.error || "Login failed")
+      // Save user info to localStorage (optional)
+      localStorage.setItem("user", JSON.stringify({ username: data.user.username, apiKey: data.apiKey }))
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+      if (typeof onLoginSuccess === "function") {
+        onLoginSuccess({ username: data.user.username, apiKey: data.apiKey })
+      }
+    } catch (err: any) {
+      setError(err.message || "Login failed")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -53,14 +82,16 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
               transition={{ delay: 0.3 }}
               className="space-y-2"
             >
-              <Label htmlFor="email" className="text-gray-300">
-                Email
+              <Label htmlFor="username" className="text-gray-300">
+                Username
               </Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
+                id="username"
+                type="text"
+                placeholder="Enter your username"
                 required
+                value={formData.username}
+                onChange={(e) => handleInputChange("username", e.target.value)}
                 className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
               />
             </motion.div>
@@ -80,6 +111,8 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   required
+                  value={formData.password}
+                  onChange={(e) => handleInputChange("password", e.target.value)}
                   className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20 pr-10"
                 />
                 <button
@@ -92,6 +125,10 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
               </div>
             </motion.div>
 
+            {/* Error message */}
+            {error && (
+              <div className="text-red-400 text-center text-sm font-semibold">{error}</div>
+            )}
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
               <Button
                 type="submit"
@@ -135,3 +172,5 @@ export default function LoginForm({ onSwitchToSignup }: LoginFormProps) {
     </motion.div>
   )
 }
+
+export default LoginForm
