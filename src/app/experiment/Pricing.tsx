@@ -339,7 +339,7 @@ export default function Component() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.8 + index * 0.2, duration: 0.5 }}
                     >
-                      <PaymentButton price={plan.rate} />
+                      <PaymentButton tier={plan.name} price={plan.rate} />
                     </motion.div>
                   </CardFooter>
                 </Card>

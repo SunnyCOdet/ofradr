@@ -13,6 +13,7 @@
     "@lottiefiles/dotlottie-react": "^0.7.2",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@supabase/supabase-js": "^2.50.3",
     "@tabler/icons-react": "^3.33.0",
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
