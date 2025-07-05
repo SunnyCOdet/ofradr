@@ -31,20 +31,54 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
 
 
 
-  // Step 1: Send OTP
+  // Step 1: Send OTP, but first validate Gemini API key
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!")
-      return
+      setError("Passwords do not match!");
+      return;
     }
     if (!formData.email.endsWith("@gmail.com")) {
-      setError("A valid Gmail address is required.")
-      return
+      setError("A valid Gmail address is required.");
+      return;
     }
-    setIsLoading(true)
+    if (!formData.geminiApiKey) {
+      setError("Please enter your Gemini API key.");
+      return;
+    }
+    setIsLoading(true);
+    // Validate Gemini API key
     try {
+      const geminiRes = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-goog-api-key": formData.geminiApiKey,
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: "Explain how AI works in a few words" }
+              ]
+            }
+          ]
+        }),
+      });
+      if (!geminiRes.ok) {
+        setError("Invalid Gemini API key. Please enter a valid key.");
+        setIsLoading(false);
+        return;
+      }
+      // Optionally, check for a valid response structure
+      const geminiData = await geminiRes.json();
+      if (!geminiData || geminiData.error) {
+        setError("Invalid Gemini API key. Please enter a valid key.");
+        setIsLoading(false);
+        return;
+      }
+      // If valid, proceed with OTP logic
       const res = await fetch("https://zryasugsrbzcraasgolv.supabase.co/functions/v1/send-otp", {
         method: "POST",
         headers: {
@@ -52,19 +86,19 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: formData.email }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || "Failed to send OTP")
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send OTP");
       onSignupSuccess(
         formData.email,
         formData.username,
         formData.password,
         formData.geminiApiKey
-      )
+      );
     } catch (err: any) {
-      setError(err.message || "Failed to send OTP")
+      setError(err.message || "Failed to send OTP");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
@@ -226,7 +260,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8 }}>
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={false}
                 className="w-full bg-gradient-to-r from-red-500 to-red-700  hover:from-red-700 hover:to-red-500 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               >
                 {isLoading ? (

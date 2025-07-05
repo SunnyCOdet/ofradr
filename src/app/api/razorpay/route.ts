@@ -4,17 +4,17 @@ import { NextRequest } from 'next/server';
 import Razorpay from 'razorpay';
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'razor_pay_keyId',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'KHg7LdD7MuzEnnAXh67fqI5g',
+  key_id: process.env.RAZORPAY_KEY_ID  ,
+  key_secret: process.env.RAZORPAY_KEY_SECRET  ,
 });
 
 export async function POST(req: NextRequest) {
   try {
-    // Optional: You can extract data from the request if needed
-     const body = await req.json();
+    const body = await req.json();
+    const amount = typeof body.amount === 'number' ? body.amount : 100; // fallback to 100 paise if not provided
 
     const order = await razorpay.orders.create({
-      amount: 1 , // ₹4.99 in paise
+      amount: amount, // amount in paise
       currency: 'INR',
       receipt: `rcptid_${Date.now()}`,
       payment_capture: true,

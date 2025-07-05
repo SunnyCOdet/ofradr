@@ -238,7 +238,7 @@ export default function ContactPage() {
                     >
                       <Button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={false}
                         className={`
                           bg-[#ea3a59] text-black font-bold px-8 py-3 rounded-lg
                           hover:bg-[#ea3a59]/90 transition-all duration-300
@@ -359,7 +359,7 @@ export default function ContactPage() {
             >
               <Mail className="w-8 h-8 text-[#ea3a59] mx-auto mb-3" />
               <h3 className={`text-white font-bold mb-2 ${bigShoulders.className}`}>EMAIL US</h3>
-              <p className="text-gray-300 text-sm">support@sunnyv5.com</p>
+              <p className="text-gray-300 text-sm">support@Ofradr.com</p>
             </motion.div>
 
             <motion.div

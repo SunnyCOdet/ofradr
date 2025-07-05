@@ -148,7 +148,7 @@ export default function OtpForm({ email, username, password, geminiApiKey, onOtp
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>
               <Button
                 type="submit"
-                disabled={isLoading || otp_hash.join("").length !== 6}
+                disabled={false}
                 className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
               >
                 {isLoading ? (

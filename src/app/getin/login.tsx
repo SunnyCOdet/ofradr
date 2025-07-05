@@ -132,7 +132,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, onLoginSuccess 
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }}>
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={false}
                 className="w-full bg-gradient-to-r from-red-500 to-red-700  hover:from-red-700 hover:to-red-500 text-white font-semibold py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               >
                 {isLoading ? (

@@ -3,10 +3,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Razorpay from "razorpay";
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID!,       // server‑side secret
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+  key_id: process.env.RAZORPAY_KEY_ID  ,       // server‑side secret
+  key_secret: process.env.RAZORPAY_KEY_SECRET  , // server‑side secret
 });
-
 /**
  * POST /api/razorpay
  * Creates and returns a Razorpay order object.

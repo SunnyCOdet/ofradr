@@ -70,7 +70,7 @@ export default function AboutPage() {
             </CardHeader>
             <CardContent className="text-gray-300 leading-relaxed">
               <p className="mb-4">
-                Ofradr is an innovative coding assistant that operates as your invisible helper during technical
+                Ofradr is an innovative coding assistant that operates as your invisible helper during Mock
                 assessments. Think of it as your secret weapon for coding tests - a sophisticated tool that combines AI
                 intelligence with stealth operation to provide coding assistance when you need it most.
               </p>
@@ -218,7 +218,7 @@ export default function AboutPage() {
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="p-4 bg-gray-800 border border-[#ea3a59]/30 rounded-lg">
-                  <h3 className={`font-semibold text-[#ea3a59] mb-2 ${bigShoulders.className}`}>Coding Exam Mode</h3>
+                  <h3 className={`font-semibold text-[#ea3a59] mb-2 ${bigShoulders.className}`}>Coding Practice Mode</h3>
                   <p className="text-gray-300">
                     Ultra-stealth mode for coding assessments. Completely invisible operation with keyboard-only
                     control.
@@ -226,10 +226,10 @@ export default function AboutPage() {
                 </div>
                 <div className="p-4 bg-gray-800 border border-[#ea3a59]/30 rounded-lg">
                   <h3 className={`font-semibold text-[#ea3a59] mb-2 ${bigShoulders.className}`}>
-                    Technical Interview Mode
+                    Mock Interview Mode
                   </h3>
                   <p className="text-gray-300">
-                    Interactive mode for technical interviews. Allows visible window interaction for custom questions.
+                    Interactive mode for Mock interviews. Allows visible window interaction for custom questions.
                   </p>
                 </div>
               </div>
@@ -256,7 +256,7 @@ export default function AboutPage() {
               <div className="p-4 bg-red-900/50 border border-red-500/30 rounded-lg">
                 <h3 className={`font-semibold mb-2 text-[#ea3a59] ${bigShoulders.className}`}>Responsible Use Only</h3>
                 <p>
-                  Ofradr is intended for educational purposes, practice sessions, and legitimate technical preparation.
+                  Ofradr is intended for educational purposes, practice sessions, and legitimate Mock preparation.
                   Users are strictly prohibited from using this software for:
                 </p>
                 <ul className="list-disc list-inside mt-2 space-y-1">
@@ -313,7 +313,7 @@ export default function AboutPage() {
               <ul className="list-disc list-inside space-y-2">
                 <li>Personal coding practice and skill development</li>
                 <li>Learning new programming concepts and techniques</li>
-                <li>Preparing for technical interviews in a practice environment</li>
+                <li>Preparing for Mock interviews in a practice environment</li>
                 <li>Educational exploration and experimentation</li>
                 <li>Debugging and understanding complex code structures</li>
               </ul>

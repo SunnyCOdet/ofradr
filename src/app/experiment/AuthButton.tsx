@@ -91,7 +91,7 @@ export default function AuthButton() {
           <div className="text-center">
             <span className="text-gray-600">Dont have an account? </span>
             <AuthShimmerButton type="button" className="mt-2 bg-gradient-to-r from-green-600 to-teal-600">
-              Create Account
+              <span onClick={() => window.location.href = '/getin'} style={{display: 'block', width: '100%', height: '100%', cursor: 'pointer'}}>Create Account</span>
             </AuthShimmerButton>
           </div>
         </form>

@@ -3,8 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Razorpay from "razorpay";
 
 const razorpay = new Razorpay({
-  key_id: "razor_pay_keyId",       // server‑side secret
-  key_secret: "TsYaT16geCx3Hsy0eZjbCjuT",
+  key_id: process.env.RAZORPAY_KEY_ID  ,       // server‑side secret
+  key_secret: process.env.RAZORPAY_KEY_SECRET  , // server‑side secret
 });
 
 /**
@@ -18,9 +18,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Get amount from request body, default to 499 if not provided
+    const { amount } = req.body;
     const order = await razorpay.orders.create({
-      amount: 4.9,          // ₹4.99 in paise
-      currency: "USD",
+      amount: amount || 499,          // ₹4.99 in paise
+      currency: "INR",
       receipt: `rcpt_${Date.now()}`,
       payment_capture: true,
     });

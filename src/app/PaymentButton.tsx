@@ -17,8 +17,37 @@ interface PaymentButtonProps {
 
 export default function PaymentButton({ price, tier }: PaymentButtonProps) {
   const [accessToken, setAccessToken] = useState<string | null>(null)
+  const [user, setUser] = useState<{ username: string; email?: string } | null>(null)
+
+  useEffect(() => {
+    // Try to get user info from localStorage
+    if (typeof window !== "undefined") {
+      const userStr = localStorage.getItem("user")
+      if (userStr) {
+        try {
+          const parsed = JSON.parse(userStr)
+          setUser(parsed)
+        } catch {}
+      }
+    }
+
+    // Listen for card click payment event
+    const handler = async (evt: any) => {
+      if (evt.detail && evt.detail.price === price && evt.detail.tier === tier) {
+        await handlePayment()
+      }
+    }
+    window.addEventListener("trigger-payment", handler)
+    return () => window.removeEventListener("trigger-payment", handler)
+    // eslint-disable-next-line
+  }, [price, tier, user])
 
   const handlePayment = async () => {
+    if (!user) {
+      window.location.href = "/getin";
+      return;
+    }
+
     const sdkLoaded = await loadRazorpayScript()
     if (!sdkLoaded) {
       alert("❌ Failed to load Razorpay SDK.")
@@ -31,31 +60,31 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: 1 }), // amount in paise
+      body: JSON.stringify({ amount: Math.round(price * 100 * 90) }), // amount in paise
     }).then((r) => r.json())
 
     // Step 2: Open Razorpay checkout
     const rzp = new window.Razorpay({
-      key: "razor_pay_keyId",
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: order.currency,
       order_id: order.id,
-      name: "My Shop",
-      description: "Test transaction",
+      name: "Ofradr Inc",
+      description: "Ofradr Payment",
       handler: async (response: any) => {
         alert(`✅ Payment success! ID: ${response.razorpay_payment_id}`)
 
         // Step 3: Tier upgrade call to Supabase Edge Function
         try {
           const res = await fetch(
-            "https://zryasugsrbzcraasgolv.supabase.co/functions/v1/tier-upgrade",
+            "https://zryasugsrbzcraasgolv.supabase.co/functions/v1/t-upgrade",
             {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                username: "user",
+                username: user?.username,
                 pro_tier: tier === "Freemium",
                 elite_tier: tier === "Premium",
               }),
@@ -65,20 +94,18 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
           const data = await res.json()
 
           if (!res.ok) {
-            throw new Error(data.error || "Tier update failed")
+            throw new Error( "Tier update failed")
           }
 
-          console.log("Tier updated:", data)
           alert("✅ Tier successfully upgraded")
         } catch (err: any) {
-          console.error("Tier upgrade error:", err.message)
           alert("⚠️ Tier upgrade failed")
         }
       },
       prefill: {
-        name: "Sat B",
-        email: "test@example.com",
-        contact: "9555999999",
+        name: user?.username || "Guest",
+        email: user?.email || "",
+        contact: "9999999999",
       },
       theme: { color: "#000000" },
     })
@@ -88,10 +115,12 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
 
   return (
     <button
-      onClick={handlePayment}
+      // Remove onClick, payment is handled by card click
       className="w-full py-4 font-semibold transition-all duration-300 backdrop-blur-sm border bg-black text-white border-none hover:bg-white/10 hover:border-white/30"
+      tabIndex={-1} // Prevent button from being focused/clicked directly
+      style={{ pointerEvents: "none" }}
     >
-      Pay ₹{price.toFixed(2)}
+      ${price}
     </button>
   )
 }

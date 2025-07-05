@@ -79,7 +79,7 @@ function Features() {
                 >
                     <h1 className='text-xl md:text-3xl text-white'>Step 3: Send to AI</h1>
                     <div className='md:text-lg text-md z-30 text-white tracking-tight mx-auto max-w-md text-center'>
-                        Once screenshots are ready, press Ctrl + Enter. Let SunnyV5 do the thinking!
+                        Once screenshots are ready, press Ctrl + Enter. Let Ofradr do the thinking!
                     </div>
                     <motion.div
                         animate={{ rotate: -360 }}
@@ -99,7 +99,7 @@ function Features() {
                             <h1 className='text-xl md:text-3xl text-white'>Step 4: View the Answer</h1>
                         </div>
                         <div className='md:text-lg  text-md text-white tracking-tight mx-auto max-w-sm text-center'>
-                            <span>Hit Alt + H to open SunnyV5 and see your answer. Press again to hide</span>
+                            <span>Hit Alt + H to open Ofradr and see your answer. Press again to hide</span>
                         </div>
                         <motion.div
                             animate={{ rotate: -360 }}
@@ -171,12 +171,12 @@ export default Features
 //         },
 //         {
 //             title: "Step 3: Send to AI",
-//             desc: "Once screenshots are ready, press Ctrl + Enter. Let SunnyV5 do the thinking!",
+//             desc: "Once screenshots are ready, press Ctrl + Enter. Let Ofradr do the thinking!",
 //             ref: ref7, view: isInView7
 //         },
 //         {
 //             title: "Step 4: View the Answer",
-//             desc: "Hit Alt + H to open SunnyV5 and see your answer. Press again to hide.",
+//             desc: "Hit Alt + H to open Ofradr and see your answer. Press again to hide.",
 //             ref: ref8, view: isInView8
 //         },
 //         {
@@ -204,9 +204,9 @@ export default Features
 //                 {/* Existing Features (1–5) */}
 //                 {/* ... your original 5 cards remain unchanged here ... */}
 
-//                 {/* SunnyV5 Guide Steps */}
+//                 {/* Ofradr Guide Steps */}
 //                 <div className='mt-20 text-white text-center text-3xl font-semibold'>
-//                     SunnyV5 in 5 Simple Steps 🚀
+//                     Ofradr in 5 Simple Steps 🚀
 //                 </div>
 //                 <div className='flex flex-col gap-4 mt-10'>
 //                     <div className='flex flex-col md:flex-row gap-4'>

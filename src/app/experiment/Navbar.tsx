@@ -5,7 +5,7 @@ import Link from "next/link";
 
 
 import { cn } from "@/lib/utils"
-import { type ButtonHTMLAttributes, forwardRef } from "react"
+import { type ButtonHTMLAttributes, forwardRef, useEffect, useState } from "react"
 
 interface AuthShimmerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
@@ -113,6 +113,21 @@ export default function GlassNavbar({
     }
   }
 
+  // User state for showing username
+  const [user, setUser] = useState<{ username: string } | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userStr = localStorage.getItem("user")
+      if (userStr) {
+        try {
+          const parsed = JSON.parse(userStr)
+          setUser(parsed)
+        } catch {}
+      }
+    }
+  }, [])
+
   return (
     <nav
       className={`fixed top-0 left-0  right-0 z-50 ${blurClasses[blurIntensity]} border-b border-white/20`}
@@ -125,42 +140,40 @@ export default function GlassNavbar({
           {/* Logo */}
           <div className="flex items-center flex-row gap-10 ">
             <div>
-      <Image src="/logo.png" alt="Logo" width={70} height={70} />
-    </div>
-          
+              <Image src="/logo.png" alt="Logo" width={70} height={70} />
+            </div>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-white/50 text-sm hover:text-white transition-colors  tracking-tight duration-200">
-              Home
-            </Link>
-            <Link href="/about" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
-              About
-            </Link>
-            <Link href="/contact" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
-              Contact
-            </Link>
-            <Link href="" className="text-white/50 text-sm cursor-not-allowed hover:text-white transition-colors duration-200">
-              Usage
-            </Link>
-            <Link href="" className="text-white/50 cursor-not-allowed text-sm hover:text-white transition-colors duration-200">
-              Pricing
-            </Link>
+            {/* Navigation Links */}
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="/" className="text-white/50 text-sm hover:text-white transition-colors  tracking-tight duration-200">
+                Home
+              </Link>
+              <Link href="/about" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+                About
+              </Link>
+              <Link href="/contact" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+                Contact
+              </Link>
+              <Link href="" className="text-white/50 text-sm cursor-not-allowed hover:text-white transition-colors duration-200">
+                Usage
+              </Link>
+              <Link href="" className="text-white/50 cursor-not-allowed text-sm hover:text-white transition-colors duration-200">
+                Pricing
+              </Link>
+            </div>
           </div>
-</div>
           {/* Right Side Actions */}
-          <div className="absolute right-0 flex cursor-not-allowed items-center space-x-4">
-            
-            <Link href="/">
-             <AuthShimmerButton type="button" className="mt-2 bg-gradient-to-r ">
-              Create Account
-            </AuthShimmerButton>
-            </Link>
+          <div className="absolute right-0 flex items-center space-x-4">
+            {user ? (
+              <span className="text-white/80 font-semibold px-4">Hello, {user.username}</span>
+            ) : (
+              <Link href="/getin">
+                <AuthShimmerButton type="button" className="mt-2 bg-gradient-to-r " onClick={() => window.location.href = '/getin'}>
+                  Create Account
+                </AuthShimmerButton>
+              </Link>
+            )}
           </div>
-          
-
-          {/* Mobile Menu Button */}
-          
         </div>
       </div>
     </nav>

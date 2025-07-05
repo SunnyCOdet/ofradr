@@ -20,7 +20,9 @@ const bigShoulders = Big_Shoulders_Display({
 })
 
 import { loadRazorpayScript } from "@/utils/loadRazorpay"
+
 import PaymentButton from "../PaymentButton"
+import { useCallback } from "react"
 
 declare global {
   interface Window {
@@ -184,6 +186,25 @@ export default function Component() {
   const cardContainerRef = useRef(null)
   const isCardContainerInView = useInView(cardContainerRef, { once: false, amount: 0.1 })
 
+  // Payment handler to trigger payment from card click
+  const handleCardPayment = useCallback(async (price: number, tier: string) => {
+    if (price === 0) {
+      // Download the zip file for Free tier
+      const link = document.createElement('a');
+      link.href = '/offradar.zip';
+      link.download = 'offradar.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      return;
+    }
+    // Dynamically import the PaymentButton module to access the payment logic
+    const mod = await import("../PaymentButton")
+    // Trigger payment for paid tiers
+    const evt = new CustomEvent("trigger-payment", { detail: { price, tier } })
+    window.dispatchEvent(evt)
+  }, [])
+
   return (
     <div className="min-h-screen bg-black text-white relative  overflow-hidden">
       {/* Background Gradient */}
@@ -260,6 +281,8 @@ export default function Component() {
                       ? "bg-[rgba(0,0,0,0.1)] hover:ring-2 hover:ring-[#ea3a59]/50 hover:bg-white/5 hover:shadow-2xl hover:shadow-[#ea3a59]/20"
                       : "bg-[rgba(0,0,0,0.5)] hover:bg-white/5 hover:border-white/20"
                   }`}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleCardPayment(plan.rate, plan.name)}
                 >
                   <CardHeader className="text-center pb-8 relative">
                     <motion.div
@@ -339,6 +362,7 @@ export default function Component() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.8 + index * 0.2, duration: 0.5 }}
                     >
+                      {/* The button is now just for style, payment is triggered by card click */}
                       <PaymentButton tier={plan.name} price={plan.rate} />
                     </motion.div>
                   </CardFooter>
