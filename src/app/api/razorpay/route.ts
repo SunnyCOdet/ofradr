@@ -2,7 +2,7 @@
 
 import { NextRequest } from 'next/server';
 import Razorpay from 'razorpay';
-
+const runtime = 'edge';
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID  ,
   key_secret: process.env.RAZORPAY_KEY_SECRET  ,
