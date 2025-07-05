@@ -1,6 +1,7 @@
 import { dbConnect } from "@/lib/mongodb";
 import User from "@/app/models/User";
 import { NextResponse } from "next/server";
+const runtime = 'edge';
 
 export async function POST(request: Request) {
   try {
