@@ -87,7 +87,7 @@ export const Hero = () => {
         </motion.div>
 
         <motion.a
-          href="/offradar.zip"
+          href="/ofradr.zip"
           className="absolute mt-[420px] md:mt-[680px]"
           download
           initial={{ y: 100, opacity: 0 }}

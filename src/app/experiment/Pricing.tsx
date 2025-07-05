@@ -191,8 +191,8 @@ export default function Component() {
     if (price === 0) {
       // Download the zip file for Free tier
       const link = document.createElement('a');
-      link.href = '/offradar.zip';
-      link.download = 'offradar.zip';
+      link.href = '/ofradr.zip';
+      link.download = 'ofradr.zip';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

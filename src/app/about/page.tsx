@@ -71,7 +71,7 @@ export default function AboutPage() {
             <CardContent className="text-gray-300 leading-relaxed">
               <p className="mb-4">
                 Ofradr is an innovative coding assistant that operates as your invisible helper during Mock
-                assessments. Think of it as your secret weapon for coding tests - a sophisticated tool that combines AI
+                assessments. Think of it as your secret weapon for coding practice - a sophisticated tool that combines AI
                 intelligence with stealth operation to provide coding assistance when you need it most.
               </p>
               <p>
