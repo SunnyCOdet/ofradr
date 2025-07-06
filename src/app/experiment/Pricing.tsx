@@ -42,7 +42,12 @@ export default function Component() {
       price: "$0",
       period: "/month",
       description: "Perfect for individuals getting started",
-      features: ["Up to 100 complitions", "Basic model", "Basic support","Only code support"],
+      features: [
+    "Up to 100 completions per month",
+    "Access to basic AI model",
+    "Basic support",
+    "Code-only assistance"
+  ],
       popular: false,
       rate:0,
       buttonText: "Get Started",
@@ -249,7 +254,7 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
           >
-           Make your life even more private and chosse the most approrite option. Start free and upgrade as you grow.
+          If you can see it, Ofradr can help — and no one will ever notice.
           </motion.p>
         </motion.div>
 
