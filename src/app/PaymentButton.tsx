@@ -85,8 +85,8 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
               },
               body: JSON.stringify({
                 username: user?.username,
-                pro_tier: tier === "Freemium",
-                elite_tier: tier === "Premium",
+                pro_tier: tier === "Pro",
+                elite_tier: tier === "Elite",
               }),
             }
           )

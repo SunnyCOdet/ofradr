@@ -53,7 +53,7 @@ export default function Component() {
       buttonText: "Get Started",
     },
     {
-      name: "Freemium",
+      name: "Pro",
       price: "$1.99",
       period: "/month",
       description: "Ideal for single cases",
@@ -72,7 +72,7 @@ export default function Component() {
       buttonText: "Get started",
     },
     {
-      name: "Premium",
+      name: "Elite",
       price: "$12.99",
       period: "/month",
       description: "For multiple use cases with advanced needs",
@@ -84,7 +84,7 @@ export default function Component() {
         "Context Awareness",
         "Audio/voice support",
         "Custom controls",
-        "Access to premium models"
+        "Access to Elite models"
       ],
       rate:12.99,
       popular: false,

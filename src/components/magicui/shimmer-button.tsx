@@ -149,7 +149,7 @@ export default function sButton() {
             shimmerWidth="150px"
             className="border border-yellow-500/30"
           >
-            ✨ Premium
+            ✨ Elite
           </ShimmerButton>
 
           <ShimmerButton
