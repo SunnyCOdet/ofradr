@@ -9,7 +9,7 @@ const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
 })
 export const metadata: Metadata = {
-  title: "MonkeyCoder",
+  title: "Ofradr",
   description: "Ofradr is a stealthy AI-powered code assistant designed for coding practices and interview helper. It operates in two intelligent modes—Coding Practice Mode and Mock Interview Mode—providing real-time code generation or concept assistance. With built-in invisibility features, it remains undetectable during proctored or shared sessions.",
 };
 
