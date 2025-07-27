@@ -13,8 +13,8 @@ interface SpinningCircleProps {
 }
 
 export default function SpinningCircle({
-  centerText = "404",
-  borderText = "NOT FOUND • PRIVACY • NO INTRUDERS • ",
+  centerText = "Ofradr",
+  borderText = "PROTECTION • PRIVACY • STEALTH• ",
   backgroundColor = "rgba(0, 0, 0, 0.2)",
   textColor = "#ffffff",
   borderColor = "rgba(255, 255, 255, 0.2)",
