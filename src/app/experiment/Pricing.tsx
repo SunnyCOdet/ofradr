@@ -54,7 +54,7 @@ export default function Component() {
     },
     {
       name: "Pro",
-      price: "$1.99",
+      price: "$5.99",
       period: "/month",
       description: "Ideal for single cases",
       features: [
@@ -67,13 +67,13 @@ export default function Component() {
         "Custom controls",
         
       ],
-      rate:1.99,
+      rate:5.99,
       popular: true,
       buttonText: "Get started",
     },
     {
       name: "Elite",
-      price: "$12.99",
+      price: "$16.99",
       period: "/month",
       description: "For multiple use cases with advanced needs",
       features: [
@@ -86,7 +86,7 @@ export default function Component() {
         "Custom controls",
         "Access to Elite models"
       ],
-      rate:12.99,
+      rate:16.99,
       popular: false,
       buttonText: "Get started",
     },
