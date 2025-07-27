@@ -39,7 +39,7 @@ export default function Component() {
   const plans = [
     {
       name: "Free",
-      price: "$0",
+      price: "₹0",
       period: "/month",
       description: "Perfect for individuals getting started",
       features: [
@@ -54,7 +54,7 @@ export default function Component() {
     },
     {
       name: "Pro",
-      price: "$5.99",
+      price: "₹499",
       period: "/month",
       description: "Ideal for single cases",
       features: [
@@ -67,13 +67,13 @@ export default function Component() {
         "Custom controls",
         
       ],
-      rate:5.99,
+      rate:499,
       popular: true,
       buttonText: "Get started",
     },
     {
       name: "Elite",
-      price: "$16.99",
+      price: "₹1499",
       period: "/month",
       description: "For multiple use cases with advanced needs",
       features: [
@@ -86,7 +86,7 @@ export default function Component() {
         "Custom controls",
         "Access to Elite models"
       ],
-      rate:16.99,
+      rate:1499,
       popular: false,
       buttonText: "Get started",
     },
