@@ -48,7 +48,7 @@ export default function Component() {
     
     "Basic Code Assistance"
   ],
-      popular: false,
+      popular: true,
       rate:0,
       buttonText: "Get Started",
     },
@@ -90,7 +90,7 @@ export default function Component() {
         "Complete Access to Elite models"
       ],
       rate:1499,
-      popular: false,
+      popular: true,
       buttonText: "Get started",
     },
   ]
