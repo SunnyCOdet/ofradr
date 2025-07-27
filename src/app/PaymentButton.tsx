@@ -120,7 +120,7 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       tabIndex={-1} // Prevent button from being focused/clicked directly
       style={{ pointerEvents: "none" }}
     >
-      ${price}
+      ₹{price}
     </button>
   )
 }
