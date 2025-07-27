@@ -65,7 +65,7 @@ export default function Component() {
         " Partial Context Awareness",
         " No Audio/voice support",
         " Custom controls",
-        "Medium Level Code Assistance with no Error Debugging"
+        "Medium Level Code Assistance with no Error Debugging",
         " Restricted Access to Elite models"
         
       ],
