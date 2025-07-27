@@ -60,7 +60,7 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: Math.round(price * 100 * 90) }), // amount in paise
+      body: JSON.stringify({ amount: Math.round(price * 100) }), // amount in paise
     }).then((r) => r.json())
 
     // Step 2: Open Razorpay checkout
