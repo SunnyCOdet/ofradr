@@ -60,7 +60,7 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ amount: Math.round(price * 100) }), // amount in paise
+      body: JSON.stringify({ amount: Math.round((price * 100)+30) }), // amount in paise
     }).then((r) => r.json())
 
     // Step 2: Open Razorpay checkout
@@ -69,7 +69,7 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       amount: order.amount,
       currency: order.currency,
       order_id: order.id,
-      name: "Ofradr Inc",
+      name: "Ofradr",
       description: "Ofradr Payment",
       handler: async (response: any) => {
         alert(`✅ Payment success! ID: ${response.razorpay_payment_id}`)
