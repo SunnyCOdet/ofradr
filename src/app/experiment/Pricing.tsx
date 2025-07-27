@@ -43,10 +43,10 @@ export default function Component() {
       period: "/month",
       description: "Perfect for individuals getting started",
       features: [
-    "Up to 100 completions per month",
+    "15 minutes per single session",
     "Access to basic AI model",
-    "Basic support",
-    "Code-only assistance"
+    
+    "Basic Code Assistance"
   ],
       popular: false,
       rate:0,
@@ -56,15 +56,17 @@ export default function Component() {
       name: "Pro",
       price: "₹499",
       period: "/month",
-      description: "Ideal for single cases",
+      description: "Ideal for Easy and Medium Level Coding Rounds",
       features: [
         
-        "Unlimited completions",
-        "Higher Model Support",
-        "Multi llm support",
-        "Fallback support",
-        "Context Awareness",
-        "Custom controls",
+        " No time limit on sessions",
+        " Supports Gemini 2.5 Flash",
+        " Fallback LLM support",
+        " Partial Context Awareness",
+        " No Audio/voice support",
+        " Custom controls",
+        "Medium Level Code Assistance with no Error Debugging"
+        " Restricted Access to Elite models"
         
       ],
       rate:499,
@@ -75,16 +77,17 @@ export default function Component() {
       name: "Elite",
       price: "₹1499",
       period: "/month",
-      description: "For multiple use cases with advanced needs",
+      description: "Best suited for High Level Coding and Technical Mock Interviews",
       features: [
-        "Unlimited completions",
-        "Higher Model Support",
-        "Multi llm support",
-        "Fallback support",
-        "Context Awareness",
+        " No time limit on sessions",
+        " Supports Gemini 2.5 Pro/Flash",
+        " Fallback LLM support",
+        " Complete Context Awareness",
         "Audio/voice support",
+        "High Level Code Assistance with Error Debugging",
+        "Technical Interview Assistance",
         "Custom controls",
-        "Access to Elite models"
+        "Complete Access to Elite models"
       ],
       rate:1499,
       popular: false,
