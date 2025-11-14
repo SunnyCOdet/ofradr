@@ -81,7 +81,7 @@ export default function WaitlistModal() {
                     transition={{ delay: 0.2 }}
                     className="text-center text-gray-300 mb-4 text-xl font-semibold"
                   >
-                    You're missing out on{" "}
+                    You&apos;re missing out on{" "}
                     <span className="text-red-400 font-bold">
                       <span className="line-through text-white/60">OFRADR</span>{" "}
                       <span className="text-red-500">OFRADR MAX</span>

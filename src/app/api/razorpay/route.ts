@@ -2,14 +2,26 @@
 
 import { NextRequest } from 'next/server';
 import Razorpay from 'razorpay';
-const runtime = 'edge';
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID  ,
-  key_secret: process.env.RAZORPAY_KEY_SECRET  ,
-});
 
 export async function POST(req: NextRequest) {
   try {
+    // Check for environment variables
+    const keyId = process.env.RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      return new Response(JSON.stringify({ error: 'Razorpay credentials not configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Initialize Razorpay inside the function to avoid build-time errors
+    const razorpay = new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret,
+    });
+
     const body = await req.json();
     const amount = typeof body.amount === 'number' ? body.amount : 100; // fallback to 100 paise if not provided
 
