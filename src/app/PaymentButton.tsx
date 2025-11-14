@@ -74,7 +74,36 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
       handler: async (response: any) => {
         alert(`✅ Payment success! ID: ${response.razorpay_payment_id}`)
 
-        // Step 3: Tier upgrade call to Supabase Edge Function
+        // Step 3: Store payment in Supabase Edge Function
+        try {
+          const paymentRes = await fetch(
+            "https://zryasugsrbzcraasgolv.supabase.co/functions/v1/payment",
+            {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyeWFzdWdzcmJ6Y3JhYXNnb2x2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1MDg3ODcsImV4cCI6MjA2NDA4NDc4N30.GHX3YhaqtueL0n2WulPS6TPaFSwfR3mf0sfakB0TjUE`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: user?.username || "Guest",
+                username: user?.username || "Guest",
+                amount_paid: price, // amount in rupees
+              }),
+            }
+          )
+
+          const paymentData = await paymentRes.json()
+
+          if (!paymentRes.ok) {
+            throw new Error(paymentData.error || "Payment recording failed")
+          }
+
+          console.log("✅ Payment recorded:", paymentData)
+        } catch (err: any) {
+          console.error("⚠️ Payment recording failed:", err)
+        }
+
+        // Step 4: Tier upgrade call to Supabase Edge Function
         try {
           const res = await fetch(
             "https://zryasugsrbzcraasgolv.supabase.co/functions/v1/t-upgrade",
