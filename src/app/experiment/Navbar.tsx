@@ -145,45 +145,34 @@ export default function GlassNavbar({
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
-              <span
-                onClick={e => { e.preventDefault(); window.open('/', '_blank'); }}
-                className="text-white/50 text-sm hover:text-white transition-colors  tracking-tight duration-200 cursor-pointer"
-                role="link"
-                tabIndex={0}
-                onKeyPress={e => { if (e.key === 'Enter') { window.open('/', '_blank'); } }}
-              >
+              <Link href="/" className="text-white/50 text-sm hover:text-white transition-colors tracking-tight duration-200">
                 Home
-              </span>
-              <span
-                onClick={e => { e.preventDefault(); window.open('/about', '_blank'); }}
-                className="text-white/50 text-sm hover:text-white transition-colors duration-200 cursor-pointer"
-                role="link"
-                tabIndex={0}
-                onKeyPress={e => { if (e.key === 'Enter') { window.open('/about', '_blank'); } }}
-              >
+              </Link>
+              <Link href="/about" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
                 About
-              </span>
-              <span
-                onClick={e => { e.preventDefault(); window.open('/contact', '_blank'); }}
-                className="text-white/50 text-sm hover:text-white transition-colors duration-200 cursor-pointer"
-                role="link"
-                tabIndex={0}
-                onKeyPress={e => { if (e.key === 'Enter') { window.open('/contact', '_blank'); } }}
-              >
+              </Link>
+              <Link href="/contact" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
                 Contact
-              </span>
-              <span
-                onClick={e => { e.preventDefault(); window.open('/about', '_blank'); }}
-                className="text-white/50 text-sm hover:text-white transition-colors duration-200 cursor-pointer"
-                role="link"
-                tabIndex={0}
-                onKeyPress={e => { if (e.key === 'Enter') { window.open('/about', '_blank'); } }}
-              >
+              </Link>
+              <Link href="/about" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
                 Usage
-              </span>
-              <a href="#payment" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+              </Link>
+              <a 
+                href="#pricing" 
+                onClick={(e) => {
+                  e.preventDefault()
+                  const element = document.getElementById('pricing')
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }
+                }}
+                className="text-white/50 text-sm hover:text-white transition-colors duration-200 cursor-pointer"
+              >
                 Pricing
               </a>
+              <Link href="/ofradr-max" className="text-white/50 text-sm hover:text-white transition-colors duration-200">
+                ofradr max
+              </Link>
             </div>
           </div>
           {/* Right Side Actions */}

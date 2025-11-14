@@ -5,6 +5,8 @@ import MainHero from './experiment/MainHero'
 import SpinningCircle from './experiment/Spinner'
 import Component from './experiment/Pricing'
 import { Footer } from './experiment/Footer'
+import WaitlistModal from './components/WaitlistModal'
+
 function page() {
   return (
     <div className='bg-black relative flex flex-col justify-center min-h-screen overflow-hidden'>
@@ -20,6 +22,7 @@ function page() {
           <Component/>
         </div>
         <Footer/>
+        <WaitlistModal />
     </div>
   )
 }

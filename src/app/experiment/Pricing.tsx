@@ -214,6 +214,7 @@ export default function Component() {
   }, [])
 
   return (
+    <section id="pricing" className="scroll-mt-20">
     <div className="min-h-screen bg-black text-white relative  overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 overflow-hidden">
@@ -241,7 +242,7 @@ export default function Component() {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             <Sparkles className="w-4 h-4" style={{ color: "#ea3a59" }} />
-            <span className="text-sm text-gray-300">Trusted by 100+ customers</span>
+            <span className="text-sm text-gray-300">Trusted by 500+ customers</span>
           </motion.div>
           <motion.h1
             className={`${bigShoulders.className} text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent`}
@@ -381,5 +382,6 @@ export default function Component() {
         </motion.div>
       </div>
     </div>
+    </section>
   )
 }
