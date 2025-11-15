@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Mail } from "lucide-react"
 
 export default function WaitlistForm() {
+  const router = useRouter()
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -126,6 +128,11 @@ export default function WaitlistForm() {
       setSuccess(true)
       setUsername("")
       setEmail("")
+      
+      // Redirect to home page after 2 seconds
+      setTimeout(() => {
+        router.push("/")
+      }, 2000)
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.")
     } finally {

@@ -139,9 +139,9 @@ export default function GlassNavbar({
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center flex-row gap-10 ">
-            <div>
+            <Link href="/" className="cursor-pointer">
               <Image src="/logo.png" alt="Logo" width={70} height={70} />
-            </div>
+            </Link>
 
             {/* Navigation Links */}
             <div className="hidden md:flex items-center space-x-8">
@@ -180,8 +180,8 @@ export default function GlassNavbar({
             {user ? (
               <span className="text-white/80 font-semibold px-4">Hello, {user.username}</span>
             ) : (
-              <Link href="/getin">
-                <AuthShimmerButton type="button" className="mt-2 bg-gradient-to-r " onClick={() => window.location.href = '/getin'}>
+              <Link href="/getin" className="no-underline">
+                <AuthShimmerButton type="button" className="mt-2 bg-gradient-to-r ">
                   Create Account
                 </AuthShimmerButton>
               </Link>
