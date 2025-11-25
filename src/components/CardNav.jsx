@@ -39,7 +39,7 @@ const CardNav = ({
 
     tl.fromTo(logoEl,
       { left: "0%", xPercent: 0, x: 0, transform: "translate(0, -50%)" }, // Override CSS transform
-      { left: "100%", xPercent: -100, duration: 8 } // Adjust duration as needed
+      { left: "100%", xPercent: -100, duration: 3 } // Adjust duration as needed
     );
 
     return () => {

@@ -6,14 +6,15 @@ import SpinningCircle from './experiment/Spinner'
 import Component from './experiment/Pricing'
 import { Footer } from './experiment/Footer'
 import WaitlistModal from './components/WaitlistModal'
+import Lightning from '../components/Lightning'
 
 function page() {
   return (
-    <div className='bg-black relative flex flex-col justify-center min-h-screen overflow-hidden'>
+    <div className='relative flex flex-col justify-center min-h-screen overflow-hidden'>
     <div className='min-h-screen'>
-      <div className="absolute overflow-hidden  top-0 left-1/2 -translate-x-1/2 -translate-y-[40%] inset-0 h-[800px] w-[800px] 
-       bg-[radial-gradient(circle,#ea3a59_0%,#ea3a59_20%,transparent_60%,transparent_100%)] 
-       rounded-full blur-2xl " />
+      <div className="fixed inset-0 -z-10">
+        <Lightning hue={350} speed={0.5} intensity={1} />
+      </div>
       <GlassNavbar />
       <MainHero/>
       <SpinningCircle />

@@ -112,7 +112,7 @@ export default function Navbar() {
   );
 
   return (
-    <CardNav
+   <CardNav
       logo="/logo.png"
       logoAlt="Ofradr Logo"
       items={navItems}
