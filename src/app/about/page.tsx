@@ -1,18 +1,20 @@
 import React from "react";
 import { WobbleCard } from "../../components/ui/wobble-card";
+import { Footer } from "../experiment/Footer";
 
 export default function AboutOfradr() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
+    <div className="relative min-h-screen text-white overflow-x-hidden flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full flex-grow pt-10 px-4 pb-20">
       {/* What is Ofradr? */}
       <WobbleCard
-        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent"
+        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent glassmorphism-element"
       >
         <div className="max-w-xl">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
             About
           </p>
-          <h2 className="text-left text-balance text-xl md:text-3xl font-semibold tracking-[-0.03em] text-white">
+          <h2 className="text-left text-balance text-xl md:text-3xl font-semibold tracking-[-0.03em] text-neutral-300">
             What is Ofradr?
           </h2>
           <p className="mt-4 text-left text-sm md:text-base leading-relaxed text-neutral-200">
@@ -27,13 +29,13 @@ export default function AboutOfradr() {
 
       {/* Key Features */}
       <WobbleCard
-        containerClassName="col-span-1 min-h-[260px] bg-transparent"
+        containerClassName="col-span-1 min-h-[260px] bg-transparent glassmorphism-element"
       >
         <div className="max-w-xs">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
             Highlights
           </p>
-          <h2 className="text-left text-balance text-xl md:text-2xl font-semibold tracking-[-0.03em] text-white">
+          <h2 className="text-left text-balance text-xl md:text-2xl font-semibold tracking-[-0.03em] text-neutral-300">
             Key Features
           </h2>
           <ul className="mt-4 space-y-3 text-left text-sm md:text-base text-neutral-200">
@@ -65,13 +67,13 @@ export default function AboutOfradr() {
 
       {/* How it Works */}
       <WobbleCard
-        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent"
+        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent glassmorphism-element"
       >
         <div className="max-w-xl">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
             Flow
           </p>
-          <h2 className="text-left text-balance text-xl md:text-3xl font-semibold tracking-[-0.03em] text-white">
+          <h2 className="text-left text-balance text-xl md:text-3xl font-semibold tracking-[-0.03em] text-neutral-300">
             How it Works
           </h2>
           <ol className="mt-4 space-y-3 text-left text-sm md:text-base text-neutral-200">
@@ -97,13 +99,13 @@ export default function AboutOfradr() {
 
       {/* Operating Modes */}
       <WobbleCard
-        containerClassName="col-span-1 lg:col-span-1 min-h-[260px] bg-transparent"
+        containerClassName="col-span-1 lg:col-span-1 min-h-[260px] bg-transparent glassmorphism-element"
       >
         <div className="max-w-xs">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
             Modes
           </p>
-          <h2 className="text-left text-balance text-xl md:text-2xl font-semibold tracking-[-0.03em] text-white">
+          <h2 className="text-left text-balance text-xl md:text-2xl font-semibold tracking-[-0.03em] text-neutral-300">
             Operating Modes
           </h2>
           <ul className="mt-4 space-y-3 text-left text-sm md:text-base text-neutral-200">
@@ -124,6 +126,8 @@ export default function AboutOfradr() {
           </ul>
         </div>
       </WobbleCard>
+      </div>
+      <Footer />
     </div>
   );
 }
