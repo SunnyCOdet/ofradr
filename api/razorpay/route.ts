@@ -1,7 +1,7 @@
 // src/pages/api/razorpay.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import Razorpay from "razorpay";
-const runtime = 'edge';
+const runtime = 'nodejs';
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID  ,       // server‑side secret
   key_secret: process.env.RAZORPAY_KEY_SECRET  , // server‑side secret

@@ -116,10 +116,10 @@ export default function Navbar() {
       logo="/logo.png"
       logoAlt="Ofradr Logo"
       items={navItems}
-      baseColor="#ffffff"
-      menuColor="#000000"
-      buttonBgColor="#000000"
-      buttonTextColor="#ffffff"
+      baseColor="transparent"
+      menuColor="#ffffff"
+      buttonBgColor="#ffffff"
+      buttonTextColor="#000000"
       customCTA={CustomAuthButton}
       className="fixed top-0 left-0 right-0 z-50"
     />
