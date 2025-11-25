@@ -237,10 +237,16 @@ export default function Component() {
 
   return (
     <section id="pricing" className="scroll-mt-20">
-    <div className="min-h-screen bg-transparent text-white relative  overflow-hidden">
+    <div className="min-h-screen bg-black text-white relative  overflow-hidden">
       {/* Background Gradient */}
-      
-      
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: `radial-gradient(circle at center, rgba(234, 58, 89,0.2) 0%, transparent 50%)`,
+          }}
+        />
+      </div>
 
       <div className="container mx-auto px-4 py-16 relative z-10">
         {/* Header */}
