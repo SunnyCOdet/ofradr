@@ -237,7 +237,7 @@ export default function Component() {
 
   return (
     <section id="pricing" className="scroll-mt-20">
-    <div className="min-h-screen bg-black text-white relative  overflow-hidden">
+    <div className="min-h-screen bg_transparent text-white relative  overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 overflow-hidden">
         <div
