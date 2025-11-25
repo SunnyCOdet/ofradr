@@ -273,7 +273,7 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Choose Your <AnimatedGradientText colorFrom="#ea3a59" colorTo="#ff6b8a" className="inline-block text-transparent bg-clip-text">Perfect Plan</AnimatedGradientText>
+            Choose Your <AnimatedGradientText colorFrom="#ea3a59" colorTo="#ff6b8a" className=" speed:{3} inline-block text-transparent bg-clip-text">Perfect Plan</AnimatedGradientText>
           </motion.h1>
           <motion.p
             className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed"

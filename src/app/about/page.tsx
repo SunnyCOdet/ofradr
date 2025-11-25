@@ -13,7 +13,7 @@ export default function AboutOfradr() {
   return (
     <div className="relative min-h-screen text-white overflow-x-hidden flex flex-col">
       <nav className="w-full max-w-6xl mx-auto pt-10 px-4 z-10 relative flex justify-center items-center gap-4">
-        <AnimatedGradientText colorFrom="#40ffaa" colorTo="#4079ff" className={`text-5xl font-bold ${bigShoulders.className}`}>About</AnimatedGradientText>
+        <AnimatedGradientText colorFrom="#d94d4dff" colorTo="#ffffffff" className={` speed:{3} text-5xl font-bold ${bigShoulders.className}`}>About</AnimatedGradientText>
         <img src="/notlogo.png" alt="Not Logo" className="h-12 w-auto" />
       </nav>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full flex-grow pt-6 px-4 pb-20">
