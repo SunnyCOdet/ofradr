@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { Analytics } from '@vercel/analytics/next';
-import { Inter,Big_Shoulders_Display } from "next/font/google";
+
 import "./globals.css";
 import GlobalBackground from "../components/GlobalBackground";
 
-const inter = Inter({ subsets: ["latin"] });
-const bigShoulders = Big_Shoulders_Display({
-  weight: ["400", "700", "900"],
-  subsets: ["latin"],
-})
+import { inter } from "../components/fonts";
 export const metadata: Metadata = {
   title: "Ofradr",
   description: "Ofradr is a stealthy AI-powered code assistant designed for coding practices and interview helper. It operates in two intelligent modes—Coding Practice Mode and Mock Interview Mode—providing real-time code generation or concept assistance. With built-in invisibility features, it remains undetectable during proctored or shared sessions.",
