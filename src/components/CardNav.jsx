@@ -23,6 +23,30 @@ const CardNav = ({
   const cardsRef = useRef([]);
   const tlRef = useRef(null);
 
+  const logoRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const logoEl = logoRef.current;
+    if (!logoEl) return;
+
+    // Kill any existing tweens
+    gsap.killTweensOf(logoEl);
+
+    // Create the loop animation
+    // Start at left: 0, x: 0 (left aligned)
+    // End at left: 100%, x: -100% (right aligned)
+    const tl = gsap.timeline({ repeat: -1, defaults: { ease: "linear" } });
+
+    tl.fromTo(logoEl,
+      { left: "0%", xPercent: 0, x: 0, transform: "translate(0, -50%)" }, // Override CSS transform
+      { left: "100%", xPercent: -100, duration: 8 } // Adjust duration as needed
+    );
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
+
   const calculateHeight = () => {
     const navEl = navRef.current;
     if (!navEl) return 260;
@@ -117,17 +141,27 @@ const CardNav = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isExpanded]);
 
-  const toggleMenu = () => {
+  const openMenu = () => {
     const tl = tlRef.current;
-    if (!tl) return;
-    if (!isExpanded) {
-      setIsHamburgerOpen(true);
-      setIsExpanded(true);
-      tl.play(0);
+    if (!tl || isExpanded) return;
+    setIsHamburgerOpen(true);
+    setIsExpanded(true);
+    tl.play(0);
+  };
+
+  const closeMenu = () => {
+    const tl = tlRef.current;
+    if (!tl || !isExpanded) return;
+    setIsHamburgerOpen(false);
+    tl.eventCallback('onReverseComplete', () => setIsExpanded(false));
+    tl.reverse();
+  };
+
+  const toggleMenu = () => {
+    if (isExpanded) {
+      closeMenu();
     } else {
-      setIsHamburgerOpen(false);
-      tl.eventCallback('onReverseComplete', () => setIsExpanded(false));
-      tl.reverse();
+      openMenu();
     }
   };
 
@@ -137,7 +171,13 @@ const CardNav = ({
 
   return (
     <div className={`card-nav-container ${className}`}>
-      <nav ref={navRef} className={`card-nav ${isExpanded ? 'open' : ''}`} style={{ backgroundColor: baseColor }}>
+      <nav 
+        ref={navRef} 
+        className={`card-nav ${isExpanded ? 'open' : ''}`} 
+        style={{ backgroundColor: baseColor }}
+        onMouseEnter={openMenu}
+        onMouseLeave={closeMenu}
+      >
         <div className="card-nav-top">
           <div
             className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''}`}
@@ -151,7 +191,7 @@ const CardNav = ({
             <div className="hamburger-line" />
           </div>
 
-          <div className="logo-container">
+          <div className="logo-container" ref={logoRef}>
             <img src={logo} alt={logoAlt} className="logo" />
           </div>
 
