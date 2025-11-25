@@ -8,7 +8,7 @@ export default function AboutOfradr() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full flex-grow pt-10 px-4 pb-20">
       {/* What is Ofradr? */}
       <WobbleCard
-        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent glassmorphism-element"
+        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent liquid-glass-card"
       >
         <div className="max-w-xl">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
@@ -29,7 +29,7 @@ export default function AboutOfradr() {
 
       {/* Key Features */}
       <WobbleCard
-        containerClassName="col-span-1 min-h-[260px] bg-transparent glassmorphism-element"
+        containerClassName="col-span-1 min-h-[260px] bg-transparent liquid-glass-card"
       >
         <div className="max-w-xs">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
@@ -67,7 +67,7 @@ export default function AboutOfradr() {
 
       {/* How it Works */}
       <WobbleCard
-        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent glassmorphism-element"
+        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent liquid-glass-card"
       >
         <div className="max-w-xl">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
@@ -99,7 +99,7 @@ export default function AboutOfradr() {
 
       {/* Operating Modes */}
       <WobbleCard
-        containerClassName="col-span-1 lg:col-span-1 min-h-[260px] bg-transparent glassmorphism-element"
+        containerClassName="col-span-1 lg:col-span-1 min-h-[260px] bg-transparent liquid-glass-card"
       >
         <div className="max-w-xs">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">

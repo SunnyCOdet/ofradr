@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @theme inline {
   --animate-aurora: aurora 8s ease-in-out infinite alternate;
 
@@ -27,25 +28,26 @@
     }
   }
   @keyframes shimmer-slide {
-  to {
-    transform: translate(calc(100cqw - 100%), 0);
+    to {
+      transform: translate(calc(100cqw - 100%), 0);
     }
   }
   @keyframes spin-around {
-  0% {
-    transform: translateZ(0) rotate(0);
+    0% {
+      transform: translateZ(0) rotate(0);
     }
-  15%, 35% {
-    transform: translateZ(0) rotate(90deg);
+    15%, 35% {
+      transform: translateZ(0) rotate(90deg);
     }
-  65%, 85% {
-    transform: translateZ(0) rotate(270deg);
+    65%, 85% {
+      transform: translateZ(0) rotate(270deg);
     }
-  100% {
-    transform: translateZ(0) rotate(360deg);
+    100% {
+      transform: translateZ(0) rotate(360deg);
     }
   }
 }
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -72,7 +74,8 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem}
+    --radius: 0.5rem;
+  }
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -97,16 +100,14 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%}
-  .theme {
-    --animate-aurora: aurora 8s ease-in-out infinite alternate;
-    --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
-    --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
+    --chart-5: 340 75% 55%;
   }
 }
-.body{
+
+.body {
   background: #d02e4c;
 }
+
 @layer base {
   * {
     @apply border-border;
@@ -116,42 +117,60 @@
   }
 }
 
-.glassmorphism-element {
-  backdrop-filter: blur(8px) saturate(100%);
-  -webkit-backdrop-filter: blur(8px) saturate(100%);
-  background: rgba(253, 244, 227, 0.08);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 4px 4px 20px 0 rgba(120, 53, 15, 0.1),
-              inset 0 0 150px rgba(245, 158, 11, 0.05),
-              inset 0px 0px 4px 2px rgba(255, 255, 255, 0.15);
+/* Liquid Glass Card */
+.liquid-glass-card {
   position: relative;
-  overflow: hidden;
+  border-radius: 28px;
+  isolation: isolate;
+  box-shadow: 0px 6px 21px -8px rgba(255, 255, 255, 0.2);
 }
 
-/* Reflection overlay for realism using pseudo-elements */
-.glassmorphism-element::before {
+/* Tint and inner shadow layer */
+.liquid-glass-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  z-index: 0;
+  border-radius: 28px;
+  box-shadow: inset 0 0 5px -8px rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0);
   pointer-events: none;
-  border-radius: inherit;
-  background: linear-gradient(to left top, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 50%);
-  z-index: 1;
 }
 
-.glassmorphism-element::after {
+/* Backdrop blur and distortion layer */
+.liquid-glass-card::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
+  z-index: -1;
+  border-radius: 28px;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  filter: url(#glass-distortion);
+  -webkit-filter: url(#glass-distortion);
+  isolation: isolate;
+  pointer-events: none;
+}
+
+/* Content styling */
+.card-content {
+  position: relative;
+  z-index: 10;
   width: 100%;
   height: 100%;
-  pointer-events: none;
-  border-radius: inherit;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
-  z-index: 1;
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
