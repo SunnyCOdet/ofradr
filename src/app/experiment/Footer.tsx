@@ -1,159 +1,149 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Big_Shoulders_Display } from "next/font/google"
-import { Mail, Phone, MapPin, Github, Twitter, Linkedin, Instagram } from "lucide-react"
-import Link from "next/link"
-const bigShoulders = Big_Shoulders_Display({
-  weight: ["400", "700", "900"],
-  subsets: ["latin"],
-})
+import React from "react";
+import type { ComponentProps, ReactNode } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
+import { Mail, MapPin } from "lucide-react";
 
-export const Footer = () => {
-  const currentYear = new Date().getFullYear()
- 
+interface FooterLink {
+  title: string;
+  href: string;
+}
+
+interface FooterSection {
+  label: string;
+  links: FooterLink[];
+}
+
+const footerLinks: FooterSection[] = [
+  {
+    label: "Product",
+    links: [
+      { title: "Features", href: "#features" },
+      { title: "Operating Modes", href: "#modes" },
+      { title: "Privacy & Security", href: "#privacy" },
+      { title: "Integration", href: "/" },
+    ],
+  },
+  {
+    label: "Company",
+    links: [
+      { title: "About", href: "/about" },
+      { title: "Contact", href: "/contact" },
+      { title: "Privacy Policy", href: "/privacy" },
+      { title: "Terms of Service", href: "/terms" },
+    ],
+  },
+  {
+    label: "Resources",
+    links: [
+      { title: "Changelog", href: "/changelog" },
+      { title: "Docs", href: "/docs" },
+      { title: "Help Center", href: "/help" },
+      { title: "Status", href: "/status" },
+    ],
+  },
+];
+
+export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-transparent text-white mt-24">
-      {/* Main Footer Content */}
-      <div className="container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Company Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            className="space-y-6"
-          >
-            <div>
-              <h3 className={`${bigShoulders.className} text-3xl font-bold text-white`}>
-                Off* <span className="text-[#ea3a59]">Radar</span>
-              </h3>
-              <p className="text-gray-400 mt-4 leading-relaxed">
-                Building the future with cutting-edge technology and innovative solutions for modern development.
-              </p>
+    <footer className="md:rounded-t-6xl relative w-full max-w-6xl mx-auto flex flex-col items-center justify-center rounded-t-4xl border-t bg-transparent bg-[radial-gradient(35%_128px_at_50%_0%,theme(backgroundColor.white/8%),transparent)] px-6 py-10 lg:py-14">
+      {/* subtle top glow */}
+      <div className="bg-foreground/20 absolute top-0 left-1/2 h-px w-1/3 -translate-x-1/2 -translate-y-1/2 rounded-full blur" />
+
+      <div className="grid w-full gap-10 lg:gap-6 xl:grid-cols-3">
+        {/* Brand / Info */}
+        <AnimatedContainer className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/notlogo.png"
+              alt="Off Radar Logo"
+              width={32}
+              height={32}
+              className="select-none pointer-events-none"
+            />
+            <h3 className="text-2xl font-bold text-white">
+              Off* <span className="text-[#ea3a59]">Radar</span>
+            </h3>
+          </div>
+
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Off* Radar is an off-screen AI coding companion for safe, secure,
+            and stealthy practice sessions and mock interviews.
+          </p>
+
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4 text-[#ea3a59]" />
+              <span>comingsoon</span>
             </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-[#ea3a59]" />
-                <span className="text-gray-300">comingsoon</span>
-              </div>
-              <div className="flex items-center gap-3">
-              
-                <span className="text-gray-300"></span>
-              </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="w-5 h-5 text-[#ea3a59]" />
-                <span className="text-gray-300">Hyderabad , Telangana</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="space-y-6"
-          >
-            <h4 className={`${bigShoulders.className} text-xl font-bold text-[#ea3a59]`}>Quick Links</h4>
-            <ul className="space-y-3">
-              
-                <li >
-                  <Link href="/about"
-                   
-                    className="text-gray-300 hover:text-[#ea3a59] transition-colors duration-300 hover:underline"
-                  >
-                   About
-                  </Link>
-                  
-                 
-                </li>
-                <li>
-                   <Link href="/contact"
-                   
-                    className="text-gray-300 hover:text-[#ea3a59] transition-colors duration-300 hover:underline"
-                  >
-                   Contact
-                  </Link>
-                </li>
-              
-            </ul>
-          </motion.div>
-
-          {/* Services */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="space-y-6"
-          >
-            <h4 className={`${bigShoulders.className} text-xl font-bold text-[#ea3a59]`}>Services</h4>
-            <ul className="space-y-3">
-              {["AI integration","Privacy protection","Secure enviroments","Multi Modal Support","Multi LLM"].map(
-                (service) => (
-                  <li key={service}>
-                    <a
-                      href="#"
-                      className="text-gray-300 hover:text-[#ea3a59] transition-colors duration-300 hover:underline"
-                    >
-                      {service}
-                    </a>
-                  </li>
-                ),
-              )}
-            </ul>
-          </motion.div>
-
-          {/* Newsletter */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="space-y-6"
-          >
-            <h4 className={`${bigShoulders.className} text-xl font-bold text-[#ea3a59]`}>Stay Updated</h4>
-            <p className="text-gray-400">Please visit the website for regular updates</p>
-
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-3">
-                
-               
-              </div>
-            </div>
-
-            {/* Social Media */}
-            
-            
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        className="border-t border-gray-800"
-      >
-        <div className="container mx-auto px-6 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-center md:text-left">
-              © {currentYear} <span className="text-[#ea3a59] font-semibold">Off* radar</span>. All rights reserved.
-            </p>
-
-            <div className="flex flex-wrap gap-6 text-sm">
-              {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((link) => (
-                <a key={link} href="#" className="text-gray-400 hover:text-[#ea3a59] transition-colors duration-300">
-                  {link}
-                </a>
-              ))}
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-[#ea3a59]" />
+              <span>Hyderabad, Telangana</span>
             </div>
           </div>
-        </div>
-      </motion.div>
 
-      {/* Decorative Elements */}
+          <p className="text-muted-foreground mt-6 text-xs">
+            © {currentYear}{" "}
+            <span className="font-semibold text-[#ea3a59]">Off* Radar</span>.
+            All rights reserved.
+          </p>
+        </AnimatedContainer>
+
+        {/* Link sections */}
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-3 xl:col-span-2">
+          {footerLinks.map((section, index) => (
+            <AnimatedContainer key={section.label} delay={0.1 + index * 0.1}>
+              <div>
+                <h3 className="text-xs uppercase tracking-[0.2em] text-white">
+                  {section.label}
+                </h3>
+                <ul className="text-muted-foreground mt-3 space-y-2 text-sm">
+                  {section.links.map((link) => (
+                    <li key={link.title}>
+                      <a
+                        href={link.href}
+                        className="hover:text-foreground transition-all duration-300"
+                      >
+                        {link.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </AnimatedContainer>
+          ))}
+        </div>
+      </div>
     </footer>
-  )
+  );
+}
+
+type ViewAnimationProps = {
+  delay?: number;
+  className?: ComponentProps<typeof motion.div>["className"];
+  children: ReactNode;
+};
+
+function AnimatedContainer({ className, delay = 0.1, children }: ViewAnimationProps) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <motion.div
+      initial={{ filter: "blur(4px)", translateY: -8, opacity: 0 }}
+      whileInView={{ filter: "blur(0px)", translateY: 0, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.8 }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 }
