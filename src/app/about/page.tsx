@@ -2,6 +2,8 @@ import React from "react";
 import { WobbleCard } from "../../components/ui/wobble-card";
 import { Footer } from "../experiment/Footer";
 import { Inter, Big_Shoulders_Display } from "next/font/google";
+import { AnimatedGradientText } from "../../components/ui/animated-gradient-text";
+
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
   weight: ["400", "700", "900"],
@@ -11,13 +13,11 @@ export default function AboutOfradr() {
   return (
     <div className="relative min-h-screen text-white overflow-x-hidden flex flex-col">
       <nav className="w-full max-w-6xl mx-auto pt-10 px-4 z-10 relative flex justify-center items-center gap-4">
-        <h1 className={`text-5xl font-bold text-white ${bigShoulders.className}`}>About</h1>
+        <AnimatedGradientText colorFrom="#40ffaa" colorTo="#4079ff" className={`text-5xl font-bold ${bigShoulders.className}`}>About</AnimatedGradientText>
         <img src="/notlogo.png" alt="Not Logo" className="h-12 w-auto" />
       </nav>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full flex-grow pt-6 px-4 pb-20">
       {/* What is Ofradr? */}
-          
- 
       <WobbleCard
         containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent liquid-glass-card"
       >

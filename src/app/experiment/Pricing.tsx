@@ -23,6 +23,7 @@ import { loadRazorpayScript } from "@/utils/loadRazorpay"
 
 import PaymentButton from "../PaymentButton"
 import { useCallback } from "react"
+import { AnimatedGradientText } from "../../components/ui/animated-gradient-text"
 
 declare global {
   interface Window {
@@ -272,7 +273,7 @@ export default function Component() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Choose Your <span style={{ color: "#ea3a59" }}>Perfect Plan</span>
+            Choose Your <AnimatedGradientText colorFrom="#ea3a59" colorTo="#ff6b8a" className="inline-block text-transparent bg-clip-text">Perfect Plan</AnimatedGradientText>
           </motion.h1>
           <motion.p
             className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed"

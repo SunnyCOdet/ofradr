@@ -46,6 +46,11 @@
       transform: translateZ(0) rotate(360deg);
     }
   }
+  @keyframes gradient {
+  to {
+    background-position: var(--bg-size, 300%) 0;
+    }
+  }
 }
 
 @layer base {
@@ -101,6 +106,9 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+  .theme {
+    --animate-gradient: gradient 8s linear infinite;
   }
 }
 
