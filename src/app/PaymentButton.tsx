@@ -145,7 +145,7 @@ export default function PaymentButton({ price, tier }: PaymentButtonProps) {
   return (
     <button
       // Remove onClick, payment is handled by card click
-      className="w-full py-4 font-semibold transition-all duration-300 backdrop-blur-sm border bg-black text-white border-none hover:bg-white/10 hover:border-white/30"
+      className="w-full py-4 font-semibold transition-all duration-300 backdrop-blur-sm border bg-transparent text-white border-none hover:bg-transparent/10 hover:border-white/30"
       tabIndex={-1} // Prevent button from being focused/clicked directly
       style={{ pointerEvents: "none" }}
     >

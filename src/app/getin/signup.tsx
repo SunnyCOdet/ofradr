@@ -114,7 +114,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
       transition={{ duration: 0.5 }}
       className="w-full max-w-md"
     >
-      <Card className="bg-black/40 border-red-500/20 backdrop-blur-xl">
+      <Card className="bg-transparent/40 border-red-500/20 backdrop-blur-xl">
         <CardHeader className="text-center">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -144,7 +144,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
                 required
                 value={formData.username}
                 onChange={(e) => handleInputChange("username", e.target.value)}
-                className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
+                className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
               />
             </motion.div>
 
@@ -165,7 +165,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
                 required
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
-                className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
+                className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
               />
             </motion.div>
 
@@ -187,7 +187,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
                   required
                   value={formData.password}
                   onChange={(e) => handleInputChange("password", e.target.value)}
-                  className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20 pr-10"
+                  className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20 pr-10"
                 />
                 <button
                   type="button"
@@ -217,7 +217,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
                   required
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                  className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20 pr-10"
+                  className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20 pr-10"
                 />
                 <button
                   type="button"
@@ -247,7 +247,7 @@ export default function SignupForm({ onSwitchToLogin, onSignupSuccess }: SignupF
                 required
                 value={formData.geminiApiKey}
                 onChange={(e) => handleInputChange("geminiApiKey", e.target.value)}
-                className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
+                className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
               />
             </motion.div>
 

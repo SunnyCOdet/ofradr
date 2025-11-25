@@ -103,7 +103,7 @@ export default function Navbar() {
         <span className="text-black font-semibold px-4">Hello, {user.username}</span>
       ) : (
         <Link href="/getin" className="no-underline">
-          <AuthShimmerButton type="button" className="bg-black text-white">
+          <AuthShimmerButton type="button" className="bg-transparent text-white">
             Create Account
           </AuthShimmerButton>
         </Link>

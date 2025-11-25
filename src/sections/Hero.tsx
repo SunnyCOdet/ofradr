@@ -63,8 +63,8 @@ export const Hero = () => {
   }
 
   return (
-    <section className="relative flex flex-col bg-black items-center justify-center">
-      <div className="min-h-screen bg-black flex items-center justify-center p-8">
+    <section className="relative flex flex-col bg-transparent items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center p-8">
         <motion.div className="text-center" variants={containerVariants} initial="hidden" animate="visible">
           <motion.div className="text-center md:text-2xl text-xl mt-10 text-yellow-200" variants={itemVariants}>
             &#9679; <span className="text-white">My model is </span>

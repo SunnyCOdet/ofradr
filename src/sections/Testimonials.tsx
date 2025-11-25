@@ -88,7 +88,7 @@ const platforms: PlatformItem[] = [
 
 // Terminal Components (simplified versions)
 const Terminal = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-black/90 border border-gray-700 rounded-lg p-4 font-mono text-sm max-w-md">{children}</div>
+  <div className="bg-transparent/90 border border-gray-700 rounded-lg p-4 font-mono text-sm max-w-md">{children}</div>
 )
 
 const TypingAnimation = ({
@@ -143,7 +143,7 @@ export default function PlatformDashboard() {
   }
 
   return (
-    <div className={`min-h-screen   bg-black text-white  ${bigShoulders.className} `}>
+    <div className={`min-h-screen   bg-transparent text-white  ${bigShoulders.className} `}>
       
       {/* Testimonials Section */}
       <section className="py-10">

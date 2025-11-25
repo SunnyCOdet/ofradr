@@ -148,7 +148,7 @@ export default function WaitlistForm() {
       transition={{ duration: 0.5 }}
       className="w-full max-w-md"
     >
-      <Card className="bg-black/40 border-red-500/20 backdrop-blur-xl">
+      <Card className="bg-transparent/40 border-red-500/20 backdrop-blur-xl">
         <CardHeader className="text-center">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -192,7 +192,7 @@ export default function WaitlistForm() {
                 required
                 value={username}
                 onChange={(e) => handleInputChange("username", e.target.value)}
-                className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
+                className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
                 disabled={isLoading}
               />
             </motion.div>
@@ -213,7 +213,7 @@ export default function WaitlistForm() {
                 required
                 value={email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
-                className="bg-black/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
+                className="bg-transparent/50 border-red-500/30 text-white placeholder:text-gray-500 focus:border-red-500 focus:ring-red-500/20"
                 disabled={isLoading}
               />
             </motion.div>

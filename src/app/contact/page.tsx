@@ -101,7 +101,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="bg-black min-h-screen overflow-hidden flex flex-col">
+    <div className="bg-transparent min-h-screen overflow-hidden flex flex-col">
 <div>
     <GlassNavbar/>
 </div>
@@ -145,7 +145,7 @@ export default function ContactPage() {
                           onFocus={() => setFocusedField("email")}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300"
+                          className="w-full px-4 py-3 bg-transparent border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300"
                           placeholder="your.email@example.com"
                           whileFocus={{
                             scale: 1.02,
@@ -173,7 +173,7 @@ export default function ContactPage() {
                           onFocus={() => setFocusedField("subject")}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300"
+                          className="w-full px-4 py-3 bg-transparent border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300"
                           placeholder="What's this about?"
                           whileFocus={{
                             scale: 1.02,
@@ -201,7 +201,7 @@ export default function ContactPage() {
                         onBlur={() => setFocusedField(null)}
                         required
                         rows={6}
-                        className="w-full px-4 py-3 bg-black border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300 resize-none"
+                        className="w-full px-4 py-3 bg-transparent border-2 border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-[#ea3a59] focus:outline-none transition-all duration-300 resize-none"
                         placeholder="Tell us what's on your mind..."
                         whileFocus={{
                           scale: 1.01,

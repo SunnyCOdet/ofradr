@@ -100,7 +100,7 @@ export default function OtpForm({ email, username, password, geminiApiKey, onOtp
       transition={{ duration: 0.5 }}
       className="w-full max-w-md"
     >
-      <Card className="bg-black/40 border-red-500/20 backdrop-blur-xl">
+      <Card className="bg-transparent/40 border-red-500/20 backdrop-blur-xl">
         <CardHeader className="text-center">
           <motion.div
             initial={{ scale: 0.8 }}
@@ -136,7 +136,7 @@ export default function OtpForm({ email, username, password, geminiApiKey, onOtp
                   value={digit}
                   onChange={(e) => handleOtpChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  className="w-12 h-12 text-center text-xl font-bold bg-black/50 border-red-500/30 text-white focus:border-red-500 focus:ring-red-500/20"
+                  className="w-12 h-12 text-center text-xl font-bold bg-transparent/50 border-red-500/30 text-white focus:border-red-500 focus:ring-red-500/20"
                 />
               ))}
             </motion.div>
