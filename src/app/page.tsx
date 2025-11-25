@@ -14,7 +14,7 @@ function page() {
       <div className="absolute overflow-hidden  top-0 left-1/2 -translate-x-1/2 -translate-y-[40%] inset-0 h-[800px] w-[800px] 
        bg-[radial-gradient(circle,#ea3a59_0%,#ea3a59_20%,transparent_60%,transparent_100%)] 
        rounded-full blur-2xl " />
-      <GlassNavbar transparency={8} tintColor="rgba(0, 0, 0, 0.4)" blurIntensity="md" />
+      <GlassNavbar />
       <MainHero/>
       <SpinningCircle />
     </div>

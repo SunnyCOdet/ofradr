@@ -33,25 +33,47 @@ declare global {
 interface PaymentButtonProps {
   price: number // in rupees
 }
+// Put this above `export default function Component() { ... }`
+function GlassDistortionFilter() {
+  return (
+    <svg
+      width="0"
+      height="0"
+      style={{ position: "absolute" }}
+      aria-hidden="true"
+    >
+      <defs>
+        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.008 0.008"
+            numOctaves={2}
+            seed={92}
+            result="noise"
+          />
+          <feGaussianBlur
+            in="noise"
+            stdDeviation={2}
+            result="blurred"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="blurred"
+            scale={150}
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+  )
+}
+
 
 export default function Component() {
   
   const plans = [
-    {
-      name: "Free",
-      price: "₹0",
-      period: "/month",
-      description: "Perfect for individuals getting started",
-      features: [
-    "15 minutes per single session",
-    "Access to basic AI model",
-    
-    "Basic Code Assistance"
-  ],
-      popular: true,
-      rate:0,
-      buttonText: "Get Started",
-    },
+   
     {
       name: "Pro",
       price: "₹499",
@@ -263,6 +285,7 @@ export default function Component() {
         </motion.div>
 
         {/* Pricing Cards */}
+        <GlassDistortionFilter />
         <motion.div
           ref={cardContainerRef}
           className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto"
