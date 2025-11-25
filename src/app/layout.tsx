@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from '@vercel/analytics/next';
 import { Inter,Big_Shoulders_Display } from "next/font/google";
 import "./globals.css";
+import GlobalBackground from "../components/GlobalBackground";
 
 const inter = Inter({ subsets: ["latin"] });
 const bigShoulders = Big_Shoulders_Display({
@@ -20,8 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}
-      <Analytics />
+      <body className={inter.className}>
+        <GlobalBackground />
+        {children}
+        <Analytics />
       </body>
     </html>
   );
