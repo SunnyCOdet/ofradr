@@ -8,11 +8,13 @@ interface ViewerProps {
   height?: number | string;
   autoRotate?: boolean;
   autoRotateSpeed?: number;
+  cameraPosition?: [number, number, number];
+  scale?: number;
 }
 
-const Model: React.FC<{ url: string }> = ({ url }) => {
+const Model: React.FC<{ url: string; scale?: number }> = ({ url, scale = 1 }) => {
   const { scene } = useGLTF(url);
-  return <primitive object={scene} />;
+  return <primitive object={scene} scale={scale} />;
 };
 
 const ModelViewer: React.FC<ViewerProps> = ({
@@ -21,12 +23,14 @@ const ModelViewer: React.FC<ViewerProps> = ({
   height = '100%',
   autoRotate = false,
   autoRotateSpeed = 1,
+  cameraPosition = [0, 0, 5],
+  scale = 1,
 }) => {
   return (
     <div style={{ width, height, position: 'relative' }}>
       <Canvas
         shadows
-        camera={{ position: [0, 0, 5], fov: 50 }}
+        camera={{ position: cameraPosition, fov: 50 }}
         gl={{ alpha: true, preserveDrawingBuffer: true }} // alpha: true enables transparency
         style={{ background: 'transparent' }} // Ensure CSS background is transparent
       >
@@ -35,7 +39,7 @@ const ModelViewer: React.FC<ViewerProps> = ({
         <Environment preset="city" />
         
         <Suspense fallback={null}>
-          <Model url={url} />
+          <Model url={url} scale={scale} />
           <ContactShadows position={[0, -1.5, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
         </Suspense>
 

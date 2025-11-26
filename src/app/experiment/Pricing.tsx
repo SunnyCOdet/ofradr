@@ -12,8 +12,8 @@ export default function Component() {
 <div>
 
 
-    <div style={{ height: 600 }}>
-      <ModelViewer url="/b2bitch.glb" autoRotate autoRotateSpeed={0.1} />
+    <div style={{ height: 300, width: '50%' }}>
+      <ModelViewer url="/b2bitch.glb" autoRotate autoRotateSpeed={2.5} cameraPosition={[-10, 10, 20]} scale={0.05} />
     </div>
 </div>
   )
