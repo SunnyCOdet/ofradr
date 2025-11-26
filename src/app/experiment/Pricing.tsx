@@ -9,6 +9,12 @@ export default function Component() {
  
 
   return (
-<div><ModelViewer url="/../../public/b2bitch.glb" /></div>
+<div>
+
+
+    <div style={{ height: 600 }}>
+      <ModelViewer url="/b2bitch.glb" autoRotate autoRotateSpeed={0.1} />
+    </div>
+</div>
   )
 }
