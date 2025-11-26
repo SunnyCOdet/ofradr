@@ -1,13 +1,14 @@
 "use client"
 
-import { useRef } from "react"
-
+import { useRef } from "react"  
+import ModelViewer from "../../components/ModelViewer"
 
 
 export default function Component() {
   
  
+
   return (
-<div><br></br><br /><br /><br /><br /><br /><br /></div>
+<div><ModelViewer url="/../../public/b2bitch.glb" /></div>
   )
 }
