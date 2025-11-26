@@ -111,21 +111,7 @@ function MainHero() {
           duration: 0.8,
         }}
       >
-        <a href="/ofradr.zip" download>
-          <Magnetic>
-            <button className="bg-[#ea3a59] flex items-center mt-9 justify-center gap-2 w-40 h-14 rounded-full text-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(234,58,89,0.6)] hover:shadow-[0_0_30px_rgba(234,58,89,0.8)]">
-              {/* <div className="w-8 h-8">
-                <Lottie
-                  animationData={AnimationData}
-                  loop
-                  autoplay
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </div> */}
-              <span>Download</span>
-            </button>
-          </Magnetic>
-        </a>
+        
       </motion.div>
     </motion.div>
   )

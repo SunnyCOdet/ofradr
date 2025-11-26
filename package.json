@@ -29,7 +29,7 @@
     "lucide-react": "^0.511.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.1",
-    "motion": "^12.19.2",
+    "motion": "^12.23.12",
     "next": "^14.2.33",
     "ogl": "^1.0.11",
     "razorpay": "^2.9.6",
@@ -39,7 +39,6 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.167.1"
-
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

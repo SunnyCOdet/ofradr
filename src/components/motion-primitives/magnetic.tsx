@@ -6,7 +6,7 @@ import {
   useMotionValue,
   useSpring,
   type SpringOptions,
-} from 'motion/react';
+} from 'framer-motion';
 
 const SPRING_CONFIG = { stiffness: 26.7, damping: 4.1, mass: 0.2 };
 
@@ -16,6 +16,7 @@ export type MagneticProps = {
   range?: number;
   actionArea?: 'self' | 'parent' | 'global';
   springOptions?: SpringOptions;
+  className?: string;
 };
 
 export function Magnetic({
@@ -24,6 +25,7 @@ export function Magnetic({
   range = 100,
   actionArea = 'self',
   springOptions = SPRING_CONFIG,
+  className,
 }: MagneticProps) {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -101,6 +103,7 @@ export function Magnetic({
       ref={ref}
       onMouseEnter={actionArea === 'self' ? handleMouseEnter : undefined}
       onMouseLeave={actionArea === 'self' ? handleMouseLeave : undefined}
+      className={className}
       style={{
         x: springX,
         y: springY,

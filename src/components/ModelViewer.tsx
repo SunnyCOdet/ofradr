@@ -26,8 +26,14 @@ const ModelViewer: React.FC<ViewerProps> = ({
   cameraPosition = [0, 0, 5],
   scale = 1,
 }) => {
+  const [isInteracting, setIsInteracting] = React.useState(false);
+
   return (
-    <div style={{ width, height, position: 'relative' }}>
+    <div 
+      style={{ width, height, position: 'relative' }}
+      onPointerDown={() => setIsInteracting(true)}
+      onPointerLeave={() => setIsInteracting(false)}
+    >
       <Canvas
         shadows
         camera={{ position: cameraPosition, fov: 50 }}
@@ -43,7 +49,12 @@ const ModelViewer: React.FC<ViewerProps> = ({
           <ContactShadows position={[0, -1.5, 0]} opacity={0.4} scale={10} blur={2.5} far={4} />
         </Suspense>
 
-        <OrbitControls autoRotate={autoRotate} autoRotateSpeed={autoRotateSpeed} />
+        <OrbitControls 
+          autoRotate={autoRotate && !isInteracting} 
+          autoRotateSpeed={autoRotateSpeed}
+          enableZoom={isInteracting}
+          enableRotate={isInteracting}
+        />
       </Canvas>
     </div>
   );
