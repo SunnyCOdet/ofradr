@@ -22,6 +22,9 @@ export interface LiquidEtherProps {
   takeoverDuration?: number;
   autoResumeDelay?: number;
   autoRampDuration?: number;
+  randomMovement?: boolean;
+  randomSpeed?: number;
+  randomIntensity?: number;
 }
 
 interface SimOptions {
@@ -46,6 +49,11 @@ interface LiquidEtherWebGL {
     rampDurationMs: number;
     mouse?: { autoIntensity: number; takeoverDuration: number };
     forceStop: () => void;
+  };
+  randomDriver?: {
+    enabled: boolean;
+    speed: number;
+    intensity: number;
   };
   resize: () => void;
   start: () => void;
@@ -74,7 +82,10 @@ export default function LiquidEther({
   autoIntensity = 2.2,
   takeoverDuration = 0.25,
   autoResumeDelay = 1000,
-  autoRampDuration = 0.6
+  autoRampDuration = 0.6,
+  randomMovement = false,
+  randomSpeed = 0.5,
+  randomIntensity = 2.0
 }: LiquidEtherProps): React.ReactElement {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const webglRef = useRef<LiquidEtherWebGL | null>(null);
@@ -306,6 +317,23 @@ export default function LiquidEther({
     }
     const Mouse = new MouseClass();
 
+    class GhostMouse {
+      coords = new THREE.Vector2();
+      coords_old = new THREE.Vector2();
+      diff = new THREE.Vector2();
+      intensity = 1.0;
+      setNormalized(nx: number, ny: number) {
+        this.coords.set(nx, ny);
+      }
+      update() {
+        this.diff.subVectors(this.coords, this.coords_old);
+        this.coords_old.copy(this.coords);
+        if (this.coords_old.x === 0 && this.coords_old.y === 0) this.diff.set(0, 0);
+        this.diff.multiplyScalar(this.intensity);
+      }
+    }
+    const Ghost = new GhostMouse();
+
     class AutoDriver {
       mouse: MouseClass;
       manager: WebGLManager;
@@ -377,6 +405,51 @@ export default function LiquidEther({
           ramp = t * t * (3 - 2 * t);
         }
         const step = this.speed * dtSec * ramp;
+        const move = Math.min(step, dist);
+        this.current.addScaledVector(dir, move);
+        this.mouse.setNormalized(this.current.x, this.current.y);
+      }
+    }
+
+    class RandomDriver {
+      mouse: GhostMouse;
+      enabled: boolean;
+      speed: number;
+      current = new THREE.Vector2(0, 0);
+      target = new THREE.Vector2();
+      lastTime = performance.now();
+      margin = 0.2;
+      private _tmpDir = new THREE.Vector2();
+      constructor(mouse: GhostMouse, opts: { enabled: boolean; speed: number }) {
+        this.mouse = mouse;
+        this.enabled = opts.enabled;
+        this.speed = opts.speed;
+        this.pickNewTarget();
+      }
+      get intensity() {
+        return this.mouse.intensity;
+      }
+      set intensity(value: number) {
+        this.mouse.intensity = value;
+      }
+      pickNewTarget() {
+        const r = Math.random;
+        this.target.set((r() * 2 - 1) * (1 - this.margin), (r() * 2 - 1) * (1 - this.margin));
+      }
+      update() {
+        if (!this.enabled) return;
+        const now = performance.now();
+        let dtSec = (now - this.lastTime) / 1000;
+        this.lastTime = now;
+        if (dtSec > 0.2) dtSec = 0.016;
+        const dir = this._tmpDir.subVectors(this.target, this.current);
+        const dist = dir.length();
+        if (dist < 0.01) {
+          this.pickNewTarget();
+          return;
+        }
+        dir.normalize();
+        const step = this.speed * dtSec;
         const move = Math.min(step, dist);
         this.current.addScaledVector(dir, move);
         this.mouse.setNormalized(this.current.x, this.current.y);
@@ -661,18 +734,19 @@ export default function LiquidEther({
       }
       update(...args: any[]) {
         const props = args[0] || {};
-        const forceX = (Mouse.diff.x / 2) * (props.mouse_force || 0);
-        const forceY = (Mouse.diff.y / 2) * (props.mouse_force || 0);
+        const mouse = props.mouse || Mouse;
+        const forceX = (mouse.diff.x / 2) * (props.mouse_force || 0);
+        const forceY = (mouse.diff.y / 2) * (props.mouse_force || 0);
         const cellScale = props.cellScale || { x: 1, y: 1 };
         const cursorSize = props.cursor_size || 0;
         const cursorSizeX = cursorSize * cellScale.x;
         const cursorSizeY = cursorSize * cellScale.y;
         const centerX = Math.min(
-          Math.max(Mouse.coords.x, -1 + cursorSizeX + cellScale.x * 2),
+          Math.max(mouse.coords.x, -1 + cursorSizeX + cellScale.x * 2),
           1 - cursorSizeX - cellScale.x * 2
         );
         const centerY = Math.min(
-          Math.max(Mouse.coords.y, -1 + cursorSizeY + cellScale.y * 2),
+          Math.max(mouse.coords.y, -1 + cursorSizeY + cellScale.y * 2),
           1 - cursorSizeY - cellScale.y * 2
         );
         const uniforms = (this.mouse.material as THREE.RawShaderMaterial).uniforms;
@@ -836,6 +910,7 @@ export default function LiquidEther({
       boundarySpace = new THREE.Vector2();
       advection!: Advection;
       externalForce!: ExternalForce;
+      randomForce!: ExternalForce;
       viscous!: Viscous;
       divergence!: Divergence;
       poisson!: Poisson;
@@ -893,6 +968,11 @@ export default function LiquidEther({
           cursor_size: this.options.cursor_size,
           dst: this.fbos.vel_1
         });
+        this.randomForce = new ExternalForce({
+          cellScale: this.cellScale,
+          cursor_size: this.options.cursor_size,
+          dst: this.fbos.vel_1
+        });
         this.viscous = new Viscous({
           cellScale: this.cellScale,
           boundarySpace: this.boundarySpace,
@@ -944,7 +1024,14 @@ export default function LiquidEther({
         this.externalForce.update({
           cursor_size: this.options.cursor_size,
           mouse_force: this.options.mouse_force,
-          cellScale: this.cellScale
+          cellScale: this.cellScale,
+          mouse: Mouse
+        });
+        this.randomForce.update({
+          cursor_size: this.options.cursor_size,
+          mouse_force: this.options.mouse_force,
+          cellScale: this.cellScale,
+          mouse: Ghost
         });
         let vel: any = this.fbos.vel_1;
         if (this.options.isViscous) {
@@ -1004,6 +1091,7 @@ export default function LiquidEther({
       props: any;
       output!: Output;
       autoDriver?: AutoDriver;
+      randomDriver?: RandomDriver;
       lastUserInteraction = performance.now();
       running = false;
       private _loop = this.loop.bind(this);
@@ -1025,6 +1113,11 @@ export default function LiquidEther({
           resumeDelay: props.autoResumeDelay,
           rampDuration: props.autoRampDuration
         });
+        this.randomDriver = new RandomDriver(Ghost, {
+          enabled: props.randomMovement,
+          speed: props.randomSpeed
+        });
+        Ghost.intensity = props.randomIntensity;
         this.init();
         window.addEventListener('resize', this._resize);
         this._onVisibility = () => {
@@ -1048,7 +1141,9 @@ export default function LiquidEther({
       }
       render() {
         if (this.autoDriver) this.autoDriver.update();
+        if (this.randomDriver) this.randomDriver.update();
         Mouse.update();
+        Ghost.update();
         Common.update();
         this.output.update();
       }
@@ -1096,7 +1191,10 @@ export default function LiquidEther({
       autoIntensity,
       takeoverDuration,
       autoResumeDelay,
-      autoRampDuration
+      autoRampDuration,
+      randomMovement,
+      randomSpeed,
+      randomIntensity
     });
     webglRef.current = webgl;
 
@@ -1219,6 +1317,11 @@ export default function LiquidEther({
         webgl.autoDriver.mouse.takeoverDuration = takeoverDuration;
       }
     }
+    if (webgl.randomDriver) {
+      webgl.randomDriver.enabled = randomMovement;
+      webgl.randomDriver.speed = randomSpeed;
+      webgl.randomDriver.intensity = randomIntensity;
+    }
     if (resolution !== prevRes) sim.resize();
   }, [
     mouseForce,
@@ -1236,7 +1339,10 @@ export default function LiquidEther({
     autoIntensity,
     takeoverDuration,
     autoResumeDelay,
-    autoRampDuration
+    autoRampDuration,
+    randomMovement,
+    randomSpeed,
+    randomIntensity
   ]);
 
   return <div ref={mountRef} className={`liquid-ether-container ${className || ''}`} style={style} />;

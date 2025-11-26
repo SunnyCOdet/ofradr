@@ -11,7 +11,7 @@ const CardNav = ({
   items,
   className = '',
   ease = 'power3.out',
-  baseColor = '#fff',
+  baseColor = '#da1515ff',
   menuColor,
   buttonBgColor,
   buttonTextColor,
@@ -185,7 +185,7 @@ const CardNav = ({
             role="button"
             aria-label={isExpanded ? 'Close menu' : 'Open menu'}
             tabIndex={0}
-            style={{ color: menuColor || '#000' }}
+            style={{ color: menuColor || '#c92222ff' }}
           >
             <div className="hamburger-line" />
             <div className="hamburger-line" />

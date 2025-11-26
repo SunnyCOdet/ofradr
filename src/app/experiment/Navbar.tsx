@@ -67,7 +67,7 @@ export default function Navbar() {
   const navItems = [
     {
       label: 'General',
-      bgColor: '#111',
+      bgColor: '#000000ff',
       textColor: '#fff',
       links: [
         { label: 'Home', href: '/' },
@@ -77,7 +77,7 @@ export default function Navbar() {
     },
     {
       label: 'Product',
-      bgColor: '#111',
+      bgColor: '#000000ff',
       textColor: '#fff',
       links: [
         { label: 'Usage', href: '/about' }, // Kept as /about based on original file
