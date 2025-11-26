@@ -1,9 +1,9 @@
 import React from "react";
-import { WobbleCard } from "../../components/ui/wobble-card";
+import TextType from "../../components/TextType";
 import { Footer } from "../experiment/Footer";
 import { Inter, Big_Shoulders_Display } from "next/font/google";
-import { AnimatedGradientText } from "../../components/ui/animated-gradient-text";
-import GlitchText from "../../components/GlitchText";
+import ASCIIText from "../../components/ASCIIText";
+import { jersey10 } from "../../components/fonts";
 
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
@@ -13,133 +13,26 @@ const bigShoulders = Big_Shoulders_Display({
 export default function AboutOfradr() {
   return (
     <div className="relative min-h-screen text-white overflow-x-hidden flex flex-col">
-      <nav className="w-full max-w-6xl mx-auto pt-10 px-4 z-10 relative flex justify-center items-center gap-4">
-        <GlitchText speed={1} enableOnHover={true} className={`text-5xl font-bold ${bigShoulders.className}`}>
-          About Ofradr
-        </GlitchText>
-        <img src="/notlogo.png" alt="Not Logo" className="h-12 w-auto" />
-      </nav>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full flex-grow pt-6 px-4 pb-20">
-      {/* What is Ofradr? */}
-      <WobbleCard
-        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent liquid-glass-card"
-      >
-        <div className="max-w-xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
-            About
-          </p>
-          <h2 className="text-left text-balance text-xl md:text-3xl font-semibold tracking-[-0.03em] text-neutral-300">
-            What is Ofradr?
-          </h2>
-          <p className="mt-4 text-left text-sm md:text-base leading-relaxed text-neutral-200">
-            Ofradr is an AI-powered coding companion that runs off-radar during
-            your coding practice and mock interviews. It reads problems directly
-            from screenshots and uses Google Gemini AI to generate solutions,
-            explanations, refactors, and more—without interrupting your flow or
-            cluttering your screen.
-          </p>
+      <div className="h-screen w-full flex items-center justify-center">
+        <div className="relative w-full max-w-6xl h-[600px]">
+          <ASCIIText 
+            text="Ofradr" 
+            enableWaves={true} 
+            asciiFontSize={5} 
+            textFontSize={300}
+          />
         </div>
-      </WobbleCard>
-
-      {/* Key Features */}
-      <WobbleCard
-        containerClassName="col-span-1 min-h-[260px] bg-transparent liquid-glass-card"
-      >
-        <div className="max-w-xs">
-          <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
-            Highlights
-          </p>
-          <h2 className="text-left text-balance text-xl md:text-2xl font-semibold tracking-[-0.03em] text-neutral-300">
-            Key Features
-          </h2>
-          <ul className="mt-4 space-y-3 text-left text-sm md:text-base text-neutral-200">
-            <li>
-              <span className="font-medium text-neutral-100">Stealth Mode</span>{" "}
-              – Runs invisibly with a keyboard-only workflow.
-            </li>
-            <li>
-              <span className="font-medium text-neutral-100">
-                Screenshot-based solving
-              </span>{" "}
-              – Capture any coding problem with <code>Alt+S</code>.
-            </li>
-            <li>
-              <span className="font-medium text-neutral-100">
-                AI Task Agent
-              </span>{" "}
-              – Solve, debug, refactor, or add tests from a single prompt.
-            </li>
-            <li>
-              <span className="font-medium text-neutral-100">
-                Paste-ready output
-              </span>{" "}
-              – View with <code>Alt+H</code> and paste with <code>Alt+V</code>.
-            </li>
-          </ul>
+      </div>
+      <div className="flex flex-col items-center w-full px-4 pb-20 pt-10">
+        <div className="max-w-4xl w-full space-y-12">
+          <TextType 
+            text="Ofradr is an AI-powered coding companion that runs off-radar during your coding practice and mock interviews. It reads problems directly from screenshots and uses Google Gemini AI to generate solutions, explanations, refactors, and more—without interrupting your flow or cluttering your screen."
+            className={`text-2xl md:text-4xl leading-relaxed text-neutral-200 block ${jersey10.className}`}
+            startOnVisible={true}
+            loop={false}
+            typingSpeed={20}
+          />
         </div>
-      </WobbleCard>
-
-      {/* How it Works */}
-      <WobbleCard
-        containerClassName="col-span-1 lg:col-span-2 min-h-[260px] bg-transparent liquid-glass-card"
-      >
-        <div className="max-w-xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
-            Flow
-          </p>
-          <h2 className="text-left text-balance text-xl md:text-3xl font-semibold tracking-[-0.03em] text-neutral-300">
-            How it Works
-          </h2>
-          <ol className="mt-4 space-y-3 text-left text-sm md:text-base text-neutral-200">
-            <li>
-              <span className="font-medium text-neutral-100">1. Capture</span> –{" "}
-              Take a screenshot of the problem with <code>Alt+S</code>.
-            </li>
-            <li>
-              <span className="font-medium text-neutral-100">
-                2. Ask once
-              </span>{" "}
-              – Optionally give a single instruction (e.g. “solve and explain
-              in simple terms”) and send with <code>Ctrl+Enter</code>.
-            </li>
-            <li>
-              <span className="font-medium text-neutral-100">3. Apply</span> –{" "}
-              View the response with <code>Alt+H</code> and paste into your
-              editor using <code>Alt+V</code>.
-            </li>
-          </ol>
-        </div>
-      </WobbleCard>
-
-      {/* Operating Modes */}
-      <WobbleCard
-        containerClassName="col-span-1 lg:col-span-1 min-h-[260px] bg-transparent liquid-glass-card"
-      >
-        <div className="max-w-xs">
-          <p className="text-xs uppercase tracking-[0.2em] text-neutral-400 mb-2">
-            Modes
-          </p>
-          <h2 className="text-left text-balance text-xl md:text-2xl font-semibold tracking-[-0.03em] text-neutral-300">
-            Operating Modes
-          </h2>
-          <ul className="mt-4 space-y-3 text-left text-sm md:text-base text-neutral-200">
-            <li>
-              <span className="font-medium text-neutral-100">
-                Coding Practice Mode
-              </span>{" "}
-              – Ultra-stealth, invisible UI, keyboard shortcuts only. Perfect
-              for daily practice and problem sets.
-            </li>
-            <li>
-              <span className="font-medium text-neutral-100">
-                Mock Interview Mode
-              </span>{" "}
-              – A visible, interactive window tailored for mock interviews,
-              follow-up questions, and deeper explanations.
-            </li>
-          </ul>
-        </div>
-      </WobbleCard>
       </div>
       <Footer />
     </div>
