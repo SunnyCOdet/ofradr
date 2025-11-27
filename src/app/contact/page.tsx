@@ -96,8 +96,8 @@ export default function ContactPage() {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-black">
-      {/* TargetCursor Component */}
-      <TargetCursor targetSelector=".cursor-target" />
+      {/* TargetCursor Component - Only show on initial screen */}
+      {!showForm && <TargetCursor targetSelector=".cursor-target" />}
 
       {/* PrismaticBurst Background */}
       <div className="absolute inset-0 z-0">
@@ -301,37 +301,7 @@ export default function ContactPage() {
               </Card>
 
               {/* Contact Info */}
-              <div className="grid md:grid-cols-3 gap-4 mt-8">
-                <motion.div
-                  className="cursor-target text-center p-4 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-[#ea3a59]/30"
-                  whileHover={{ scale: 1.05, borderColor: "#ea3a59" }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Mail className="w-8 h-8 text-[#ea3a59] mx-auto mb-2" />
-                  <h3 className={`text-white font-bold mb-1 ${bigShoulders.className}`}>EMAIL US</h3>
-                  <p className="text-gray-300 text-sm">support@ofradr.com</p>
-                </motion.div>
-
-                <motion.div
-                  className="cursor-target text-center p-4 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-[#ea3a59]/30"
-                  whileHover={{ scale: 1.05, borderColor: "#ea3a59" }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <MessageSquare className="w-8 h-8 text-[#ea3a59] mx-auto mb-2" />
-                  <h3 className={`text-white font-bold mb-1 ${bigShoulders.className}`}>LIVE CHAT</h3>
-                  <p className="text-gray-300 text-sm">Available 24/7</p>
-                </motion.div>
-
-                <motion.div
-                  className="cursor-target text-center p-4 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-[#ea3a59]/30"
-                  whileHover={{ scale: 1.05, borderColor: "#ea3a59" }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Send className="w-8 h-8 text-[#ea3a59] mx-auto mb-2" />
-                  <h3 className={`text-white font-bold mb-1 ${bigShoulders.className}`}>RESPONSE TIME</h3>
-                  <p className="text-gray-300 text-sm">Within 24 hours</p>
-                </motion.div>
-              </div>
+            
             </div>
           </motion.div>
         )}
