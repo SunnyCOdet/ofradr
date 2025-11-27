@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import './Lightning.css';
+import { lightningEvents } from '../lib/lightningEvents';
 
 interface LightningProps {
   hue?: number;
@@ -167,13 +168,21 @@ const Lightning: React.FC<LightningProps> = ({ hue = 230, xOffset = 0, speed = 1
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(iResolutionLocation, canvas.width, canvas.height);
       const currentTime = performance.now();
-      gl.uniform1f(iTimeLocation, (currentTime - startTime) / 1000.0);
+      const time = (currentTime - startTime) / 1000.0;
+      gl.uniform1f(iTimeLocation, time);
       gl.uniform1f(uHueLocation, hue);
       gl.uniform1f(uXOffsetLocation, xOffset);
       gl.uniform1f(uSpeedLocation, speed);
       gl.uniform1f(uIntensityLocation, intensity);
       gl.uniform1f(uSizeLocation, size);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
+      
+      // Calculate lightning intensity based on the shader's hash function
+      // This simulates the flashing pattern
+      const flashIntensity = Math.sin(time * speed * 2) * 0.5 + 0.5;
+      const randomFlash = Math.abs(Math.sin(time * speed * 13.7)) > 0.95 ? 2.0 : 1.0;
+      lightningEvents.emit(flashIntensity * randomFlash);
+      
       requestAnimationFrame(render);
     };
     requestAnimationFrame(render);
