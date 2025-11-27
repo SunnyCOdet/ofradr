@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { ReactLenis, useLenis } from "lenis/react";
 import { Big_Shoulders_Display } from "next/font/google";
 import { ChevronUp, ChevronDown } from "lucide-react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { jersey10 } from "../../components/fonts";
 import Plasma from "../../components/Plasma";
 import TextType from "../../components/TextType";
@@ -55,6 +55,100 @@ Automatically completes tasks and assignments for you using the agent.`
   }
 ];
 
+// Animated step component with scroll-triggered animations
+function AnimatedStep({ step, index }: { step: typeof usageSteps[0], index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { 
+    once: true, 
+    margin: "-100px",
+    amount: 0.3
+  });
+
+  // Multi-step animation variants for smoother transitions
+  const containerVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 60,
+      scale: 0.98
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        delay: 0.1,
+        ease: [0.16, 1, 0.3, 1],
+        opacity: { duration: 0.6 },
+        y: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+        scale: { duration: 0.8, ease: [0.33, 1, 0.68, 1] }
+      }
+    }
+  };
+
+  const titleVariants = {
+    hidden: { 
+      opacity: 0,
+      x: -20,
+      filter: "blur(4px)"
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.6,
+        delay: 0.2,
+        ease: [0.16, 1, 0.3, 1],
+        filter: { duration: 0.4 }
+      }
+    }
+  };
+
+  const contentVariants = {
+    hidden: { 
+      opacity: 0,
+      filter: "blur(2px)"
+    },
+    visible: {
+      opacity: 1,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        delay: 0.4,
+        ease: "easeOut",
+        filter: { duration: 0.5 }
+      }
+    }
+  };
+
+  return (
+    <motion.div 
+      ref={ref}
+      className="min-h-screen flex flex-col justify-center"
+      variants={containerVariants}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      style={{ willChange: 'transform, opacity' }}
+    >
+      <motion.h2 
+        className={`text-4xl md:text-5xl mb-6 text-[#ea3a59] ${jersey10.className}`}
+        variants={titleVariants}
+        style={{ willChange: 'transform, opacity, filter' }}
+      >
+        {step.title}
+      </motion.h2>
+      <motion.div 
+        className={`text-2xl md:text-3xl leading-relaxed text-neutral-200 whitespace-pre-wrap ${jersey10.className}`}
+        variants={contentVariants}
+        style={{ willChange: 'opacity, filter' }}
+      >
+        {step.content}
+      </motion.div>
+    </motion.div>
+  );
+}
+
 function UsageContent() {
   const lenis = useLenis();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -71,6 +165,7 @@ function UsageContent() {
   const titleScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.6]);
   const titleTop = useTransform(scrollYProgress, [0, 0.1], ["50%", "55%"]);
   const titleYPercent = useTransform(scrollYProgress, [0, 0.1], ["-50%", "-50%"]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.05, 0.15], [1, 1, 0.8]);
 
   const scrollToSection = (direction: 'up' | 'down') => {
     if (!lenis) return;
@@ -98,7 +193,10 @@ function UsageContent() {
     }
 
     if (targetIndex !== -1 && targetIndex < positions.length) {
-      lenis.scrollTo(positions[targetIndex], { duration: 1.5 });
+      lenis.scrollTo(positions[targetIndex], { 
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+      });
     }
   };
 
@@ -143,7 +241,9 @@ function UsageContent() {
           x: titleXPercent,
           y: titleYPercent,
           scale: titleScale,
-          transformOrigin: "left top"
+          opacity: titleOpacity,
+          transformOrigin: "left top",
+          willChange: "transform, opacity"
         }}
       >
         <h1 className={`text-8xl md:text-[12rem] font-black leading-none ${bigShoulders.className}`}>
@@ -168,14 +268,8 @@ function UsageContent() {
             <div 
               key={index} 
               ref={(el) => { sectionRefs.current[index] = el; }}
-              className="min-h-screen flex flex-col justify-center"
             >
-              <h2 className={`text-4xl md:text-5xl mb-6 text-[#ea3a59] ${jersey10.className}`}>
-                {step.title}
-              </h2>
-              <div className={`text-2xl md:text-3xl leading-relaxed text-neutral-200 whitespace-pre-wrap ${jersey10.className}`}>
-                {step.content}
-              </div>
+              <AnimatedStep step={step} index={index} />
             </div>
           ))}
         </div>
@@ -188,7 +282,17 @@ function UsageContent() {
 
 export default function UsagePage() {
   return (
-    <ReactLenis root>
+    <ReactLenis 
+      root 
+      options={{
+        lerp: 0.08,
+        duration: 1.2,
+        smoothWheel: true,
+        touchMultiplier: 2,
+        infinite: false,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+      }}
+    >
       <UsageContent />
     </ReactLenis>
   );

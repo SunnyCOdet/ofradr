@@ -1,8 +1,9 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { Big_Shoulders_Display } from "next/font/google"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import { useLenis } from 'lenis/react'
 import Lottie from "lottie-react"
 import AnimationData from "./fileicon.json" // Ensure this path is correct and the JSON is valid
 import { Magnetic } from "@/components/motion-primitives/magnetic"
@@ -14,42 +15,37 @@ const bigShoulders = Big_Shoulders_Display({
 })
 
 function MainHero() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
-  }
+  const containerRef = useRef<HTMLDivElement>(null);
+  const lenis = useLenis();
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
 
-  const itemVariants = {
-    hidden: { y: 100, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
-        duration: 0.8,
-      },
-    },
-  }
+  // Parallax and fade effects based on scroll
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
+  const yOffset = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
     <motion.div
+      ref={containerRef}
       className="text-center flex flex-col items-center z-20 relative"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      style={{ 
+        opacity,
+        scale,
+        y: yOffset,
+        willChange: 'transform, opacity'
+      }}
     >
      
       <motion.h1
         className={`font-black text-[120px] md:text-[220px] leading-[110px] md:leading-[300px] text-white select-none ${bigShoulders.className}`}
-        variants={itemVariants}
+        whileHover={{ 
+          scale: 1.02,
+          transition: { duration: 0.3, ease: "easeOut" }
+        }}
       >
         OFF*
       </motion.h1>
@@ -60,25 +56,17 @@ function MainHero() {
 
       <motion.h1
         className={`font-black text-[120px] md:text-[220px] leading-[100px] md:leading-[132px] text-[#ea3a59] select-none md:-mt-2 ${bigShoulders.className}`}
-        variants={itemVariants}
+        whileHover={{ 
+          scale: 1.02,
+          transition: { duration: 0.3, ease: "easeOut" }
+        }}
       >
         RADAR
       </motion.h1>
 
-      <motion.div
-        className="flex justify-center mt-8"
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 100,
-          damping: 12,
-          delay: 0.8,
-          duration: 0.8,
-        }}
-      >
+      <div className="flex justify-center mt-8">
         
-      </motion.div>
+      </div>
     </motion.div>
   )
 }
