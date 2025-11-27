@@ -102,11 +102,16 @@ export default function ContactPage() {
       {/* PrismaticBurst Background */}
       <div className="absolute inset-0 z-0">
         <PrismaticBurst
-          intensity={2}
-          speed={0.5}
           animationType="rotate3d"
-          distort={5}
-          mixBlendMode="lighten"
+    intensity={2}
+    speed={0.5}
+    distort={1.0}
+    paused={false}
+    offset={{ x: 0, y: 0 }}
+    hoverDampness={0.25}
+    rayCount={24}
+    mixBlendMode="lighten"
+    colors={['#df5d5d', '#ff0000', '#000000']}
         />
       </div>
 

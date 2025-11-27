@@ -16,7 +16,7 @@
   top: 50%;
   width: 4px;
   height: 4px;
-  background: #fff;
+  background: #ea3a59;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   will-change: transform;
@@ -28,7 +28,7 @@
   top: 50%;
   width: 12px;
   height: 12px;
-  border: 3px solid #fff;
+  border: 3px solid #ea3a59;
   will-change: transform;
 }
 
