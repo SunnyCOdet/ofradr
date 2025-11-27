@@ -8,7 +8,7 @@ import { Big_Shoulders_Display } from "next/font/google"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, MessageSquare, Send, CheckCircle } from "lucide-react"
-import CenteredLottieNavbar from "@/sections/Header"
+
 import { Footer } from "../experiment/Footer"
 import { TypingAnimation } from "@/components/magicui/typing-animation"
 import GlassNavbar from "../experiment/Navbar"

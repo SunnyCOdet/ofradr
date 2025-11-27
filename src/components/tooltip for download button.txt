@@ -1,2 +1,0 @@
-tooltip for download button
-carosel for cards 
