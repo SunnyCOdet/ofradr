@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import Lottie from "lottie-react"
 import AnimationData from "./fileicon.json" // Ensure this path is correct and the JSON is valid
 import { Magnetic } from "@/components/motion-primitives/magnetic"
+import SpinningCircle from "./Spinner"
 
 const bigShoulders = Big_Shoulders_Display({
   weight: ["400", "700", "900"],
@@ -79,7 +80,7 @@ function MainHero() {
 
   return (
     <motion.div
-      className="text-center flex flex-col items-center z-20 relative top-[110px] left-1/2 -translate-x-1/2"
+      className="text-center flex flex-col items-center z-20 relative"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -91,6 +92,10 @@ function MainHero() {
       >
         OFF*
       </motion.h1>
+
+      <div className="absolute top-[55%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
+        <SpinningCircle size={125} />
+      </div>
 
       <motion.h1
         className={`font-black text-[120px] md:text-[220px] leading-[100px] md:leading-[132px] text-[#ea3a59] select-none md:-mt-2 ${bigShoulders.className}`}

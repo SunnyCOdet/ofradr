@@ -1,15 +1,20 @@
-"use client"
-import React, { useRef } from 'react'
-import { ReactLenis, useLenis } from 'lenis/react'
-import GlassNavbar from './experiment/Navbar'
-import MainHero from './experiment/MainHero'
-import Component from './experiment/Pricing'
-import { Footer } from './experiment/Footer'
-import WaitlistModal from './components/WaitlistModal'
-import Lightning from '../components/Lightning'
-import { ChevronUp, ChevronDown } from "lucide-react"
+"use client";
+import React, { useRef } from "react";
+import { ReactLenis, useLenis } from "lenis/react";
+import { Big_Shoulders_Display } from "next/font/google";
+import { ChevronUp, ChevronDown } from "lucide-react";
+import { Footer } from "../experiment/Footer";
+import GlassNavbar from "../experiment/Navbar";
+import { jersey10 } from "../../components/fonts";
+import TextType from "../../components/TextType";
+import Plasma from "../../components/Plasma";
 
-function HomeContent() {
+const bigShoulders = Big_Shoulders_Display({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+})
+
+function UsageContent() {
   const lenis = useLenis();
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -49,12 +54,18 @@ function HomeContent() {
   };
 
   return (
-    <div className='relative flex flex-col min-h-screen overflow-x-hidden'>
-      <div className="fixed inset-0 -z-10">
-        <Lightning hue={350} speed={0.5} intensity={1} />
+    <div className="relative min-h-screen text-white overflow-x-hidden flex flex-col bg-transparent">
+       <div className="fixed inset-0 -z-20 bg-black" />
+       <div className="fixed inset-0 -z-10">
+        <Plasma 
+          color="#ea3a59"
+          speed={1.5}
+          direction="forward"
+          scale={1.5}
+          opacity={0.8}
+          mouseInteractive={true}
+        />
       </div>
-      
-      <GlassNavbar />
 
       {/* Navigation Buttons */}
       <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
@@ -74,26 +85,32 @@ function HomeContent() {
         </button>
       </div>
 
-      <div ref={(el) => { sectionRefs.current[0] = el; }} className='min-h-screen w-full flex items-center justify-center'>
-        <MainHero/>
-      </div>
-      
-      <div ref={(el) => { sectionRefs.current[1] = el; }} className='min-h-screen w-full flex items-center justify-center'>
-        <Component/>
+      <div ref={(el) => { sectionRefs.current[0] = el; }} className="min-h-screen w-full flex items-center justify-center px-4 pt-20">
+        <div className="max-w-5xl w-full">
+             <h1 className={`text-6xl md:text-8xl font-black mb-8 ${bigShoulders.className}`}>
+            USAGE
+          </h1>
+          <TextType 
+            text="How to use Ofradr..."
+            className={`text-3xl md:text-5xl leading-relaxed text-neutral-200 block ${jersey10.className}`}
+            startOnVisible={true}
+            loop={false}
+            typingSpeed={20}
+          />
+        </div>
       </div>
 
-      <div ref={(el) => { sectionRefs.current[3] = el; }}>
-        <Footer/>
+      <div ref={(el) => { sectionRefs.current[1] = el; }}>
+        
       </div>
-      <WaitlistModal />
     </div>
-  )
+  );
 }
 
-export default function page() {
+export default function UsagePage() {
   return (
     <ReactLenis root>
-      <HomeContent />
+      <UsageContent />
     </ReactLenis>
-  )
+  );
 }

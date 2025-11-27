@@ -6,6 +6,7 @@ import { Inter, Big_Shoulders_Display } from "next/font/google";
 import ASCIIText from "../../components/ASCIIText";
 import { jersey10 } from "../../components/fonts";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { Footer } from "../experiment/Footer";
 
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
@@ -134,6 +135,9 @@ Leverages Google Gemini AI to analyse everything on the screen either via the sc
             typingSpeed={20}
           />
         </div>
+      </div>
+      <div ref={(el) => { sectionRefs.current[4] = el; }}>
+        <Footer />
       </div>
     </div>
   );

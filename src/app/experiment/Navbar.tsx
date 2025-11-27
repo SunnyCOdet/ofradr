@@ -80,7 +80,7 @@ export default function Navbar() {
       bgColor: '#000000ff',
       textColor: '#fff',
       links: [
-        { label: 'Usage', href: '/about' }, // Kept as /about based on original file
+        { label: 'Usage', href: '/usage' }, // Updated to /usage
         { 
           label: 'Pricing', 
           href: '#pricing',

@@ -7,7 +7,7 @@ import { GridScan } from './GridScan'
 export default function GlobalBackground() {
   const pathname = usePathname()
 
-  if (pathname === '/') {
+  if (pathname === '/' || pathname === '/usage') {
     return null
   }
 

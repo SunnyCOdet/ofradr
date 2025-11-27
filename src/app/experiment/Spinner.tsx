@@ -27,7 +27,7 @@ export default function SpinningCircle({
   const repeatedText = borderText.repeat(3)
 
   return (
-    <div className="flex items-center relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100px] md:-translate-y-[180px] justify-center  bg-tranparent z-50 p-8">
+    <div className="flex items-center justify-center bg-transparent z-50 p-8">
       <div className="relative">
         {/* Blur background */}
         <div
