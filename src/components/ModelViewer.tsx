@@ -41,12 +41,12 @@ const ModelViewer: React.FC<ViewerProps> = ({
         style={{ background: 'transparent' }} // Ensure CSS background is transparent
       >
         {/* Red ambient light for base illumination */}
-        <ambientLight color="#ff0000" intensity={0.3} />
+        <ambientLight color="#ff0000" intensity={2} />
         
         {/* Red point lights for dramatic effect */}
-        <pointLight position={[10, 10, 10]} color="#ff0000" intensity={2} distance={50} />
-        <pointLight position={[-10, -5, 10]} color="#ff3333" intensity={1.5} distance={50} />
-        <pointLight position={[0, 15, -10]} color="#cc0000" intensity={1.8} distance={50} />
+        <pointLight position={[10, 10, 10]} color="#ff0000" intensity={10} distance={50} />
+        <pointLight position={[-10, -5, 10]} color="#ff3333" intensity={10} distance={50} />
+        <pointLight position={[0, 15, -10]} color="#cc0000" intensity={10} distance={50} />
         
         {/* Red directional light for key lighting */}
         <directionalLight position={[5, 10, 5]} color="#ff1a1a" intensity={1.5} castShadow />
