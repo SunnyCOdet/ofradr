@@ -66,10 +66,10 @@ function UsageContent() {
   });
 
   // Animation for the title moving from center to left
-  const titleX = useTransform(scrollYProgress, [0, 0.1], ["50%", "0%"]);
-  const titleXPercent = useTransform(scrollYProgress, [0, 0.1], ["-50%", "0%"]);
+  const titleX = useTransform(scrollYProgress, [0, 0.1], ["50%", "35%"]);
+  const titleXPercent = useTransform(scrollYProgress, [0, 0.1], ["-50%", "-50%"]);
   const titleScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.6]);
-  const titleTop = useTransform(scrollYProgress, [0, 0.1], ["50%", "50%"]);
+  const titleTop = useTransform(scrollYProgress, [0, 0.1], ["50%", "55%"]);
   const titleYPercent = useTransform(scrollYProgress, [0, 0.1], ["-50%", "-50%"]);
 
   const scrollToSection = (direction: 'up' | 'down') => {
