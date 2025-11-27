@@ -8,6 +8,6 @@ export const bigShoulders = Big_Shoulders_Display({
 });
 
 export const jersey10 = Jersey_10({
-  weight: "400",
+  weight: ["400"],
   subsets: ["latin"],
 });

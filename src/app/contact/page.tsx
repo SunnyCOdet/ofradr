@@ -160,7 +160,7 @@ export default function ContactPage() {
                   CONTACT <span className="text-[#ea3a59]">US</span>
                 </h1>
                 <p className="text-gray-300 text-lg">
-                  Have a question? We'd love to hear from you.
+                  Have a question? We&apos;d love to hear from you.
                 </p>
               </div>
 
@@ -293,7 +293,7 @@ export default function ContactPage() {
                         MESSAGE SENT!
                       </h2>
                       <p className="text-gray-300 text-lg">
-                        Thanks for reaching out! We'll get back to you soon.
+                        Thanks for reaching out! We&apos;ll get back to you soon.
                       </p>
                     </motion.div>
                   )}
