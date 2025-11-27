@@ -91,8 +91,7 @@ export default function Navbar() {
               element.scrollIntoView({ behavior: 'smooth', block: 'start' })
             }
           }
-        },
-        { label: 'ofradr max', href: '/ofradr-max' }
+        }
       ]
     }
   ];

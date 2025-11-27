@@ -14,45 +14,6 @@ const bigShoulders = Big_Shoulders_Display({
 })
 
 function MainHero() {
-  const [showStrike, setShowStrike] = useState(false)
-  const [typingText, setTypingText] = useState("")
-  const [showCursor, setShowCursor] = useState(true)
-  const fullText = "OFRADR MAX"
-  const baseText = "OFRADR"
-
-  useEffect(() => {
-    // First show "ofradr" with strike-through
-    const strikeTimer = setTimeout(() => {
-      setShowStrike(true)
-    }, 500)
-
-    // Then start typing "ofradr max" after a delay
-    const typingTimer = setTimeout(() => {
-      let i = 0
-      const typingInterval = setInterval(() => {
-        if (i < fullText.length) {
-          setTypingText(fullText.substring(0, i + 1))
-          i++
-        } else {
-          clearInterval(typingInterval)
-        }
-      }, 100) // Typing speed
-
-      return () => clearInterval(typingInterval)
-    }, 1500)
-
-    // Blink cursor continuously
-    const cursorInterval = setInterval(() => {
-      setShowCursor((prev) => !prev)
-    }, 530)
-
-    return () => {
-      clearTimeout(strikeTimer)
-      clearTimeout(typingTimer)
-      clearInterval(cursorInterval)
-    }
-  }, [])
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {

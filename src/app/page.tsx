@@ -5,7 +5,7 @@ import GlassNavbar from './experiment/Navbar'
 import MainHero from './experiment/MainHero'
 import Component from './experiment/Pricing'
 import { Footer } from './experiment/Footer'
-import WaitlistModal from './components/WaitlistModal'
+
 import Lightning from '../components/Lightning'
 import { ChevronUp, ChevronDown } from "lucide-react"
 
@@ -85,7 +85,7 @@ function HomeContent() {
       <div ref={(el) => { sectionRefs.current[3] = el; }}>
         <Footer/>
       </div>
-      <WaitlistModal />
+
     </div>
   )
 }
