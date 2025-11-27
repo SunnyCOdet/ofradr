@@ -2,6 +2,7 @@
 
 import { Big_Shoulders_Display } from "next/font/google"
 import PrismaticBurst from "@/components/PrismaticBurst"
+import TargetCursor from "@/components/TargetCursor"
 
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
@@ -11,6 +12,9 @@ const bigShoulders = Big_Shoulders_Display({
 export default function ContactPage() {
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
+      {/* TargetCursor Component */}
+      <TargetCursor targetSelector=".cursor-target" />
+
       {/* PrismaticBurst Background */}
       <div className="absolute inset-0 z-0">
         <PrismaticBurst
@@ -24,7 +28,7 @@ export default function ContactPage() {
 
       {/* Centered Contact Us Text */}
       <div className="relative z-10 flex items-center justify-center w-full h-full">
-        <h1 className={`text-7xl md:text-9xl lg:text-[12rem] font-black text-white ${bigShoulders.className}`}>
+        <h1 className={`cursor-target text-7xl md:text-9xl lg:text-[12rem] font-black text-white ${bigShoulders.className}`}>
           CONTACT US
         </h1>
       </div>
