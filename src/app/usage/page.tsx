@@ -170,7 +170,7 @@ function UsageContent() {
               ref={(el) => { sectionRefs.current[index] = el; }}
               className="min-h-screen flex flex-col justify-center"
             >
-              <h2 className={`text-4xl md:text-5xl mb-6 text-red-500 ${jersey10.className}`}>
+              <h2 className={`text-4xl md:text-5xl mb-6 text-[#ea3a59] ${jersey10.className}`}>
                 {step.title}
               </h2>
               <div className={`text-2xl md:text-3xl leading-relaxed text-neutral-200 whitespace-pre-wrap ${jersey10.className}`}>
