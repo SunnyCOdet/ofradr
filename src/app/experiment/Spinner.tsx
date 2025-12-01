@@ -14,11 +14,11 @@ interface SpinningCircleProps {
 
 export default function SpinningCircle({
   centerText = "Ofradr",
-  borderText = "PROTECTION • PRIVACY • STEALTH• ",
+  borderText = "STEALTH • INVISIBLE • PRIVACY •",
   backgroundColor = "rgba(0, 0, 0, 0.2)",
   textColor = "#ffffff",
   borderColor = "rgba(255, 255, 255, 0.2)",
-  size = 150,
+  size = 200,
   spinDuration = 20,
 }: SpinningCircleProps) {
   const [isSpinning, setIsSpinning] = useState(true)
