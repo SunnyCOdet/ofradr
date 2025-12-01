@@ -118,7 +118,7 @@ export default function ComparePage() {
               onClick={handleCompareClick}
               className={`cursor-target cursor-pointer text-7xl md:text-9xl lg:text-[12rem] font-black text-white transition-all hover:scale-105 ${bigShoulders.className}`}
             >
-              How we're better
+              How we&apos;re better
             </h1>
           </motion.div>
         ) : (

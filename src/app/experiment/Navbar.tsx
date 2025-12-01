@@ -88,10 +88,24 @@ export default function Navbar() {
     }
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("user")
+    setUser(null)
+    window.location.href = "/" // Force reload/redirect to clear any other state if needed
+  }
+
   const CustomAuthButton = (
-    <div className="flex items-center">
+    <div className="flex items-center gap-4">
       {user ? (
-        <span className="text-white font-semibold px-4">Hello, {user.username}</span>
+        <>
+          <span className="text-white font-semibold">Hello, {user.username}</span>
+          <button 
+            onClick={handleLogout}
+            className="text-xs text-white/60 hover:text-white transition-colors border border-white/10 hover:border-white/30 rounded-full px-3 py-1.5 hover:bg-white/5"
+          >
+            Logout
+          </button>
+        </>
       ) : (
         <Link href="/getin" className="no-underline">
           <AuthShimmerButton type="button" className="bg-transparent text-white">

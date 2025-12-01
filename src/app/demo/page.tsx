@@ -69,13 +69,13 @@ export default function DemoPage() {
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-6">
           <button
             onClick={handlePrevious}
-            className="group flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            className="group flex items-center justify-center w-14 h-14 rounded-full bg-[#ea3a59] border border-[#ea3a59] hover:bg-[#d93350] transition-all duration-300 hover:scale-110 shadow-[0_0_20px_rgba(234,58,89,0.3)] hover:shadow-[0_0_30px_rgba(234,58,89,0.5)]"
             aria-label="Previous image"
           >
             <IconChevronLeft className="w-7 h-7 text-white" />
           </button>
           
-          <div className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+          <div className="px-6 py-3 rounded-full bg-black/40 backdrop-blur-md border border-white/10">
             <span className="text-white font-semibold">
               {currentImageIndex + 1} / {images.length}
             </span>
@@ -83,7 +83,7 @@ export default function DemoPage() {
           
           <button
             onClick={handleNext}
-            className="group flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            className="group flex items-center justify-center w-14 h-14 rounded-full bg-[#ea3a59] border border-[#ea3a59] hover:bg-[#d93350] transition-all duration-300 hover:scale-110 shadow-[0_0_20px_rgba(234,58,89,0.3)] hover:shadow-[0_0_30px_rgba(234,58,89,0.5)]"
             aria-label="Next image"
           >
             <IconChevronRight className="w-7 h-7 text-white" />

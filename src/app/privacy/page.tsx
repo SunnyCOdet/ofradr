@@ -187,7 +187,7 @@ function PrivacyContent() {
 
                     {/* Article 9 */}
                     <section ref={(el) => { sectionRefs.current[8] = el; }} className="backdrop-blur-sm bg-black/20 p-8 rounded-3xl border border-white/5 hover:border-white/10 transition-colors">
-                        <h2 className="text-3xl font-semibold mb-6 text-blue-400">9. Children's Privacy</h2>
+                        <h2 className="text-3xl font-semibold mb-6 text-blue-400">9. Children&apos;s Privacy</h2>
                         <div className="space-y-4 text-lg text-white/70 leading-relaxed">
                             <p>
                                 Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13.

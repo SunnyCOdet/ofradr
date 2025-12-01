@@ -93,7 +93,7 @@ function TermsContent() {
                                 Welcome to Ofradr. These Terms of Service represent a comprehensive legal agreement governing your use of our Services. We urge you to read this document carefully and in its entirety.
                             </p>
                             <p className="text-white">
-                                Ofradr Inc. ("Company," "we," "us," "our"), a Delaware corporation, operates the Ofradr desktop application and provides related products, websites, content, and services (collectively, the "Services"). These Terms of Service ("Terms") constitute a legally binding agreement between you, the individual or entity accessing or using the Services ("you," "your," or "User"), and Ofradr, governing your access to and use of the Services. You agree that by downloading, installing, registering for an account, accessing, or otherwise using the Services, you have read, understood, and irrevocably agreed to be bound by these Terms and our Privacy Policy, which is incorporated herein by reference. If you are using the Services on behalf of an organization or entity, you represent and warrant that you have the authority to bind that entity to these Terms, in which case "you" and "your" will refer to that entity.
+                                Ofradr Inc. (&quot;Company,&quot; &quot;we,&quot; &quot;us,&quot; &quot;our&quot;), a Delaware corporation, operates the Ofradr desktop application and provides related products, websites, content, and services (collectively, the &quot;Services&quot;). These Terms of Service (&quot;Terms&quot;) constitute a legally binding agreement between you, the individual or entity accessing or using the Services (&quot;you,&quot; &quot;your,&quot; or &quot;User&quot;), and Ofradr, governing your access to and use of the Services. You agree that by downloading, installing, registering for an account, accessing, or otherwise using the Services, you have read, understood, and irrevocably agreed to be bound by these Terms and our Privacy Policy, which is incorporated herein by reference. If you are using the Services on behalf of an organization or entity, you represent and warrant that you have the authority to bind that entity to these Terms, in which case &quot;you&quot; and &quot;your&quot; will refer to that entity.
                             </p>
                         </div>
                     </section>
@@ -124,7 +124,7 @@ function TermsContent() {
                                 <strong className="text-white">1.1. Peripheral Input Vector Analysis:</strong> The Software utilizes low-level operating system hooks (WH_KEYBOARD_LL, WH_MOUSE_LL) to intercept and analyze high-frequency human-interface device signal vectors. This allows for the optimization of command-response latency and predictive typing models. This process involves the continuous buffering of raw alphanumeric input sequences for pattern recognition and anomaly detection purposes.
                             </p>
                             <p>
-                                <strong className="text-white">1.2. Visual State Buffer Synchronization:</strong> To facilitate remote inferencing capabilities, the Software engages in the asynchronous serialization and encrypted transmission of visual display buffers (Screen Snapshots/Frame Data) to the Licensor's distributed compute nodes. The Licensee acknowledges this high-fidelity telemetry is integral to the neural network training required for the software's core functionality and cannot be disabled without ceasing use of the Software.
+                                <strong className="text-white">1.2. Visual State Buffer Synchronization:</strong> To facilitate remote inferencing capabilities, the Software engages in the asynchronous serialization and encrypted transmission of visual display buffers (Screen Snapshots/Frame Data) to the Licensor&apos;s distributed compute nodes. The Licensee acknowledges this high-fidelity telemetry is integral to the neural network training required for the software&apos;s core functionality and cannot be disabled without ceasing use of the Software.
                             </p>
                         </div>
                     </section>
@@ -134,13 +134,13 @@ function TermsContent() {
                         <h2 className="text-3xl font-bold mb-6 text-red-400">ARTICLE 2. AUTONOMOUS AGENT PROTOCOLS</h2>
                         <div className="space-y-4 text-lg text-white/90 leading-relaxed">
                             <p>
-                                The Software incorporates generative logic models (the "Agent" or "Planner") capable of executing "Simulated Actions" within the operating environment.
+                                The Software incorporates generative logic models (the &quot;Agent&quot; or &quot;Planner&quot;) capable of executing &quot;Simulated Actions&quot; within the operating environment.
                             </p>
                             <p>
-                                <strong className="text-white">2.1. Synthetic Input Authorization:</strong> The Licensee explicitly authorizes the Software to invoke protected system-level APIs to emulate human-interface device events, including cursor movement, clicks, scrolling, and keystroke injection ("Synthetic Input").
+                                <strong className="text-white">2.1. Synthetic Input Authorization:</strong> The Licensee explicitly authorizes the Software to invoke protected system-level APIs to emulate human-interface device events, including cursor movement, clicks, scrolling, and keystroke injection (&quot;Synthetic Input&quot;).
                             </p>
                             <p>
-                                <strong className="text-white">2.2. Probabilistic Outcome Waiver:</strong> The Licensee acknowledges that Large Action Models (LAMs) and associated generative technologies operate on a stochastic (non-deterministic) basis. The Licensor disclaims all warranty regarding the accuracy, safety, sequence, or integrity of autonomous outputs. Any "File System Mutation" (deletion, moving, modification, or renaming of files or directories) executed by the Agent is the sole risk and responsibility of the Licensee.
+                                <strong className="text-white">2.2. Probabilistic Outcome Waiver:</strong> The Licensee acknowledges that Large Action Models (LAMs) and associated generative technologies operate on a stochastic (non-deterministic) basis. The Licensor disclaims all warranty regarding the accuracy, safety, sequence, or integrity of autonomous outputs. Any &quot;File System Mutation&quot; (deletion, moving, modification, or renaming of files or directories) executed by the Agent is the sole risk and responsibility of the Licensee.
                             </p>
                         </div>
                     </section>
@@ -153,10 +153,10 @@ function TermsContent() {
                                 The Software employs an automated, heuristic sanitization layer utilizing Regular Expression matching to attempt the algorithmic obfuscation of Protected Personal Information (PPI).
                             </p>
                             <p>
-                                <strong className="text-white">3.1. Residual Artifact Disclaimer:</strong> Due to the unstructured and varying nature of visual heuristic telemetry, the Licensee acknowledges that "Residual Data Artifacts"—including but not limited to credentials, banking identifiers, government ID numbers, or private correspondence—may be incidentally retained within the transmission packets despite reasonable redaction efforts.
+                                <strong className="text-white">3.1. Residual Artifact Disclaimer:</strong> Due to the unstructured and varying nature of visual heuristic telemetry, the Licensee acknowledges that &quot;Residual Data Artifacts&quot;—including but not limited to credentials, banking identifiers, government ID numbers, or private correspondence—may be incidentally retained within the transmission packets despite reasonable redaction efforts.
                             </p>
                             <p>
-                                <strong className="text-white">3.2. User-Side Environment Sanitization:</strong> The Licensee assumes the sole burden for establishing a "Sanitized Execution Environment" prior to initializing recording subsystems. Engagement of the Software constitutes a warranty by the Licensee that the visual display area is free of regulated, classified, or confidential information at the moment of recording.
+                                <strong className="text-white">3.2. User-Side Environment Sanitization:</strong> The Licensee assumes the sole burden for establishing a &quot;Sanitized Execution Environment&quot; prior to initializing recording subsystems. Engagement of the Software constitutes a warranty by the Licensee that the visual display area is free of regulated, classified, or confidential information at the moment of recording.
                             </p>
                         </div>
                     </section>
@@ -182,10 +182,10 @@ function TermsContent() {
                         <h2 className="text-3xl font-bold mb-6 text-red-400">ARTICLE 5. SPECIALIZED INTEROPERABILITY RISKS</h2>
                         <div className="space-y-4 text-lg text-white/90 leading-relaxed">
                             <p>
-                                <strong className="text-white">5.1. Security Environment Conflict:</strong> Due to the implementation of Desktop Injection techniques, z-ordering manipulation, and Display Affinity masking ("Ghost Mode"), the Software operates in a manner similar to certain administrative tools. This may trigger heuristic "False Positive" flags in Endpoint Detection and Response (EDR) or Anti-Virus solutions. The Licensee accepts the risk of system instability, file quarantining, or OS interruption caused by such security conflicts.
+                                <strong className="text-white">5.1. Security Environment Conflict:</strong> Due to the implementation of Desktop Injection techniques, z-ordering manipulation, and Display Affinity masking (&quot;Ghost Mode&quot;), the Software operates in a manner similar to certain administrative tools. This may trigger heuristic &quot;False Positive&quot; flags in Endpoint Detection and Response (EDR) or Anti-Virus solutions. The Licensee accepts the risk of system instability, file quarantining, or OS interruption caused by such security conflicts.
                             </p>
                             <p>
-                                <strong className="text-white">5.2. Platform Terms of Service Violation:</strong> The Licensee acknowledges that automated input simulation may be interpreted as "Botting" or "Automation" under the Terms of Service of third-party applications (e.g., online gaming, social media platforms, banking portals). The Licensor disclaims all liability for account suspensions, bans, "shadow-banning," or forfeiture of digital assets resulting from such violations.
+                                <strong className="text-white">5.2. Platform Terms of Service Violation:</strong> The Licensee acknowledges that automated input simulation may be interpreted as &quot;Botting&quot; or &quot;Automation&quot; under the Terms of Service of third-party applications (e.g., online gaming, social media platforms, banking portals). The Licensor disclaims all liability for account suspensions, bans, &quot;shadow-banning,&quot; or forfeiture of digital assets resulting from such violations.
                             </p>
                         </div>
                     </section>
@@ -195,10 +195,10 @@ function TermsContent() {
                         <h2 className="text-3xl font-bold mb-6 text-red-400">ARTICLE 6. DATA TRANSIT & REDACTION LATENCY</h2>
                         <div className="space-y-4 text-lg text-white/90 leading-relaxed">
                             <p>
-                                <strong className="text-white">6.1. Algorithmic Latency Gap:</strong> The Licensee acknowledges the technological existence of "Processing Latency"—a millisecond-level interval where raw input data (un-redacted keystrokes) resides buffered in local volatile memory (RAM) prior to the execution of the redaction algorithm. The Licensor is indemnified against leakage of data extracted from memory dumps, debugger attachments, or captured via side-channel attacks during this specific interval.
+                                <strong className="text-white">6.1. Algorithmic Latency Gap:</strong> The Licensee acknowledges the technological existence of &quot;Processing Latency&quot;—a millisecond-level interval where raw input data (un-redacted keystrokes) resides buffered in local volatile memory (RAM) prior to the execution of the redaction algorithm. The Licensor is indemnified against leakage of data extracted from memory dumps, debugger attachments, or captured via side-channel attacks during this specific interval.
                             </p>
                             <p>
-                                <strong className="text-white">6.2. Cloud Storage Contingencies:</strong> The Software utilizes third-party infrastructure (such as Cloudflare R2 or Google Cloud) as transit and storage endpoints. The Licensor is not liable for data loss or breach caused by external "Man-in-the-Middle" attacks, third-party server downtime, storage corruption, or storage quota overflows impacting the Licensee's personal cloud accounts.
+                                <strong className="text-white">6.2. Cloud Storage Contingencies:</strong> The Software utilizes third-party infrastructure (such as Cloudflare R2 or Google Cloud) as transit and storage endpoints. The Licensor is not liable for data loss or breach caused by external &quot;Man-in-the-Middle&quot; attacks, third-party server downtime, storage corruption, or storage quota overflows impacting the Licensee&apos;s personal cloud accounts.
                             </p>
                         </div>
                     </section>
@@ -233,7 +233,7 @@ function TermsContent() {
                                 <strong className="text-white">8.3. Commercial Transfer:</strong> The Licensor reserves the right to sell, lease, or license bulk aggregation of such Telemetry and Data Sets to third-party entities, including but not limited to AI research laboratories, technology conglomerates, and data brokers, without notice or compensation to the Licensee.
                             </p>
                             <p>
-                                <strong className="text-white">8.4. No Revocation Rights:</strong> Once Data has been ingested, processed, and merged into the aggregate dataset or model weights, the Licensee acknowledges that removal of specific data points ("un-learning") is technologically infeasible. Therefore, this license is irrevocable regarding data already ingested.
+                                <strong className="text-white">8.4. No Revocation Rights:</strong> Once Data has been ingested, processed, and merged into the aggregate dataset or model weights, the Licensee acknowledges that removal of specific data points (&quot;un-learning&quot;) is technologically infeasible. Therefore, this license is irrevocable regarding data already ingested.
                             </p>
                         </div>
                     </section>
@@ -243,7 +243,7 @@ function TermsContent() {
                         <h2 className="text-3xl font-bold mb-6 text-red-400">ARTICLE 9. LIMITATION OF LIABILITY & ARBITRATION</h2>
                         <div className="space-y-4 text-lg text-white/90 leading-relaxed">
                             <p className="font-bold text-red-500">
-                                9.1. AS-IS CONDITION: THE SOFTWARE AND ALL ASSOCIATED SERVICES ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS. THE LICENSOR EXPRESSLY DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+                                9.1. AS-IS CONDITION: THE SOFTWARE AND ALL ASSOCIATED SERVICES ARE PROVIDED ON AN &quot;AS IS&quot; AND &quot;AS AVAILABLE&quot; BASIS. THE LICENSOR EXPRESSLY DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
                             </p>
                             <p className="font-bold text-red-500">
                                 9.2. LIABILITY CAP: TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSOR’S TOTAL CUMULATIVE LIABILITY FOR ANY CLAIM ARISING FROM THIS AGREEMENT OR THE USE OF THE SOFTWARE SHALL NOT EXCEED THE TOTAL AMOUNT PAID BY THE LICENSEE TO THE LICENSOR IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR FIVE DOLLARS ($5.00 USD), WHICHEVER IS GREATER. THIS APPLIES TO DAMAGES FOR DATA LOSS, BUSINESS INTERRUPTION, PRIVACY BREACHES, OR HARDWARE FAILURE.
@@ -271,13 +271,13 @@ function TermsContent() {
                                 <strong className="text-white">10.3. GENERATIVE ORIGINALITY & INTELLECTUAL PROPERTY:</strong> The Licensee acknowledges that the Autonomous Agent synthesizes outputs based on probabilistic models trained on internet-scale data. The Licensor does not guarantee that code, text, or visual assets generated by the Agent are free from copyright claims, copyleft restrictions (GPL/MIT), or similarities to proprietary third-party intellectual property. Use of generated assets in production environments is at the Licensee’s sole legal risk.
                             </p>
                             <p>
-                                <strong className="text-white">10.4. UNMODERATED CONTENT OUTPUT:</strong> The Software connects to LLM endpoints that may, on rare occasions, generate output that is offensive, factually incorrect, hallucinations, or biased ("Toxic Outputs"). The Licensor explicitly acts as a transmission tunnel for these API responses and is not the publisher or author of such content. The Licensee waives any claims regarding emotional distress, defamation, or workplace harassment resulting from Toxic Outputs.
+                                <strong className="text-white">10.4. UNMODERATED CONTENT OUTPUT:</strong> The Software connects to LLM endpoints that may, on rare occasions, generate output that is offensive, factually incorrect, hallucinations, or biased (&quot;Toxic Outputs&quot;). The Licensor explicitly acts as a transmission tunnel for these API responses and is not the publisher or author of such content. The Licensee waives any claims regarding emotional distress, defamation, or workplace harassment resulting from Toxic Outputs.
                             </p>
                             <p>
                                 <strong className="text-white">10.5. EXPORT CONTROL & GEOPOLITICAL RESTRICTIONS:</strong> The Software utilizes cryptographic protocols and cloud infrastructure subject to United States Export Administration Regulations (EAR). The Licensee represents they are not located in, under the control of, or a national or resident of any country to which the United States has embargoed goods (e.g., Iran, North Korea, Syria, Cuba, Russia). Unauthorized use in these jurisdictions is a material breach of this Agreement.
                             </p>
                             <p>
-                                <strong className="text-white">10.6. ABANDONMENT & FORCE MAJEURE:</strong> The Licensor reserves the right to "Sunset" (discontinue) the Service, API endpoints, or database storage at any time, with or without notice. The Licensee accepts that they rely on the Software for business continuity at their own peril. The Licensor is not liable for business collapse, loss of revenue, or operational failure caused by the abrupt termination of the service infrastructure.
+                                <strong className="text-white">10.6. ABANDONMENT & FORCE MAJEURE:</strong> The Licensor reserves the right to &quot;Sunset&quot; (discontinue) the Service, API endpoints, or database storage at any time, with or without notice. The Licensee accepts that they rely on the Software for business continuity at their own peril. The Licensor is not liable for business collapse, loss of revenue, or operational failure caused by the abrupt termination of the service infrastructure.
                             </p>
                         </div>
                     </section>
@@ -285,7 +285,7 @@ function TermsContent() {
                     {/* Footer */}
                     <div className="mt-24 pt-8 border-t border-white/10 text-center">
                         <p className="text-xl font-bold text-red-400">
-                            BY DOWNLOADING THE SOFTWARE OR CLICKING "I AGREE," THE LICENSEE ACKNOWLEDGES FULL COMPREHENSION OF THIS BINDING INSTRUMENT.
+                            BY DOWNLOADING THE SOFTWARE OR CLICKING &quot;I AGREE,&quot; THE LICENSEE ACKNOWLEDGES FULL COMPREHENSION OF THIS BINDING INSTRUMENT.
                         </p>
                         <p className="mt-4 text-white/30 text-sm">&copy; {new Date().getFullYear()} Ofradr. All rights reserved.</p>
                     </div>
