@@ -82,6 +82,7 @@ export default function Navbar() {
       links: [
         { label: 'Usage', href: '/usage' }, // Updated to /usage
         { label: 'Demonstration', href: '/demo' },
+        { label: 'Comparison', href: '/comparison' },
         { 
           label: 'Pricing', 
           href: '#pricing',

@@ -76,6 +76,17 @@ export default function Component() {
           </div>
         </div>
       </div>
+      
+      {/* Compare Plans Button */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
+        <a href="/comparison" className="inline-block">
+          <Magnetic className="relative z-10 inline-block">
+            <button className="bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center gap-2 px-8 py-3 rounded-full text-lg hover:bg-white/20 transition-all text-white font-bold">
+              <span>Compare Plans</span>
+            </button>
+          </Magnetic>
+        </a>
+      </div>
     </div>
   )
 }
