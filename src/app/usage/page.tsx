@@ -2,8 +2,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { ReactLenis, useLenis } from "lenis/react";
 import { Big_Shoulders_Display } from "next/font/google";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ArrowLeft } from "lucide-react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import Link from "next/link";
 import { jersey10 } from "../../components/fonts";
 import Plasma from "../../components/Plasma";
 import TextType from "../../components/TextType";
@@ -202,6 +203,9 @@ function UsageContent() {
 
   return (
     <div ref={containerRef} className="relative min-h-screen text-white overflow-x-hidden flex flex-col bg-transparent">
+       <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+        <ArrowLeft size={32} />
+      </Link>
        <div className="fixed inset-0 -z-20 bg-black" />
        <div className="fixed inset-0 -z-10">
         <Plasma 

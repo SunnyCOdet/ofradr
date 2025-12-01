@@ -5,6 +5,8 @@ import ColorBends from '../../components/ColorBends';
 import { MacbookScroll } from '../../components/ui/macbook-scroll';
 import { Big_Shoulders_Display } from "next/font/google";
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 const bigShoulders = Big_Shoulders_Display({
   weight: ["400", "700", "900"],
@@ -39,6 +41,9 @@ export default function DemonstrationPage() {
 
   return (
     <div className="relative w-full min-h-screen overflow-x-hidden bg-black">
+      <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+        <ArrowLeft size={32} />
+      </Link>
       {/* Background */}
       <div className="fixed inset-0 z-0">
         <ColorBends 

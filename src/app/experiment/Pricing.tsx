@@ -32,10 +32,10 @@ export default function Component() {
               Community Edition
             </AnimatedGradientText>
             <p className="text-2xl font-light tracking-wide text-gray-300">
-              Open source power for everyone.
+              If it’s on your screen, Ofradr can help,
             </p>
             <p className="text-2xl font-light tracking-wide text-gray-300">
-              Build without limits, free forever.
+              and no one will know.
             </p>
             <div className="mt-2">
               <a href="/ofradr.zip" download className="inline-block">
@@ -59,16 +59,16 @@ export default function Component() {
               Enterprise Edition
             </AnimatedGradientText>
             <p className="text-2xl font-light tracking-wide text-gray-300">
-              Advanced security and control.
+              Ultimate stealth and control.
             </p>
             <p className="text-2xl font-light tracking-wide text-gray-300">
-              Scale your business with confidence.
+              Scale your operations off the grid.
             </p>
             <div className="mt-2">
-              <a href="/ofradr.zip" download className="inline-block">
+              <a href="/contact" className="inline-block">
                 <Magnetic className="relative z-10 inline-block">
-                  <button className="bg-[#f472b6] flex items-center justify-center gap-2 w-32 h-14 rounded-full text-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(244,114,182,0.6)] hover:shadow-[0_0_30px_rgba(244,114,182,0.8)] text-black font-bold">
-                    <span>Download</span>
+                  <button className="bg-[#f472b6] flex items-center justify-center gap-2 w-40 h-14 rounded-full text-xl hover:scale-105 transition-transform shadow-[0_0_20px_rgba(244,114,182,0.6)] hover:shadow-[0_0_30px_rgba(244,114,182,0.8)] text-black font-bold">
+                    <span>Contact Us</span>
                   </button>
                 </Magnetic>
               </a>
@@ -77,16 +77,7 @@ export default function Component() {
         </div>
       </div>
       
-      {/* Compare Plans Button */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20">
-        <a href="/comparison" className="inline-block">
-          <Magnetic className="relative z-10 inline-block">
-            <button className="bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center gap-2 px-8 py-3 rounded-full text-lg hover:bg-white/20 transition-all text-white font-bold">
-              <span>Compare Plans</span>
-            </button>
-          </Magnetic>
-        </a>
-      </div>
+
     </div>
   )
 }

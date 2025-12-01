@@ -5,6 +5,8 @@ import { AnimatePresence } from "framer-motion"
 import LoginForm  from "./login"
 import SignupForm from "./signup"
 import OtpForm from "./otp"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 
 export default function AuthPage() {
   const [currentView, setCurrentView] = useState<"login" | "signup" | "otp">("login")
@@ -33,6 +35,9 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-transparent relative overflow-hidden">
+      <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+        <ArrowLeft size={32} />
+      </Link>
       {/* Radial Background Gradients */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/20 rounded-full blur-3xl animate-pulse" />

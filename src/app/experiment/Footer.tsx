@@ -90,6 +90,30 @@ export function Footer() {
             <span className="font-semibold text-[#ea3a59]">Off* Radar</span>.
             All rights reserved.
           </p>
+          <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-2">
+            <p>
+              website by{" "}
+              <a 
+                href="https://github.com/Riot-Just-Finished" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold text-[#ea3a59] hover:underline"
+              >
+                Riot-Just-Finished
+              </a>
+            </p>
+            <p>
+              ofradr by{" "}
+              <a 
+                href="https://github.com/SunnyCOdet" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="font-semibold text-[#ea3a59] hover:underline"
+              >
+                SunnyCOdet
+              </a>
+            </p>
+          </div>
         </AnimatedContainer>
 
         {/* Link sections */}

@@ -82,7 +82,7 @@ export default function Navbar() {
       links: [
         { label: 'Usage', href: '/usage' }, // Updated to /usage
         { label: 'Demonstration', href: '/demo' },
-        { label: 'Comparison', href: '/comparison' },
+        { label: 'Comparison', href: '/compare' },
 
       ]
     }
@@ -91,7 +91,7 @@ export default function Navbar() {
   const CustomAuthButton = (
     <div className="flex items-center">
       {user ? (
-        <span className="text-black font-semibold px-4">Hello, {user.username}</span>
+        <span className="text-white font-semibold px-4">Hello, {user.username}</span>
       ) : (
         <Link href="/getin" className="no-underline">
           <AuthShimmerButton type="button" className="bg-transparent text-white">

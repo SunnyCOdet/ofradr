@@ -13,8 +13,13 @@ const bigShoulders = Big_Shoulders_Display({
   weight: ["400", "700", "900"],
 })
 
+import Link from "next/link"
+
 export default function ComparePage() {
   const [showTable, setShowTable] = useState(false)
+
+
+
 
   const handleCompareClick = () => {
     setShowTable(true)
@@ -76,6 +81,11 @@ export default function ComparePage() {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-black">
+      {!showTable && (
+        <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+          <ArrowLeft size={32} />
+        </Link>
+      )}
       {/* TargetCursor Component - Only show on initial screen */}
       {!showTable && <TargetCursor targetSelector=".cursor-target" />}
 

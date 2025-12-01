@@ -143,10 +143,10 @@ const CardNav = ({
 
   const openMenu = () => {
     const tl = tlRef.current;
-    if (!tl || isExpanded) return;
+    if (!tl) return;
     setIsHamburgerOpen(true);
     setIsExpanded(true);
-    tl.play(0);
+    tl.play();
   };
 
   const closeMenu = () => {

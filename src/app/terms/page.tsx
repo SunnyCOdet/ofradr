@@ -2,7 +2,7 @@
 import React, { useRef } from 'react'
 import { ReactLenis, useLenis } from 'lenis/react'
 import Plasma from '../../components/Plasma'
-import { ChevronUp, ChevronDown } from "lucide-react"
+import { ChevronUp, ChevronDown, ArrowLeft } from "lucide-react"
 import Link from 'next/link'
 
 function TermsContent() {
@@ -41,6 +41,9 @@ function TermsContent() {
 
     return (
         <div className='relative flex flex-col min-h-screen overflow-x-hidden text-white font-sans selection:bg-red-500/30'>
+            <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+                <ArrowLeft size={32} />
+            </Link>
             <div className="fixed inset-0 -z-10 bg-black">
                 <Plasma
                     color="#ff0040"

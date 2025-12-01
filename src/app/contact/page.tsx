@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, MessageSquare, Send, CheckCircle, ArrowLeft } from "lucide-react"
+import Link from "next/link"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -96,6 +97,11 @@ export default function ContactPage() {
 
   return (
     <div className="relative w-full min-h-screen overflow-hidden bg-black">
+      {!showForm && (
+        <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+          <ArrowLeft size={32} />
+        </Link>
+      )}
       {/* TargetCursor Component - Only show on initial screen */}
       {!showForm && <TargetCursor targetSelector=".cursor-target" />}
 

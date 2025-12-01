@@ -5,8 +5,9 @@ import TextType from "../../components/TextType";
 import { Inter, Big_Shoulders_Display } from "next/font/google";
 import ASCIIText from "../../components/ASCIIText";
 import { jersey10 } from "../../components/fonts";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, ArrowLeft } from "lucide-react";
 import { Footer } from "../experiment/Footer";
+import Link from "next/link";
 
 const bigShoulders = Big_Shoulders_Display({
   subsets: ["latin"],
@@ -54,6 +55,9 @@ function AboutContent() {
 
   return (
     <div className="relative min-h-screen text-white overflow-x-hidden flex flex-col">
+      <Link href="/" className="fixed top-8 left-8 z-50 text-white hover:text-[#ea3a59] transition-colors">
+        <ArrowLeft size={32} />
+      </Link>
       {/* Navigation Buttons */}
       <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
         <button 
