@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import ColorBends from '../../components/ColorBends';
 import { MacbookScroll } from '../../components/ui/macbook-scroll';
 import { Big_Shoulders_Display } from "next/font/google";
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 const bigShoulders = Big_Shoulders_Display({
   weight: ["400", "700", "900"],
@@ -25,6 +26,16 @@ const images = [
 ];
 
 export default function DemoPage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handlePrevious = () => {
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
   return (
     <div className="relative w-full bg-black">
       {/* Background */}
@@ -40,7 +51,7 @@ export default function DemoPage() {
       {/* Content */}
       <div className="relative z-10">
         <MacbookScroll
-          src={images[0]}
+          src={images[currentImageIndex]}
           showGradient={false}
           title={
             <h1 className={`${bigShoulders.className} text-8xl md:text-9xl font-black text-white uppercase tracking-wider`}>
@@ -48,6 +59,31 @@ export default function DemoPage() {
             </h1>
           }
         />
+
+        {/* Navigation Buttons */}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-6">
+          <button
+            onClick={handlePrevious}
+            className="group flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            aria-label="Previous image"
+          >
+            <IconChevronLeft className="w-7 h-7 text-white" />
+          </button>
+          
+          <div className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+            <span className="text-white font-semibold">
+              {currentImageIndex + 1} / {images.length}
+            </span>
+          </div>
+          
+          <button
+            onClick={handleNext}
+            className="group flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            aria-label="Next image"
+          >
+            <IconChevronRight className="w-7 h-7 text-white" />
+          </button>
+        </div>
       </div>
     </div>
   );
