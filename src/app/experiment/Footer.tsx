@@ -22,7 +22,7 @@ const footerLinks: FooterSection[] = [
     links: [
       { title: "Features", href: "#features" },
       { title: "Operating Modes", href: "#modes" },
-      { title: "Privacy & Security", href: "#privacy" },
+      { title: "Privacy & Security", href: "/privacy" },
       { title: "Integration", href: "/" },
     ],
   },

@@ -78,7 +78,7 @@ function AboutContent() {
             text="Ofradr" 
             enableWaves={true} 
             asciiFontSize={5} 
-            textFontSize={300}
+            textFontSize={200}
           />
         </div>
       </div>

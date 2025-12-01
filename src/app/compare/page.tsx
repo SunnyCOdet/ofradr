@@ -5,7 +5,7 @@ import Particles from "@/components/Particles"
 import TargetCursor from "@/components/TargetCursor"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, EyeOff, MonitorOff, Ghost, Activity, MousePointerClick, Shield, CreditCard, Globe, Cpu, CheckCircle } from "lucide-react"
+import { ArrowLeft, EyeOff, MonitorOff, Ghost, Activity, MousePointerClick, Shield, CreditCard, Globe, Cpu, CheckCircle, MousePointer2 } from "lucide-react"
 import ComparisonTable from "@/components/ComparisonTable"
 
 const bigShoulders = Big_Shoulders_Display({
@@ -25,9 +25,10 @@ export default function ComparePage() {
   }
 
   const features = [
+    
     {
-      feature: { name: "Invisible In Dock", icon: <EyeOff className="w-5 h-5" /> },
-      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
+      feature: { name: "AI Agent", icon:<MousePointer2 className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: true },
     },
     {
       feature: { name: "Invisible To Screen Share", icon: <MonitorOff className="w-5 h-5" /> },
@@ -107,7 +108,7 @@ export default function ComparePage() {
               onClick={handleCompareClick}
               className={`cursor-target cursor-pointer text-7xl md:text-9xl lg:text-[12rem] font-black text-white transition-all hover:scale-105 ${bigShoulders.className}`}
             >
-              COMPARE PLANS
+              How we're better
             </h1>
           </motion.div>
         ) : (
