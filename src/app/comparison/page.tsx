@@ -5,6 +5,12 @@ import ComparisonTable from "../../components/ComparisonTable"
 import { Zap, Shield, Globe, Cpu, Smartphone } from "lucide-react"
 import { SpiralAnimation } from "../../components/ui/spiral-animation"
 import { motion, AnimatePresence } from "framer-motion"
+import { Big_Shoulders_Display } from "next/font/google"
+
+const bigShoulders = Big_Shoulders_Display({
+  weight: ["400", "700", "900"],
+  subsets: ["latin"],
+})
 
 export default function ComparisonPage() {
   const [showTable, setShowTable] = useState(false)
@@ -56,9 +62,12 @@ export default function ComparisonPage() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5, ease: "easeInOut" }}
-            className="fixed inset-0 z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center"
           >
             <SpiralAnimation onComplete={() => setShowTable(true)} />
+            <h1 className={`absolute z-10 text-white text-2xl font-black uppercase tracking-widest translate-y-4 ${bigShoulders.className}`}>
+              Comparison
+            </h1>
           </motion.div>
         ) : (
           <motion.div
