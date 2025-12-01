@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import ComparisonTable from "../../components/ComparisonTable"
-import { Zap, Shield, Globe, Cpu, Smartphone } from "lucide-react"
+import { Zap, Shield, Globe, Cpu, Smartphone, EyeOff, MonitorOff, Ghost, Activity, MousePointerClick, CreditCard, CheckCircle } from "lucide-react"
 import { SpiralAnimation } from "../../components/ui/spiral-animation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Big_Shoulders_Display } from "next/font/google"
@@ -26,23 +26,43 @@ export default function ComparisonPage() {
 
   const features = [
     {
-      feature: { name: "AI Integration", icon: <Cpu className="w-5 h-5" /> },
-      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: true },
-    },
-    {
-      feature: { name: "Global Coverage", icon: <Globe className="w-5 h-5" /> },
-      comparison: { Ofradr: true, CompetitorA: true, CompetitorB: false },
-    },
-    {
-      feature: { name: "Advanced Security", icon: <Shield className="w-5 h-5" /> },
+      feature: { name: "Invisible In Dock", icon: <EyeOff className="w-5 h-5" /> },
       comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
     },
     {
-      feature: { name: "Mobile App", icon: <Smartphone className="w-5 h-5" /> },
+      feature: { name: "Invisible To Screen Share", icon: <MonitorOff className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: true },
+    },
+    {
+      feature: { name: "Invisible To Tray", icon: <Ghost className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: true, CompetitorB: false },
+    },
+    {
+      feature: { name: "Invisible To System/Activity Monitor", icon: <Activity className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
+    },
+    {
+      feature: { name: "Click-Through Undetectability", icon: <MousePointerClick className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
+    },
+    {
+      feature: { name: "Hasn't Been Caught", icon: <Shield className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
+    },
+    {
+      feature: { name: "Free", icon: <CreditCard className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
+    },
+    {
+      feature: { name: "Undetectable By Browser", icon: <Globe className="w-5 h-5" /> },
       comparison: { Ofradr: true, CompetitorA: true, CompetitorB: true },
     },
     {
-      feature: { name: "Instant Updates", icon: <Zap className="w-5 h-5" /> },
+      feature: { name: "Undetectable in Task Manager", icon: <Cpu className="w-5 h-5" /> },
+      comparison: { Ofradr: true, CompetitorA: false, CompetitorB: false },
+    },
+    {
+      feature: { name: "Works on Any Testing Software", icon: <CheckCircle className="w-5 h-5" /> },
       comparison: { Ofradr: true, CompetitorA: false, CompetitorB: true },
     },
   ]

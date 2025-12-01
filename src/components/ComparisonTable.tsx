@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { Check, X, HelpCircle } from "lucide-react"
 import { Big_Shoulders_Display } from "next/font/google"
 
@@ -37,7 +37,7 @@ const ComparisonTable: React.FC<{
   const getStatusIcon = (status: boolean, productColor: string) => {
     if (status === true) {
       if (productColor === "gold") {
-        return <Check className="w-6 h-6 text-yellow-400" strokeWidth={3} />
+        return <Check className="w-6 h-6 text-[#ea3a59]" strokeWidth={3} />
       }
       return <Check className="w-6 h-6 text-white" strokeWidth={3} />
     }
@@ -45,70 +45,61 @@ const ComparisonTable: React.FC<{
   }
 
   return (
-    <div className={`min-h-screen bg-black p-8 ${bigShoulders.className}`}>
-      <div className="max-w-full mx-auto">
-        {/* Main Container - Flex layout */}
-        <div className="flex gap-6">
-          {/* Left Sidebar - Features Panel */}
-          <div className="w-96 flex-shrink-0">
-            <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden p-6">
-              <h2 className="text-white text-3xl font-black uppercase mb-1">{title}</h2>
-              {subtitle && <p className="text-gray-400 text-xl font-light mb-6">{subtitle}</p>}
+    <div className={`min-h-screen bg-black p-8 flex items-center justify-center ${bigShoulders.className}`}>
+      <div className="w-full max-w-5xl mx-auto">
+        {/* Grid Container */}
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-4">
+          
+          {/* Header Row */}
+          {/* Title Column */}
+          <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-4 flex flex-col justify-center">
+            <h2 className="text-white text-2xl font-black uppercase mb-1">{title}</h2>
+            {subtitle && <p className="text-red-200/70 text-lg font-light">{subtitle}</p>}
+          </div>
 
-              {/* Features List */}
-              <div className="space-y-4">
-                {features.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <span className="text-gray-400 flex-shrink-0">{item.feature.icon}</span>
-                    <span className="text-gray-300 text-xl font-bold uppercase flex-1 hover:text-gray-100 cursor-pointer transition underline underline-offset-2">
-                      {item.feature.name}
-                    </span>
-                    <button className="text-gray-600 hover:text-gray-400 transition flex-shrink-0">
-                      <HelpCircle className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
+          {/* Product Headers */}
+          {products.map((product, index) => (
+            <div
+              key={index}
+              className={`${
+                product.color === "gold"
+                  ? "bg-[#ea3a59] border border-[#ea3a59]"
+                  : "bg-red-950 border border-red-900"
+              } p-4 rounded-lg flex items-center justify-center`}
+            >
+              <h3 className="text-white font-black text-lg uppercase text-center">{product.name}</h3>
             </div>
-          </div>
+          ))}
 
-          {/* Right Side - Product Columns */}
-          <div className="flex gap-3 flex-1 overflow-x-auto">
-            {products.map((product, productIndex) => (
-              <div key={productIndex} className="flex flex-col flex-shrink-0 w-32">
-                {/* Product Header */}
-                <div
-                  className={`${
-                    product.color === "gold"
-                      ? "bg-yellow-800 border border-yellow-700"
-                      : "bg-gray-800 border border-gray-700"
-                  } px-4 py-4 text-center rounded-t-lg`}
-                >
-                  <h3 className="text-white font-black text-xl uppercase">{product.name}</h3>
-                </div>
-
-                {/* Product Features */}
-                <div
-                  className={`${
-                    product.color === "gold"
-                      ? "bg-yellow-900 border-l border-r border-b border-yellow-700"
-                      : "bg-gray-900 border-l border-r border-b border-gray-700"
-                  } flex flex-col rounded-b-lg overflow-hidden`}
-                >
-                  {features.map((item, featureIndex) => (
-                    <div
-                      key={featureIndex}
-                      className={`flex items-center justify-center px-4 py-4 border-t ${
-                        product.color === "gold" ? "border-yellow-700" : "border-gray-700"
-                      } ${featureIndex === 0 ? "border-t-0" : ""}`}
-                    >
-                      {getStatusIcon(item.comparison[product.name], product.color || "default")}
-                    </div>
-                  ))}
-                </div>
+          {/* Feature Rows */}
+          {features.map((item, featureIndex) => (
+            <React.Fragment key={featureIndex}>
+              {/* Feature Name */}
+              <div className="bg-red-950/30 border border-red-900/30 rounded-lg p-3 flex items-center gap-3">
+                <span className="text-red-200/70 flex-shrink-0">{item.feature.icon}</span>
+                <span className="text-red-100 text-lg font-bold uppercase flex-1 hover:text-white cursor-pointer transition underline underline-offset-2">
+                  {item.feature.name}
+                </span>
+                <button className="text-red-400 hover:text-red-300 transition flex-shrink-0">
+                  <HelpCircle className="w-4 h-4" />
+                </button>
               </div>
-            ))}
-          </div>
+
+              {/* Product Statuses */}
+              {products.map((product, productIndex) => (
+                <div
+                  key={productIndex}
+                  className={`${
+                    product.color === "gold"
+                      ? "bg-[#ea3a59]/20 border border-[#ea3a59]/50"
+                      : "bg-red-950/50 border border-red-900/50"
+                  } rounded-lg p-3 flex items-center justify-center`}
+                >
+                  {getStatusIcon(item.comparison[product.name], product.color || "default")}
+                </div>
+              ))}
+            </React.Fragment>
+          ))}
         </div>
       </div>
     </div>
