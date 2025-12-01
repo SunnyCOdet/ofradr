@@ -52,13 +52,13 @@ export const MacbookScroll = ({
 
   const scaleX = useTransform(
     scrollYProgress,
-    [0, 0.3],
-    [1.2, isMobile ? 1 : 1.5],
+    [0, 0.3, 1],
+    [1.2, isMobile ? 1 : 1.5, isMobile ? 3 : 4],
   );
   const scaleY = useTransform(
     scrollYProgress,
-    [0, 0.3],
-    [0.6, isMobile ? 1 : 1.5],
+    [0, 0.3, 1],
+    [0.6, isMobile ? 1 : 1.5, isMobile ? 3 : 4],
   );
   const translate = useTransform(scrollYProgress, [0, 1], [0, 1500]);
   const rotate = useTransform(scrollYProgress, [0.1, 0.12, 0.3], [-28, -28, 0]);
@@ -161,8 +161,9 @@ export const Lid = ({
           translateY: translate,
           transformStyle: "preserve-3d",
           transformOrigin: "top",
+          aspectRatio: '16/9',
         }}
-        className="absolute inset-0 h-96 w-[32rem] rounded-2xl bg-[#010101] p-2"
+        className="absolute inset-0 w-[32rem] rounded-2xl bg-[#010101] p-2"
       >
         <div className="absolute inset-0 rounded-lg bg-[#272729]" />
         <img

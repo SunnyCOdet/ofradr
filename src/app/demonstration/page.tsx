@@ -1,19 +1,46 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import ColorBends from '../../components/ColorBends';
-import ModelViewer from '../../components/ModelViewer';
+import { MacbookScroll } from '../../components/ui/macbook-scroll';
 import { Big_Shoulders_Display } from "next/font/google";
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 const bigShoulders = Big_Shoulders_Display({
   weight: ["400", "700", "900"],
   subsets: ["latin"],
 });
 
+// All images in order, starting with IMG_2127
+const images = [
+  '/photos/IMG_2127.png',
+  '/photos/PNG image.png',
+  '/photos/PNG image 2.png',
+  '/photos/PNG image 3.png',
+  '/photos/PNG image 4.png',
+  '/photos/PNG image 5.png',
+  '/photos/PNG image 6.png',
+  '/photos/PNG image 7.png',
+  '/photos/PNG image 8.png',
+  '/photos/PNG image 9.png',
+  '/photos/PNG image 10.png',
+];
+
 export default function DemonstrationPage() {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handlePrevious = () => {
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
-      <div className="absolute inset-0 z-0 pointer-events-none">
+    <div className="relative w-full min-h-screen overflow-x-hidden bg-black">
+      {/* Background */}
+      <div className="fixed inset-0 z-0">
         <ColorBends 
           className="w-full h-full" 
           colors={['#ff0000', '#ff0000ff', '#ff1010ff', '#ff0707ff', '#ff1919ff']}
@@ -21,22 +48,42 @@ export default function DemonstrationPage() {
           rotation={45}
         />
       </div>
-      <div className="absolute inset-0 z-50 flex flex-col pointer-events-none">
-        <div className="flex-1 pointer-events-auto">
-          <ModelViewer 
-            url="/FinalLappy.glb"
-            autoRotate={false}
-            autoRotateSpeed={0}
-            cameraPosition={[0, 2, 2]}
-            scale={1.5}
-          />
-        </div>
-        <div className="absolute bottom-8 left-0 right-0 flex justify-center">
-          <div className="bg-transparent px-16 py-4 rounded-lg backdrop-blur-sm">
+      
+      {/* Content */}
+      <div className="relative z-10">
+        <MacbookScroll
+          src={images[currentImageIndex]}
+          showGradient={false}
+          title={
             <h1 className={`${bigShoulders.className} text-7xl font-black text-white uppercase`}>
               Demonstration
             </h1>
+          }
+        />
+        
+        {/* Navigation Buttons */}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-6">
+          <button
+            onClick={handlePrevious}
+            className="group flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            aria-label="Previous image"
+          >
+            <IconChevronLeft className="w-7 h-7 text-white" />
+          </button>
+          
+          <div className="px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+            <span className="text-white font-semibold">
+              {currentImageIndex + 1} / {images.length}
+            </span>
           </div>
+          
+          <button
+            onClick={handleNext}
+            className="group flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
+            aria-label="Next image"
+          >
+            <IconChevronRight className="w-7 h-7 text-white" />
+          </button>
         </div>
       </div>
     </div>
