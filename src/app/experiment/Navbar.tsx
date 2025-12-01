@@ -81,6 +81,7 @@ export default function Navbar() {
       textColor: '#fff',
       links: [
         { label: 'Usage', href: '/usage' }, // Updated to /usage
+        { label: 'Demonstration', href: '/demo' },
         { 
           label: 'Pricing', 
           href: '#pricing',
