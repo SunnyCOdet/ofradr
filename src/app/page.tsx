@@ -6,7 +6,7 @@ import MainHero from './experiment/MainHero'
 import Component from './experiment/Pricing'
 import { Footer } from './experiment/Footer'
 
-import Lightning from '../components/Lightning'
+import Plasma from '../components/Plasma'
 import { ChevronUp, ChevronDown } from "lucide-react"
 
 function HomeContent() {
@@ -17,7 +17,7 @@ function HomeContent() {
     if (!lenis) return;
 
     const currentScroll = window.scrollY;
-    
+
     // Get valid section positions
     const positions = sectionRefs.current
       .filter((ref): ref is HTMLDivElement => ref !== null)
@@ -50,22 +50,22 @@ function HomeContent() {
 
   return (
     <div className='relative flex flex-col min-h-screen overflow-x-hidden'>
-      <div className="fixed inset-0 -z-10">
-        <Lightning hue={350} speed={0.5} intensity={1} />
+      <div className="fixed inset-0 -z-10 bg-black">
+        <Plasma color="#ff0040" speed={0.5} scale={2} opacity={0.6} />
       </div>
-      
+
       <GlassNavbar />
 
       {/* Navigation Buttons */}
       <div className="fixed right-8 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4">
-        <button 
+        <button
           onClick={() => scrollToSection('up')}
           className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all text-white group"
           aria-label="Scroll Up"
         >
           <ChevronUp size={24} className="group-hover:-translate-y-0.5 transition-transform" />
         </button>
-        <button 
+        <button
           onClick={() => scrollToSection('down')}
           className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all text-white group"
           aria-label="Scroll Down"
@@ -75,15 +75,15 @@ function HomeContent() {
       </div>
 
       <div ref={(el) => { sectionRefs.current[0] = el; }} className='min-h-screen w-full flex items-center justify-center'>
-        <MainHero/>
+        <MainHero />
       </div>
-      
+
       <div ref={(el) => { sectionRefs.current[1] = el; }} className='min-h-screen w-full flex items-center justify-center'>
-        <Component/>
+        <Component />
       </div>
 
       <div ref={(el) => { sectionRefs.current[3] = el; }}>
-        <Footer/>
+        <Footer />
       </div>
 
     </div>
