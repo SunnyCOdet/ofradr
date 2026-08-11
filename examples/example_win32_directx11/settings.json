@@ -1,0 +1,15 @@
+{
+    "mode": "agent",
+    "screenshot": {
+        "alt": false,
+        "ctrl": false,
+        "shift": false,
+        "vk": 0
+    },
+    "toggle": {
+        "alt": true,
+        "ctrl": false,
+        "shift": false,
+        "vk": 191
+    }
+}

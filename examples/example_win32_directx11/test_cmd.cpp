@@ -1,0 +1,3 @@
+#include <windows.h>  
+#include <iostream>  
+int main() { SECURITY_ATTRIBUTES sa = { sizeof(sa), NULL, TRUE }; HANDLE hR, hW; CreatePipe(&hR, &hW, &sa, 0); STARTUPINFOA si = { sizeof(si) }; si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW; si.wShowWindow = SW_SHOW; si.hStdOutput = hW; si.hStdError = hW; PROCESS_INFORMATION pi = {}; CreateProcessA(NULL, (LPSTR)"cmd.exe /c echo Hello World ^& ping 1.1.1.1 -n 3", NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi); CloseHandle(hW); char buf[128]; DWORD read; while (ReadFile(hR, buf, sizeof(buf)-1, &read, NULL) && read > 0) { buf[read] = 0; std::cout << buf; } return 0; }  

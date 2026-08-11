@@ -1,0 +1,23 @@
+{
+    "chatHistory": {
+        "enabled": true
+    },
+    "screenshot": {
+        "alt": true,
+        "ctrl": false,
+        "shift": false,
+        "vk": 220
+    },
+    "duelCapture": {
+        "alt": true,
+        "ctrl": false,
+        "shift": false,
+        "vk": 81
+    },
+    "toggle": {
+        "alt": true,
+        "ctrl": false,
+        "shift": false,
+        "vk": 191
+    }
+}
