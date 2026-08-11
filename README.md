@@ -1,6 +1,145 @@
 # OfraDR
 
-Windows desktop automation and accessibility software built with C++, Dear ImGui, DirectX 11, and WebView2.
+The Ultimate anti-proctoring software built with C++, Dear ImGui, DirectX 11, and WebView2.
+
+It works with every proctoring system out there undetected.
+Here is a list in which it works:
+Here’s the combined list of everything from both previous messages, with “bypass” after each name (duplicates removed for cleanliness):
+
+ProctorU bypass  
+Honorlock bypass  
+Proctorio bypass  
+Respondus Monitor bypass  
+Respondus LockDown Browser bypass  
+Proctortrack bypass  
+ProctorExam bypass  
+Talview bypass  
+Mercer Mettl bypass  
+Inspera Proctoring bypass  
+SMOWL bypass  
+Pearson VUE OnVUE bypass  
+Prometric ProProctor bypass  
+PSI Bridge bypass  
+Kryterion Webassessor bypass  
+Questionmark bypass  
+Proctor360 bypass  
+Examus bypass  
+MonitorExam bypass  
+HirePro bypass  
+Wheebox bypass  
+Constructor Proctor bypass  
+Briso Proctor bypass  
+TrustExam.ai bypass  
+uLearn.io bypass  
+ExamOnline bypass  
+Exam.net bypass  
+Digiexam bypass  
+Synap bypass  
+TestInvite bypass  
+Quilgo bypass  
+ExamSoft bypass  
+Examplify bypass  
+Meazure Learning bypass  
+Guardian Browser bypass  
+Aiproctor bypass  
+DigiProctor bypass  
+Disamina bypass  
+Datamatics Proctoring bypass  
+RPNow bypass  
+Safe Exam Browser bypass  
+ExamMonitor bypass  
+Eduswitch bypass  
+ConductExam bypass  
+SpeedExam bypass  
+Think Exam bypass  
+Eklavvya bypass  
+ProctorEdu bypass  
+TestWe bypass  
+Rosalyn bypass  
+ProctorFree bypass  
+ProctorCam bypass  
+Remote Proctor NOW bypass  
+AutoProctor bypass  
+ThinkProxi bypass  
+ProctorLive AI bypass  
+ExamRoom.AI bypass  
+Proctoring.com bypass  
+Proctorizer bypass  
+Integrity Advocate bypass  
+Invigilator bypass  
+TestReach bypass  
+Cirrus Assessment bypass  
+Surpass bypass  
+Janison Remote Proctoring bypass  
+Speedwell bypass  
+Gauge Online bypass  
+Learnosity Proctoring bypass  
+ClassMarker bypass  
+HackerEarth Assessments bypass  
+HackerRank bypass  
+Codility bypass  
+iMocha bypass  
+CodeSignal bypass  
+SHL bypass  
+TestGorilla bypass  
+Glider AI bypass  
+Interview Mocha bypass  
+Evalground bypass  
+Xobin bypass  
+Adaface bypass  
+WeCP bypass  
+HackerRank Proctor Mode bypass  
+CodeTantra bypass  
+MeritTrac bypass  
+TCS iON Remote Assessments bypass  
+NTA Secure Browser bypass  
+Wheebox Remote Proctoring bypass  
+Mettl Secure Browser bypass  
+HirePro Remote Proctoring bypass  
+Mercer Mettl SuperProctor bypass  
+Talview Proview bypass  
+Talview Alvy bypass  
+Rosalyn AI Proctoring bypass  
+Unstop bypass  
+HackerEarth bypass  
+CoderPad bypass  
+Qualified bypass  
+DevSkiller bypass  
+TestDome bypass  
+eSkill bypass  
+Vervoe bypass  
+HireVue bypass  
+Harver bypass  
+Pymetrics bypass  
+Criteria bypass  
+HackerTrail bypass  
+CodeSubmit bypass  
+Byteboard bypass  
+Triplebyte bypass  
+Interviewing.io bypass  
+Karat bypass  
+CodeInterview bypass  
+Coderbyte bypass  
+Geektastic bypass  
+Mimir bypass  
+Sphere Engine bypass  
+CodeGrade bypass  
+TCS iON bypass  
+Superset bypass  
+Mercer | Mettl bypass  
+HackerRank for Work bypass  
+Unstop Assessments bypass  
+CodeChef for Business bypass  
+InterviewBit bypass  
+Skillenza bypass  
+FacePrep bypass  
+DoSelect bypass  
+FirstNaukri Assessments bypass  
+CoCubes bypass  
+AMCAT bypass  
+Aspiring Minds bypass  
+Mettl bypass  
+MyAnatomy bypass
 
 ## Requirements
 
