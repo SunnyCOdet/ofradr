@@ -161,6 +161,10 @@ static ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
 static IDXGISwapChain* g_pSwapChain = nullptr;
 static ID3D11RenderTargetView* g_mainRenderTargetView = nullptr;
 static IDXGIOutputDuplication* g_pDup = nullptr;
+static bool g_SwapChainOccluded = false;
+static bool g_NeedDeviceReset = false;
+static UINT g_ResizeWidth = 0;
+static UINT g_ResizeHeight = 0;
 
 static HWND g_hwnd = NULL;
 static HHOOK g_hKeyboardHook = NULL;
@@ -2426,6 +2430,143 @@ void LoadAllIcons() {
     g_icons.Close = LoadTextureFromSVGMemory(close_data, close_len);
 }
 
+static void ReleaseView(ID3D11ShaderResourceView*& view) {
+    if (view) { view->Release(); view = nullptr; }
+}
+
+static void ReleaseAppGpuResources() {
+    ReleaseView(g_icons.Screenshot);
+    ReleaseView(g_icons.Inspect);
+    ReleaseView(g_icons.Copy);
+    ReleaseView(g_icons.NewChat);
+    ReleaseView(g_icons.Settings);
+    ReleaseView(g_icons.Send);
+    ReleaseView(g_icons.Close);
+    for (auto& shot : g_screenshots) {
+        if (shot.textureView) { shot.textureView->Release(); shot.textureView = nullptr; }
+    }
+    g_screenshots.clear();
+    if (g_proxyTextureSRV) { g_proxyTextureSRV->Release(); g_proxyTextureSRV = nullptr; }
+    if (g_proxyTexture) { g_proxyTexture->Release(); g_proxyTexture = nullptr; }
+}
+
+static void CleanupRenderTarget() {
+    if (g_mainRenderTargetView) {
+        if (g_pd3dDeviceContext)
+            g_pd3dDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+        g_mainRenderTargetView->Release();
+        g_mainRenderTargetView = nullptr;
+    }
+}
+
+static bool CreateRenderTarget() {
+    CleanupRenderTarget();
+    if (!g_pSwapChain || !g_pd3dDevice) return false;
+
+    ID3D11Texture2D* backBuffer = nullptr;
+    HRESULT hr = g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
+    if (FAILED(hr) || !backBuffer) return false;
+
+    hr = g_pd3dDevice->CreateRenderTargetView(backBuffer, nullptr, &g_mainRenderTargetView);
+    backBuffer->Release();
+    return SUCCEEDED(hr) && g_mainRenderTargetView != nullptr;
+}
+
+static void CleanupDeviceD3D() {
+    CleanupRenderTarget();
+    if (g_pSwapChain) { g_pSwapChain->Release(); g_pSwapChain = nullptr; }
+    if (g_pd3dDeviceContext) { g_pd3dDeviceContext->Release(); g_pd3dDeviceContext = nullptr; }
+    if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = nullptr; }
+}
+
+static bool CreateDeviceD3D(HWND hWnd) {
+    if (!hWnd) return false;
+
+    DXGI_SWAP_CHAIN_DESC sd = {};
+    sd.BufferCount = 2;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = hWnd;
+    sd.SampleDesc.Count = 1;
+    sd.Windowed = TRUE;
+    sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+
+    D3D_FEATURE_LEVEL featureLevel;
+    const D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 };
+    HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
+        featureLevels, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
+    if (hr == DXGI_ERROR_UNSUPPORTED) {
+        hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, 0,
+            featureLevels, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
+    }
+    if (FAILED(hr) || !g_pSwapChain || !g_pd3dDevice || !g_pd3dDeviceContext) {
+        CleanupDeviceD3D();
+        return false;
+    }
+    if (!CreateRenderTarget()) {
+        CleanupDeviceD3D();
+        return false;
+    }
+    return true;
+}
+
+static bool HandleDeviceLost() {
+    ReleaseAppGpuResources();
+    const bool imguiReady = (ImGui::GetCurrentContext() != nullptr);
+    if (imguiReady && ImGui::GetIO().BackendRendererUserData)
+        ImGui_ImplDX11_Shutdown();
+    CleanupDeviceD3D();
+    if (!CreateDeviceD3D(g_hwnd)) {
+        g_NeedDeviceReset = true;
+        return false;
+    }
+    if (imguiReady)
+        ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+    LoadAllIcons();
+    g_NeedDeviceReset = false;
+    g_SwapChainOccluded = false;
+    return true;
+}
+
+static void ApplyPendingResize() {
+    if (g_ResizeWidth == 0 || g_ResizeHeight == 0 || !g_pSwapChain) return;
+
+    CleanupRenderTarget();
+    HRESULT hr = g_pSwapChain->ResizeBuffers(0, g_ResizeWidth, g_ResizeHeight, DXGI_FORMAT_UNKNOWN, 0);
+    g_ResizeWidth = g_ResizeHeight = 0;
+    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET) {
+        g_NeedDeviceReset = true;
+        return;
+    }
+    if (SUCCEEDED(hr))
+        CreateRenderTarget();
+}
+
+static void QueueSwapchainResize(UINT width, UINT height) {
+    if (width > 0 && height > 0) {
+        g_ResizeWidth = width;
+        g_ResizeHeight = height;
+    }
+}
+
+static bool PresentFrame() {
+    if (!g_pSwapChain || !g_pd3dDeviceContext || !g_mainRenderTargetView) return false;
+
+    const float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
+    g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clearColor);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+    HRESULT hr = g_pSwapChain->Present(1, 0);
+    g_SwapChainOccluded = (hr == DXGI_STATUS_OCCLUDED);
+    if (hr == DXGI_ERROR_DEVICE_REMOVED || hr == DXGI_ERROR_DEVICE_RESET)
+        g_NeedDeviceReset = true;
+    return true;
+}
+
 
 // =========================================================
 // 5. WINDOW & GHOST LOGIC
@@ -2453,16 +2594,20 @@ void CheckDesktopJump() {
             while (!b.empty() && b.back() == L'\0') b.pop_back();
             return b;
             };
+        // Keep desktop names alive until CreateProcessW finishes
         std::wstring nameI = GetN(hI);
         std::wstring nameM = GetN(hM);
         if (_wcsicmp(nameI.c_str(), nameM.c_str()) != 0) {
+            // Clean up WebView2 before re-launching so the new process can
+            // acquire the browser_data directory lock and init properly
+            ShutdownBrowserMode();
+
             WCHAR p[MAX_PATH]; GetModuleFileNameW(NULL, p, MAX_PATH);
             STARTUPINFOW si = { sizeof(si) };
             si.lpDesktop = (LPWSTR)nameI.c_str();
-            PROCESS_INFORMATION pi;
+            PROCESS_INFORMATION pi{};
             if (CreateProcessW(p, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
                 BrowserLog("CheckDesktopJump: Jumped from " + ws2s(nameM) + " to " + ws2s(nameI) + ", shutting down current instance.");
-                ShutdownBrowserMode();
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
                 ExitProcess(0);
@@ -2486,23 +2631,37 @@ bool IsImageBlack(const std::vector<BYTE>& buffer) {
     // Check a sample of pixels to see if they are above a darkness threshold
     // Buffer is likely BGRA or RGBA. We just check if byte values are > 15
     size_t step = 64; // Check every 16th pixel (4 bytes per pixel * 16)
-    for (size_t i = 0; i < buffer.size(); i += step) {
+    if (buffer.size() < 3) return true;
+    for (size_t i = 0; i + 2 < buffer.size(); i += step) {
         if (buffer[i] > 15 && buffer[i + 1] > 15 && buffer[i + 2] > 15) return false;
     }
     return true;
 }
 
 void BitBltScreenshot() {
+    if (!g_pd3dDevice) return;
     int w = GetSystemMetrics(SM_CXSCREEN);
     int h = GetSystemMetrics(SM_CYSCREEN);
+    if (w <= 0 || h <= 0) return;
     HDC hdc = GetDC(NULL);
+    if (!hdc) return;
     HDC memDC = CreateCompatibleDC(hdc);
     HBITMAP hBmp = CreateCompatibleBitmap(hdc, w, h);
+    if (!memDC || !hBmp) {
+        if (hBmp) DeleteObject(hBmp);
+        if (memDC) DeleteDC(memDC);
+        ReleaseDC(NULL, hdc);
+        return;
+    }
     SelectObject(memDC, hBmp);
     BitBlt(memDC, 0, 0, w, h, hdc, 0, 0, SRCCOPY);
 
     Gdiplus::Bitmap bmp(hBmp, nullptr);
     IStream* pStream = nullptr; CreateStreamOnHGlobal(NULL, TRUE, &pStream);
+    if (!pStream) {
+        DeleteObject(hBmp); DeleteDC(memDC); ReleaseDC(NULL, hdc);
+        return;
+    }
     CLSID clsid; {
         UINT num, sz; Gdiplus::GetImageEncodersSize(&num, &sz);
         Gdiplus::ImageCodecInfo* p = (Gdiplus::ImageCodecInfo*)malloc(sz);
@@ -2532,13 +2691,13 @@ void BitBltScreenshot() {
 
             Gdiplus::BitmapData bmpData;
             Gdiplus::Rect rect(0, 0, w, h);
-            bmp.LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpData);
-
-            D3D11_SUBRESOURCE_DATA sr = {}; sr.pSysMem = bmpData.Scan0; sr.SysMemPitch = w * 4;
-            ID3D11Texture2D* tex = nullptr;
-            g_pd3dDevice->CreateTexture2D(&desc, &sr, &tex);
-            if (tex) { g_pd3dDevice->CreateShaderResourceView(tex, nullptr, &view); tex->Release(); }
-            bmp.UnlockBits(&bmpData);
+            if (bmp.LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpData) == Gdiplus::Ok && bmpData.Scan0) {
+                D3D11_SUBRESOURCE_DATA sr = {}; sr.pSysMem = bmpData.Scan0; sr.SysMemPitch = w * 4;
+                ID3D11Texture2D* tex = nullptr;
+                g_pd3dDevice->CreateTexture2D(&desc, &sr, &tex);
+                if (tex) { g_pd3dDevice->CreateShaderResourceView(tex, nullptr, &view); tex->Release(); }
+                bmp.UnlockBits(&bmpData);
+            }
         }
 
         CapturedImage img; img.textureView = view; img.base64Data = Base64Encode(buffer.data(), size);
@@ -5485,7 +5644,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     }
     // Intercept focus messages — tell ImGui we always have focus
     if (msg == WM_SETFOCUS || msg == WM_KILLFOCUS) {
-        ImGui::GetIO().AddFocusEvent(true);
+        if (ImGui::GetCurrentContext())
+            ImGui::GetIO().AddFocusEvent(true);
         return 0;
     }
     // --- KEY FIX: Intercept every window position/size/z-order change ---
@@ -5640,14 +5800,16 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     // ----------------------------------------------------
 
     if (msg == WM_SIZE) {
-        if (g_pd3dDevice != NULL && wParam != SIZE_MINIMIZED) {
-            if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = NULL; }
-            g_pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_UNKNOWN, 0);
-            ID3D11Texture2D* b; g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&b));
-            g_pd3dDevice->CreateRenderTargetView(b, NULL, &g_mainRenderTargetView); b->Release();
-        }
+        if (wParam != SIZE_MINIMIZED)
+            QueueSwapchainResize((UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
         // Resize browser if active
         if (g_appMode == AppMode::Browser) ResizeBrowser();
+        return 0;
+    }
+    if (msg == WM_DISPLAYCHANGE) {
+        RECT rc{};
+        if (g_hwnd && GetClientRect(g_hwnd, &rc))
+            QueueSwapchainResize((UINT)(rc.right - rc.left), (UINT)(rc.bottom - rc.top));
         return 0;
     }
     if (msg == WM_DESTROY) { PostQuitMessage(0); return 0; }
@@ -5661,11 +5823,12 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 // =========================================================
 
 void ResizeBrowser() {
+    if (!g_hwnd) return;
     RECT rc;
     GetClientRect(g_hwnd, &rc);
     int w = rc.right;
     int h = rc.bottom - 80;
-    if (w <= 0) w = 1024;
+    if (w <= 0 || rc.bottom <= 80) return;
     if (h <= 0) h = 768;
     if (g_proxyModeActive) {
         std::lock_guard<std::mutex> lock(g_proxyMutex);
@@ -7068,10 +7231,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     SetLayeredWindowAttributes(g_hwnd, 0, 255, LWA_ALPHA);
     SetWindowDisplayAffinity(g_hwnd, 0x00000011); // TEMP: Disabled for video recording
 
-    DXGI_SWAP_CHAIN_DESC sd = { 0 }; sd.BufferCount = 2; sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; sd.OutputWindow = g_hwnd; sd.SampleDesc.Count = 1; sd.Windowed = TRUE; sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-    D3D_FEATURE_LEVEL fl = D3D_FEATURE_LEVEL_11_0;
-    D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &fl, 1, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, NULL, &g_pd3dDeviceContext);
-    ID3D11Texture2D* b; g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&b)); g_pd3dDevice->CreateRenderTargetView(b, NULL, &g_mainRenderTargetView); b->Release();
+    if (!CreateDeviceD3D(g_hwnd))
+        return 1;
     ShowWindow(g_hwnd, SW_SHOWNOACTIVATE);
 
     Agent::Init(g_hwnd);
@@ -7198,6 +7359,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     bool dragging = false; POINT offset = { 0,0 }; bool done = false;
     while (!done) {
         MSG m; while (PeekMessage(&m, NULL, 0, 0, PM_REMOVE)) { TranslateMessage(&m); DispatchMessage(&m); if (m.message == WM_QUIT) done = true; }
+
+        if (g_NeedDeviceReset) {
+            if (!HandleDeviceLost()) {
+                Sleep(50);
+                continue;
+            }
+        }
+        ApplyPendingResize();
+        if (g_NeedDeviceReset) {
+            Sleep(10);
+            continue;
+        }
 
         // --- HOOK WATCHDOG ---
         // If system load drops the hook, we re-inject it every 2 seconds
@@ -7406,6 +7579,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         PumpInterviewCompletedQueue();
 
         if (!g_isVisible) { Sleep(50); continue; }
+
+        if (g_SwapChainOccluded && g_pSwapChain) {
+            HRESULT occludedHr = g_pSwapChain->Present(0, DXGI_PRESENT_TEST);
+            if (occludedHr == DXGI_STATUS_OCCLUDED) {
+                Sleep(10);
+                continue;
+            }
+            if (occludedHr == DXGI_ERROR_DEVICE_REMOVED || occludedHr == DXGI_ERROR_DEVICE_RESET) {
+                g_NeedDeviceReset = true;
+                continue;
+            }
+            g_SwapChainOccluded = false;
+        }
+        if (!g_pd3dDevice || !g_pd3dDeviceContext || !g_pSwapChain || !g_mainRenderTargetView) {
+            Sleep(10);
+            continue;
+        }
+
         ForceTopMost();
 
         // --- APPLY TRANSPARENCY ---
@@ -7523,10 +7714,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             ImGui::PopStyleColor(2);
 
             ImGui::Render();
-            float c[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
-            g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, c);
-            ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-            g_pSwapChain->Present(1, 0);
+            PresentFrame();
             continue;
         }
 
@@ -8170,14 +8358,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
         ImGui::End(); ImGui::Render();
-        float c[4] = { 0.0f, 0.0f, 0.0f, 0.0f }; g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
-        g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, c);
-        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-        g_pSwapChain->Present(1, 0);
+        PresentFrame();
     }
     StopInterviewModeRuntime();
     ShutdownBrowserMode();
     Agent::Shutdown();
+    if (ImGui::GetCurrentContext() && ImGui::GetIO().BackendRendererUserData)
+        ImGui_ImplDX11_Shutdown();
+    ReleaseAppGpuResources();
+    CleanupDeviceD3D();
     if (g_oauthLockReady) {
         DeleteCriticalSection(&g_oauthLock);
         g_oauthLockReady = false;
