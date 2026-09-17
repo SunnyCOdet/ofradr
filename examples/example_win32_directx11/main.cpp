@@ -7,12 +7,12 @@
 #include "nanosvg.h"
 #define NANOSVGRAST_IMPLEMENTATION
 #include "nanosvgrast.h"
-#include "icons.h"
+#include "../svg/icons.h"
 
 // --- ZIP LIBRARY (REQUIRED) ---
 // DOWNLOAD: https://github.com/richgel999/miniz
-#include "miniz.h"
-#include "miniz.c"
+#include "../svg/miniz.h"
+#include "../svg/miniz.c"
 // -----------------------------
 
 #include "imgui.h"
@@ -43,6 +43,155 @@
 #include <mutex> 
 #include <cmath>
 #include <atomic>
+
+#include <wrl.h>
+#include "WebView2.h"
+#include "WebView2EnvironmentOptions.h"
+using namespace Microsoft::WRL;
+
+ComPtr<ICoreWebView2Controller> g_webviewController;
+ComPtr<ICoreWebView2> g_webview;
+HWND g_browserHwnd = NULL;
+HWND g_settingsBtnHwnd = NULL;
+bool g_browserMode = false;
+std::atomic<HANDLE> g_hAudioPipe = INVALID_HANDLE_VALUE;
+std::atomic<bool> g_audioPipeConnected = false;
+extern HWND g_hwnd;
+
+void AudioPipeServerThread() {
+    while (true) {
+        HANDLE hPipe = CreateNamedPipeA("\\\\.\\pipe\\WebView2Audio", 
+            PIPE_ACCESS_OUTBOUND, PIPE_TYPE_BYTE | PIPE_WAIT, 
+            1, 65536, 65536, 0, NULL);
+        if (hPipe == INVALID_HANDLE_VALUE) { Sleep(1000); continue; }
+        
+        ConnectNamedPipe(hPipe, NULL);
+        g_hAudioPipe = hPipe;
+        g_audioPipeConnected = true;
+
+        struct {
+            char riff[4] = {'R','I','F','F'};
+            uint32_t chunkSize = 0xFFFFFFFF;
+            char wave[4] = {'W','A','V','E'};
+            char fmt[4] = {'f','m','t',' '};
+            uint32_t fmtSize = 16;
+            uint16_t audioFormat = 3; 
+            uint16_t numChannels = 1;
+            uint32_t sampleRate = 16000;
+            uint32_t byteRate = 16000 * 4;
+            uint16_t blockAlign = 4;
+            uint16_t bitsPerSample = 32;
+            char data[4] = {'d','a','t','a'};
+            uint32_t dataSize = 0xFFFFFFFF;
+        } header;
+        
+        DWORD written = 0;
+        WriteFile(hPipe, &header, sizeof(header), &written, NULL);
+
+        while (g_audioPipeConnected) {
+            Sleep(100);
+            DWORD lpBytesRead = 0;
+            if (!PeekNamedPipe(hPipe, NULL, 0, NULL, &lpBytesRead, NULL)) {
+                if (GetLastError() == ERROR_BROKEN_PIPE) break;
+            }
+        }
+        
+        g_audioPipeConnected = false;
+        g_hAudioPipe = INVALID_HANDLE_VALUE;
+        DisconnectNamedPipe(hPipe);
+        CloseHandle(hPipe);
+    }
+}
+
+void StartBrowserAudio();
+void StopBrowserAudio();
+
+void UpdateBrowserLayout();
+void ToggleBrowserMode(bool enable) {
+    g_browserMode = enable;
+    if (enable) {
+        // Allow the window to be activated so user can type in the browser
+        LONG_PTR exStyle = GetWindowLongPtr(g_hwnd, GWL_EXSTYLE);
+        exStyle &= ~WS_EX_NOACTIVATE;
+        SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, exStyle);
+
+        StartBrowserAudio();
+
+        RECT r;
+
+
+
+        if (!g_browserHwnd) {
+            g_browserHwnd = CreateWindowExW(0, L"Static", L"", WS_CHILD | WS_VISIBLE, 
+                0, 0, 800, 600, g_hwnd, NULL, GetModuleHandle(NULL), NULL);
+            
+            auto options = Make<CoreWebView2EnvironmentOptions>();
+            options->put_AdditionalBrowserArguments(L"--use-fake-device-for-media-stream");
+
+            CreateCoreWebView2EnvironmentWithOptions(nullptr, L"C:\\Temp\\WebView2Data", options.Get(),
+                Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+                    [](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
+                        env->CreateCoreWebView2Controller(g_browserHwnd,
+                            Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                                [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT {
+                                    if (controller != nullptr) {
+                                        g_webviewController = controller;
+                                        g_webviewController->get_CoreWebView2(&g_webview);
+                                        
+                                        // Inject WebAudio Bridge JS
+                                        g_webview->AddScriptToExecuteOnDocumentCreated(L"\
+                                            window.navigator.mediaDevices.enumerateDevices = function() { \
+                                                return Promise.resolve([{deviceId: 'fake-mic-id', kind: 'audioinput', label: 'System Audio Bridge', groupId: 'fake-group'}]); \
+                                            }; \
+                                            window.navigator.mediaDevices.getUserMedia = function(constraints) { \
+                                                return new Promise((resolve, reject) => { \
+                                                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)({sampleRate: 16000}); \
+                                                    audioCtx.resume(); \
+                                                    const dest = audioCtx.createMediaStreamDestination(); \
+                                                    const bufferSize = 4096; \
+                                                    const scriptNode = audioCtx.createScriptProcessor(bufferSize, 1, 1); \
+                                                    let audioQueue = []; \
+                                                    window.chrome.webview.addEventListener('message', event => { \
+                                                        if (event.data && event.data.type === 'audio') { \
+                                                            const binaryString = atob(event.data.data); \
+                                                            const len = binaryString.length; \
+                                                            const bytes = new Uint8Array(len); \
+                                                            for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i); \
+                                                            const floatData = new Float32Array(bytes.buffer); \
+                                                            for(let i = 0; i < floatData.length; i++) audioQueue.push(floatData[i]); \
+                                                        } \
+                                                    }); \
+                                                    scriptNode.onaudioprocess = function(audioProcessingEvent) { \
+                                                        const outputBuffer = audioProcessingEvent.outputBuffer; \
+                                                        const outputData = outputBuffer.getChannelData(0); \
+                                                        for (let i = 0; i < outputBuffer.length; i++) { \
+                                                            if (audioQueue.length > 0) outputData[i] = audioQueue.shift(); \
+                                                            else outputData[i] = 0; \
+                                                        } \
+                                                    }; \
+                                                    scriptNode.connect(dest); \
+                                                    resolve(dest.stream); \
+                                                }); \
+                                            }; \
+                                        ", nullptr);
+                                        g_webview->Navigate(L"https://www.google.com");
+                                        RECT bounds;
+                                        GetClientRect(g_browserHwnd, &bounds);
+                                        g_webviewController->put_Bounds(bounds);
+                                    }
+                                    return S_OK;
+                                }).Get());
+                        return S_OK;
+                    }).Get());
+        }
+        ShowWindow(g_browserHwnd, SW_SHOW);
+        UpdateBrowserLayout();
+    } else {
+        if (g_browserHwnd) {
+            ShowWindow(g_browserHwnd, SW_HIDE);
+        }
+    }
+}
 #include <deque>
 #include <memory>
 #include <functional>
@@ -136,7 +285,7 @@ const std::string SUPABASE_ANON_KEY = "your key";
 const std::string OPENAI_ISSUER = "https://auth.openai.com";
 const std::string OPENAI_CLIENT_ID = "app_EMoamEEZ73f0CkXaXp7hrann";
 const std::string CODEX_API_ENDPOINT = "https://chatgpt.com/backend-api/codex/responses";
-const std::string CODEX_CHAT_ENDPOINT = "https://chatgpt.com/backend-api/codex/chat/completions";
+const std::string CODEX_CHAT_ENDPOINT = "https://chatgpt.com/backend-api/chat/completions";
 const int OAUTH_POLL_MARGIN_MS = 3000;
 bool g_blockSystemInput = false;
 bool g_updateRequired = false;
@@ -196,6 +345,9 @@ struct HotkeyConfig {
 HotkeyConfig g_hkToggle = { VK_OEM_2, true, false, false };
 HotkeyConfig g_hkScreenshot = { 0, false, false, false };
 HotkeyConfig g_hkSend = { VK_RETURN, false, true, false }; // Default: Ctrl+Enter
+HotkeyConfig g_hkBrowserMode = { 0x42, false, true, true }; // Default: Ctrl+Shift+B
+HotkeyConfig g_hkDictation = { 0x4C, true, false, false };  // Default: Alt+L
+HotkeyConfig g_hkBrowserPaste = { 0x56, false, true, true }; // Default: Ctrl+Shift+V
 
 bool g_isBindingKey = false;
 HotkeyConfig* g_targetBinding = nullptr;
@@ -360,6 +512,7 @@ void RunStealthMode() {
 }
 
 // --- HOTKEY PERSISTENCE FUNCTIONS ---
+std::string GetExePath();
 void SaveHotkeys() {
     json j;
     // OMITTED OPACITY SAVING AS REQUESTED
@@ -379,6 +532,21 @@ void SaveHotkeys() {
     j["send"]["alt"] = g_hkSend.alt;
     j["send"]["ctrl"] = g_hkSend.ctrl;
     j["send"]["shift"] = g_hkSend.shift;
+    
+    j["browser"]["vk"] = g_hkBrowserMode.vkCode;
+    j["browser"]["alt"] = g_hkBrowserMode.alt;
+    j["browser"]["ctrl"] = g_hkBrowserMode.ctrl;
+    j["browser"]["shift"] = g_hkBrowserMode.shift;
+    
+    j["dictation"]["vk"] = g_hkDictation.vkCode;
+    j["dictation"]["alt"] = g_hkDictation.alt;
+    j["dictation"]["ctrl"] = g_hkDictation.ctrl;
+    j["dictation"]["shift"] = g_hkDictation.shift;
+
+    j["browserPaste"]["vk"] = g_hkBrowserPaste.vkCode;
+    j["browserPaste"]["alt"] = g_hkBrowserPaste.alt;
+    j["browserPaste"]["ctrl"] = g_hkBrowserPaste.ctrl;
+    j["browserPaste"]["shift"] = g_hkBrowserPaste.shift;
 
     j["chatHistory"]["enabled"] = g_chatHistoryEnabled;
 
@@ -390,14 +558,16 @@ void SaveHotkeys() {
     j["interview"]["modelArch"] = g_interviewModelArch;
     j["interview"]["autoDownload"] = g_interviewAutoDownload;
 
-    std::ofstream o("hotkeys.json");
+    std::string path = GetExePath() + "\\hotkeys.json";
+    std::ofstream o(path);
     if (o.is_open()) {
         o << std::setw(4) << j << std::endl;
     }
 }
 
 void LoadHotkeys() {
-    std::ifstream i("hotkeys.json");
+    std::string path = GetExePath() + "\\hotkeys.json";
+    std::ifstream i(path);
     if (i.is_open()) {
         try {
             json j;
@@ -423,6 +593,24 @@ void LoadHotkeys() {
                 g_hkSend.alt = j["send"].value("alt", false);
                 g_hkSend.ctrl = j["send"].value("ctrl", true);
                 g_hkSend.shift = j["send"].value("shift", false);
+            }
+            if (j.contains("browser")) {
+                g_hkBrowserMode.vkCode = j["browser"].value("vk", 0x42);
+                g_hkBrowserMode.alt = j["browser"].value("alt", false);
+                g_hkBrowserMode.ctrl = j["browser"].value("ctrl", true);
+                g_hkBrowserMode.shift = j["browser"].value("shift", true);
+            }
+            if (j.contains("dictation")) {
+                g_hkDictation.vkCode = j["dictation"].value("vk", 0x4C);
+                g_hkDictation.alt = j["dictation"].value("alt", true);
+                g_hkDictation.ctrl = j["dictation"].value("ctrl", false);
+                g_hkDictation.shift = j["dictation"].value("shift", false);
+            }
+            if (j.contains("browserPaste")) {
+                g_hkBrowserPaste.vkCode = j["browserPaste"].value("vk", 0x56);
+                g_hkBrowserPaste.alt = j["browserPaste"].value("alt", false);
+                g_hkBrowserPaste.ctrl = j["browserPaste"].value("ctrl", true);
+                g_hkBrowserPaste.shift = j["browserPaste"].value("shift", true);
             }
             if (j.contains("chatHistory") && j["chatHistory"].contains("enabled")) {
                 g_chatHistoryEnabled = j["chatHistory"]["enabled"].get<bool>();
@@ -868,7 +1056,13 @@ private:
 
                 if (!mono.empty() && callback_) {
                     std::vector<float> resampled = ResampleToRate(mono, actualSampleRate_, targetSampleRate_);
-                    if (!resampled.empty()) callback_(resampled, targetSampleRate_);
+                    if (!resampled.empty()) {
+                        callback_(resampled, targetSampleRate_);
+                        if (g_audioPipeConnected && g_hAudioPipe != INVALID_HANDLE_VALUE) {
+                            DWORD written = 0;
+                            WriteFile(g_hAudioPipe, resampled.data(), resampled.size() * sizeof(float), &written, NULL);
+                        }
+                    }
                 }
 
                 hr = captureClient_->GetNextPacketSize(&packetLength);
@@ -891,6 +1085,32 @@ private:
     int bytesPerSample_ = 4;
     bool isFloat_ = true;
 };
+
+std::unique_ptr<SystemLoopbackCapture> g_browserCapture;
+std::string Base64Encode(unsigned char const* bytes_to_encode, unsigned int in_len);
+std::wstring s2ws(const std::string& s);
+void StartBrowserAudio() {
+    if (!g_browserCapture) {
+        g_browserCapture.reset(new SystemLoopbackCapture());
+        g_browserCapture->SetAudioCallback([](const std::vector<float>& audio, int32_t sampleRate) {
+            if (!g_webview || audio.empty()) return;
+            
+            // Base64 encode the float data
+            std::string b64 = Base64Encode((const unsigned char*)audio.data(), audio.size() * sizeof(float));
+            std::string jsonStr = "{\"type\":\"audio\",\"data\":\"" + b64 + "\",\"sampleRate\":" + std::to_string(sampleRate) + "}";
+            std::wstring* wjson = new std::wstring(s2ws(jsonStr));
+            PostMessage(g_hwnd, WM_APP + 6, 0, (LPARAM)wjson);
+        });
+        g_browserCapture->Initialize();
+        g_browserCapture->Start();
+    }
+}
+void StopBrowserAudio() {
+    if (g_browserCapture) {
+        g_browserCapture->Stop();
+        g_browserCapture.reset();
+    }
+}
 
 void HandleInterviewBridgeLine(const std::string& line) {
     std::string s = TrimInterviewText(line);
@@ -1167,6 +1387,12 @@ void StartInterviewModeRuntimeAsync() {
                 (void)sampleRate;
                 std::lock_guard<std::mutex> inner(g_interviewRuntimeMutex);
                 if (!g_interviewBridgeStdInWrite || !g_interviewRunning) return;
+
+                if (audio.empty()) return;
+                float sumSq = 0.0f;
+                for (float sample : audio) sumSq += sample * sample;
+                float rms = std::sqrt(sumSq / audio.size());
+                if (rms < 0.001f) return; // VAD: drop pure silence
 
                 DWORD bytesToWrite = (DWORD)(audio.size() * sizeof(float));
                 if (bytesToWrite == 0) return;
@@ -1795,7 +2021,7 @@ void SaveChatHistoryEntry(const std::string& userQuestion, const std::string& ai
 // 3. APP STATE
 // =========================================================
 
-enum class AppMode { Chat, Agent, Interview };
+enum class AppMode { Chat, Agent, Interview, Browser };
 AppMode g_appMode = AppMode::Chat;
 
 enum class AppState { Login, LoggedIn };
@@ -2073,7 +2299,7 @@ void LoadAllIcons() {
 
 void ForceTopMost() {
     if (g_isVisible) {
-        SetWindowPos(g_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        SetWindowPos(g_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOACTIVATE);
     }
 }
 
@@ -2127,6 +2353,14 @@ void BitBltScreenshot() {
     HBITMAP hBmp = CreateCompatibleBitmap(hdc, w, h);
     SelectObject(memDC, hBmp);
     BitBlt(memDC, 0, 0, w, h, hdc, 0, 0, SRCCOPY);
+
+    // Copy to clipboard
+    if (OpenClipboard(NULL)) {
+        EmptyClipboard();
+        HBITMAP hBmpCopy = (HBITMAP)CopyImage(hBmp, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG);
+        SetClipboardData(CF_BITMAP, hBmpCopy);
+        CloseClipboard();
+    }
 
     Gdiplus::Bitmap bmp(hBmp, nullptr);
     IStream* pStream = nullptr; CreateStreamOnHGlobal(NULL, TRUE, &pStream);
@@ -2402,6 +2636,7 @@ HWND GetWindowBehind(HWND overlayWnd) {
 // =========================================================
 // 7. API ENGINE (MULTI-PROVIDER + VISION + VERSIONING + R2 UPLOAD)
 // =========================================================
+void SaveConfig();
 namespace Api {
 
     void FetchModelsForProvider(AIProvider type);
@@ -3420,6 +3655,7 @@ namespace Api {
         catch (...) {}
     }
 
+    
     void PerformLogin(std::string u, std::string p) {
         std::thread([=]() {
             { std::lock_guard<std::mutex> lock(g_dataMutex); g_statusMessage = "Authenticating..."; }
@@ -3436,6 +3672,7 @@ namespace Api {
                     auto j = json::parse(res);
                     if (j.contains("success") && j["success"].get<bool>() == true && j.contains("keys")) {
                         auto k = j["keys"];
+                        ::SaveConfig();
                         if (k["api_key"].is_string()) g_apiKeys.gemini = CleanApiKey(k["api_key"].get<std::string>());
                         if (k["openai_apikey"].is_string()) g_apiKeys.openai = CleanApiKey(k["openai_apikey"].get<std::string>());
                         if (k["claude_apikey"].is_string()) g_apiKeys.claude = CleanApiKey(k["claude_apikey"].get<std::string>());
@@ -3693,40 +3930,11 @@ namespace Api {
                 else {
                     if (type == AIProvider::OpenAIUser && useOauth) {
                         domain = L"chatgpt.com";
-                        path = L"/backend-api/codex/responses";
+                        path = L"/backend-api/chat/completions";
                         heads.push_back(L"Authorization: Bearer " + s2ws(auth.access));
                         heads.push_back(L"Accept: text/event-stream");
                         if (!auth.accountId.empty()) heads.push_back(L"ChatGPT-Account-Id: " + s2ws(auth.accountId));
                         resp = true;
-
-                        reqBody["model"] = modelID;
-                        reqBody["instructions"] = sysTxt;
-                        reqBody["store"] = false;
-                        reqBody["stream"] = true;
-                        reqBody["input"] = json::array();
-
-                        for (size_t i = 0; i < hist.size() - 1; i++) {
-                            const auto& m = hist[i]; if (m.isPreview || m.role == "system") continue;
-                            json msg;
-                            const char* role = (m.role == "model" ? "assistant" : m.role.c_str());
-                            msg["role"] = role;
-                            if (strcmp(role, "assistant") == 0) {
-                                msg["content"] = json::array({ { {"type","output_text"}, {"text", m.text} } });
-                            }
-                            else {
-                                msg["content"] = json::array({ { {"type","input_text"}, {"text", m.text} } });
-                            }
-                            reqBody["input"].push_back(msg);
-                        }
-
-                        json last;
-                        last["role"] = "user";
-                        last["content"] = json::array();
-                        last["content"].push_back({ {"type","input_text"}, {"text", userTxt} });
-                        for (const auto& img : imgs) {
-                            last["content"].push_back({ {"type","input_image"}, {"image_url", "data:image/jpeg;base64," + img.base64Data} });
-                        }
-                        reqBody["input"].push_back(last);
                     }
                     else {
                         heads.push_back(L"Authorization: Bearer " + s2ws(apiKey));
@@ -3734,7 +3942,7 @@ namespace Api {
                         else if (type == AIProvider::Moonshot) domain = L"api.moonshot.ai";
                         else if (type == AIProvider::OpenRouter) { domain = L"openrouter.ai"; path = L"/api/v1/chat/completions"; }
                     }
-                    if (!resp) {
+                    if (!resp || (type == AIProvider::OpenAIUser && useOauth)) {
                         reqBody["model"] = modelID;
                         reqBody["messages"] = json::array();
                         reqBody["messages"].push_back({ {"role", "system"}, {"content", sysTxt} });
@@ -3742,7 +3950,7 @@ namespace Api {
                             const auto& m = hist[i]; if (m.isPreview) continue;
                             reqBody["messages"].push_back({ {"role", (m.role == "model" ? "assistant" : "user")}, {"content", m.text} });
                         }
-                        if (!imgs.empty() && (type == AIProvider::OpenAI || type == AIProvider::OpenRouter || type == AIProvider::Moonshot || type == AIProvider::DeepSeek)) {
+                        if (!imgs.empty() && (type == AIProvider::OpenAI || type == AIProvider::OpenRouter || type == AIProvider::Moonshot || type == AIProvider::DeepSeek || type == AIProvider::OpenAIUser)) {
                             json con = json::array();
                             con.push_back({ {"type", "text"}, {"text", userTxt} });
                             for (const auto& img : imgs) {
@@ -3752,6 +3960,10 @@ namespace Api {
                         }
                         else {
                             reqBody["messages"].push_back({ {"role", "user"}, {"content", userTxt} });
+                        }
+                        
+                        if (type == AIProvider::OpenAIUser && useOauth) {
+                            reqBody["stream"] = true;
                         }
                     }
                 }
@@ -4242,15 +4454,15 @@ bool NeonCheckbox(const char* label, bool* v) {
     return pressed;
 }
 
-void HotkeyWidget(const char* label, HotkeyConfig& hk) {
+bool HotkeyWidget(const char* label, HotkeyConfig& hk) {
+    bool changed = false;
     ImGui::PushID(label);
     ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "%s", label);
 
-    // --- FIX: TEXT LABELS FIRST, THEN CHECKBOXES ---
     ImGui::AlignTextToFramePadding();
-    ImGui::Text("Ctrl"); ImGui::SameLine(); NeonCheckbox("##ctrl", &hk.ctrl); ImGui::SameLine(0.0f, 15.0f);
-    ImGui::Text("Alt");  ImGui::SameLine(); NeonCheckbox("##alt", &hk.alt);   ImGui::SameLine(0.0f, 15.0f);
-    ImGui::Text("Shift"); ImGui::SameLine(); NeonCheckbox("##shift", &hk.shift); ImGui::SameLine(0.0f, 15.0f);
+    ImGui::Text("Ctrl"); ImGui::SameLine(); if (NeonCheckbox("##ctrl", &hk.ctrl)) changed = true; ImGui::SameLine(0.0f, 15.0f);
+    ImGui::Text("Alt");  ImGui::SameLine(); if (NeonCheckbox("##alt", &hk.alt)) changed = true;   ImGui::SameLine(0.0f, 15.0f);
+    ImGui::Text("Shift"); ImGui::SameLine(); if (NeonCheckbox("##shift", &hk.shift)) changed = true; ImGui::SameLine(0.0f, 15.0f);
 
     char buf[16] = { 0 };
     bool isBindingThis = (g_isBindingKey && g_targetBinding == &hk);
@@ -4283,6 +4495,7 @@ void HotkeyWidget(const char* label, HotkeyConfig& hk) {
 
     ImGui::PopStyleColor();
     ImGui::PopID();
+    return changed;
 }
 
 void DrawThinkingLoader() {
@@ -4437,6 +4650,58 @@ void RenderSmartMessage(const ChatMessage& msg) {
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
 }
 
+bool g_rememberMe = false;
+
+std::string GetExePath() {
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+    return std::string(buffer).substr(0, pos);
+}
+
+void SaveConfig() {
+    try {
+        json j;
+        if (g_rememberMe) {
+            j["username"] = g_usernameBuffer;
+            j["password"] = g_passwordBuffer;
+            j["remember"] = true;
+        } else {
+            j["remember"] = false;
+        }
+        std::string path = GetExePath() + "\\config.json";
+        std::ofstream o(path);
+        if (o.is_open()) o << j.dump(4);
+    } catch (...) {}
+}
+
+void LoadConfig() {
+    try {
+        std::string path = GetExePath() + "\\config.json";
+        std::ifstream i(path);
+        if (i.is_open()) {
+            json j;
+            i >> j;
+            if (j.contains("remember") && j["remember"].get<bool>()) {
+                g_rememberMe = true;
+                if (j.contains("username") && j["username"].is_string()) {
+                    std::string u = j["username"].get<std::string>();
+                    g_usernameBuffer = u;
+                }
+                if (j.contains("password") && j["password"].is_string()) {
+                    std::string p = j["password"].get<std::string>();
+                    g_passwordBuffer = p;
+                }
+                
+                // Auto login
+                if (g_usernameBuffer.length() > 0 && g_passwordBuffer.length() > 0) {
+                    Api::PerformLogin(g_usernameBuffer, g_passwordBuffer);
+                }
+            }
+        }
+    } catch (...) {}
+}
+
 void DrawDimOverlayIfRequested() {
     if (!g_dimOverlay) return;
     ImDrawList* d = ImGui::GetBackgroundDrawList();
@@ -4482,6 +4747,24 @@ LRESULT CALLBACK HookProc(int n, WPARAM w, LPARAM l) {
                     altDown == g_hkSend.alt &&
                     ctrlDown == g_hkSend.ctrl &&
                     shiftDown == g_hkSend.shift);
+                    
+                bool isBrowserHotkey = (g_hkBrowserMode.vkCode != 0 &&
+                    p->vkCode == g_hkBrowserMode.vkCode &&
+                    altDown == g_hkBrowserMode.alt &&
+                    ctrlDown == g_hkBrowserMode.ctrl &&
+                    shiftDown == g_hkBrowserMode.shift);
+                    
+                bool isDictationHotkey = (g_hkDictation.vkCode != 0 &&
+                    p->vkCode == g_hkDictation.vkCode &&
+                    altDown == g_hkDictation.alt &&
+                    ctrlDown == g_hkDictation.ctrl &&
+                    shiftDown == g_hkDictation.shift);
+                    
+                bool isBrowserPasteHotkey = (g_hkBrowserPaste.vkCode != 0 &&
+                    p->vkCode == g_hkBrowserPaste.vkCode &&
+                    altDown == g_hkBrowserPaste.alt &&
+                    ctrlDown == g_hkBrowserPaste.ctrl &&
+                    shiftDown == g_hkBrowserPaste.shift);
 
                 // Handle Toggle Hotkey - swallow both keydown and keyup, but only trigger on keydown
                 if (isToggleHotkey) {
@@ -4509,6 +4792,23 @@ LRESULT CALLBACK HookProc(int n, WPARAM w, LPARAM l) {
                     }
                     return 1;
                 }
+
+                // Handle Browser Toggle Hotkey
+                if (isBrowserHotkey) {
+                    if (isKeyDown) PostMessage(g_hwnd, WM_APP + 7, 0, 0);
+                    return 1;
+                }
+                // Handle Dictation Hotkey
+                if (isDictationHotkey) {
+                    if (isKeyDown) PostMessage(g_hwnd, WM_APP + 8, 0, 0);
+                    return 1;
+                }
+                // Handle Browser Paste Hotkey
+                if (isBrowserPasteHotkey) {
+                    if (isKeyDown) PostMessage(g_hwnd, WM_APP + 9, 0, 0);
+                    return 1;
+                }
+
             }
             // --- 2. HANDLE BINDING (FAST) ---
             if (g_isBindingKey && g_targetBinding) {
@@ -4559,10 +4859,115 @@ LRESULT CALLBACK HookProc(int n, WPARAM w, LPARAM l) {
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+
+void UpdateBrowserLayout() {
+    if (!g_browserHwnd) return;
+    
+    // If we are not in browser mode, always hide it
+    if (g_appMode != AppMode::Browser) {
+        ShowWindow(g_browserHwnd, SW_HIDE);
+        if (g_webviewController) g_webviewController->put_IsVisible(FALSE);
+        return;
+    }
+    
+    // If settings are open, the user wants settings to take full screen
+    if (g_showSettings) {
+        ShowWindow(g_browserHwnd, SW_HIDE);
+        if (g_webviewController) g_webviewController->put_IsVisible(FALSE);
+        return;
+    }
+    
+    // Otherwise, show and position correctly
+    RECT r;
+    GetClientRect(g_hwnd, &r);
+    int width = r.right;
+    int height = r.bottom;
+    
+    int startY = 130;
+    int browserWidth = width;
+    int startX = 0;
+    
+    ShowWindow(g_browserHwnd, SW_SHOW);
+    if (g_webviewController) g_webviewController->put_IsVisible(TRUE);
+    
+    SetWindowPos(g_browserHwnd, HWND_TOP, startX, startY, browserWidth, height - startY, SWP_NOZORDER | SWP_NOACTIVATE);
+
+    if (g_webviewController) {
+        RECT bounds;
+        GetClientRect(g_browserHwnd, &bounds);
+        g_webviewController->put_Bounds(bounds);
+    }
+}
+
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam)) return true;
-    if (msg == WM_MOUSEACTIVATE) return MA_NOACTIVATE;
+    if (msg == WM_MOUSEACTIVATE) {
+        if (g_appMode == AppMode::Browser) return MA_ACTIVATE;
+        return MA_NOACTIVATE;
+    }
+    if (msg == WM_COMMAND && LOWORD(wParam) == 1001) {
+        g_showSettings = true;
+        if (g_browserHwnd) ShowWindow(g_browserHwnd, SW_HIDE);
+        if (g_settingsBtnHwnd) ShowWindow(g_settingsBtnHwnd, SW_HIDE);
+        return 0;
+    }
     if (msg == WM_USER + 1) { CaptureScreenshot(); return 0; }
+
+    if (msg == WM_APP + 7) { 
+        if (g_appState == AppState::LoggedIn) {
+            if (g_appMode == AppMode::Browser) {
+                g_appMode = AppMode::Agent;
+                ToggleBrowserMode(false);
+            } else {
+                g_appMode = AppMode::Browser;
+                ToggleBrowserMode(true);
+            }
+        }
+        return 0; 
+    }
+    if (msg == WM_APP + 8) { 
+        // Dictation Toggle Placeholder
+        return 0; 
+    }
+    if (msg == WM_APP + 9) {
+        // 1. Make sure the app is visible
+        if (!g_isVisible) {
+            g_isVisible = true;
+            ShowWindow(g_hwnd, SW_SHOWNOACTIVATE);
+            SetWindowPos(g_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+        }
+        
+        // 2. Make sure we are in Browser Mode
+        if (g_appMode != AppMode::Browser) {
+            g_appMode = AppMode::Browser;
+            ToggleBrowserMode(true);
+            UpdateBrowserLayout();
+        }
+        
+        // 3. Force window to foreground and set focus to Browser
+        SetForegroundWindow(g_hwnd);
+        if (g_browserHwnd) {
+            SetFocus(g_browserHwnd);
+        }
+
+        // 4. Send KEYUP for modifiers that might be held down from the hotkey trigger
+        INPUT clearMods[4] = {};
+        clearMods[0].type = INPUT_KEYBOARD; clearMods[0].ki.wVk = VK_CONTROL; clearMods[0].ki.dwFlags = KEYEVENTF_KEYUP;
+        clearMods[1].type = INPUT_KEYBOARD; clearMods[1].ki.wVk = VK_SHIFT; clearMods[1].ki.dwFlags = KEYEVENTF_KEYUP;
+        clearMods[2].type = INPUT_KEYBOARD; clearMods[2].ki.wVk = VK_MENU; clearMods[2].ki.dwFlags = KEYEVENTF_KEYUP;
+        clearMods[3].type = INPUT_KEYBOARD; clearMods[3].ki.wVk = VK_LWIN; clearMods[3].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(4, clearMods, sizeof(INPUT));
+        
+        // 5. Inject Ctrl+V
+        INPUT inputs[4] = {};
+        inputs[0].type = INPUT_KEYBOARD; inputs[0].ki.wVk = VK_CONTROL;
+        inputs[1].type = INPUT_KEYBOARD; inputs[1].ki.wVk = 'V';
+        inputs[2].type = INPUT_KEYBOARD; inputs[2].ki.wVk = 'V'; inputs[2].ki.dwFlags = KEYEVENTF_KEYUP;
+        inputs[3].type = INPUT_KEYBOARD; inputs[3].ki.wVk = VK_CONTROL; inputs[3].ki.dwFlags = KEYEVENTF_KEYUP;
+        SendInput(4, inputs, sizeof(INPUT));
+        return 0;
+    }
+
 
     // Handle Custom Toggle Message from Hook
     if (msg == WM_APP + 1) {
@@ -4576,6 +4981,16 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             ShowWindow(g_hwnd, SW_HIDE);
             g_currentFocus = FocusState::None;
         }
+        return 0;
+    }
+
+    // Handle WebView2 Cross-Thread Audio JSON
+    if (msg == WM_APP + 6) {
+        std::wstring* wjson = (std::wstring*)lParam;
+        if (g_webview && wjson) {
+            g_webview->PostWebMessageAsJson(wjson->c_str());
+        }
+        delete wjson;
         return 0;
     }
 
@@ -4648,6 +5063,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             g_pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_UNKNOWN, 0);
             ID3D11Texture2D* b; g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&b));
             g_pd3dDevice->CreateRenderTargetView(b, NULL, &g_mainRenderTargetView); b->Release();
+            
+            UpdateBrowserLayout();
         }
         return 0;
     }
@@ -4663,11 +5080,13 @@ void RenderSettingsPage() {
 
     ImGui::BeginChild("ModeBox", ImVec2(0.0f, 50.0f), true);
     ImGui::Text("Interface Mode:"); ImGui::SameLine();
-    if (ImGui::RadioButton("Chat", g_appMode == AppMode::Chat)) g_appMode = AppMode::Chat;
+    if (ImGui::RadioButton("Chat", g_appMode == AppMode::Chat)) { g_appMode = AppMode::Chat; ToggleBrowserMode(false); }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Agent", g_appMode == AppMode::Agent)) g_appMode = AppMode::Agent;
+    if (ImGui::RadioButton("Agent", g_appMode == AppMode::Agent)) { g_appMode = AppMode::Agent; ToggleBrowserMode(false); }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Interview", g_appMode == AppMode::Interview)) g_appMode = AppMode::Interview;
+    if (ImGui::RadioButton("Interview", g_appMode == AppMode::Interview)) { g_appMode = AppMode::Interview; ToggleBrowserMode(false); }
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Browser", g_appMode == AppMode::Browser)) { g_appMode = AppMode::Browser; ToggleBrowserMode(true); }
     ImGui::EndChild();
     ImGui::Spacing();
 
@@ -4684,17 +5103,32 @@ void RenderSettingsPage() {
     ImGui::Spacing();
 
     ImGui::BeginChild("Box2", ImVec2(0.0f, 80.0f), true);
-    HotkeyWidget("Toggle Visibility (Global)", g_hkToggle);
+    if (HotkeyWidget("Toggle Visibility (Global)", g_hkToggle)) SaveHotkeys();
     ImGui::EndChild();
     ImGui::Spacing();
 
     ImGui::BeginChild("Box3", ImVec2(0.0f, 80.0f), true);
-    HotkeyWidget("Take Screenshot", g_hkScreenshot);
+    if (HotkeyWidget("Take Screenshot", g_hkScreenshot)) SaveHotkeys();
     ImGui::EndChild();
     ImGui::Spacing();
 
     ImGui::BeginChild("BoxSend", ImVec2(0.0f, 80.0f), true);
-    HotkeyWidget("Send Message", g_hkSend);
+    if (HotkeyWidget("Send Message", g_hkSend)) SaveHotkeys();
+    ImGui::EndChild();
+    ImGui::Spacing();
+
+    ImGui::BeginChild("BoxBrowserToggle", ImVec2(0.0f, 80.0f), true);
+    if (HotkeyWidget("Toggle Browser Mode", g_hkBrowserMode)) SaveHotkeys();
+    ImGui::EndChild();
+    ImGui::Spacing();
+
+    ImGui::BeginChild("BoxDictation", ImVec2(0.0f, 80.0f), true);
+    if (HotkeyWidget("Browser Dictation (Mic)", g_hkDictation)) SaveHotkeys();
+    ImGui::EndChild();
+    ImGui::Spacing();
+
+    ImGui::BeginChild("BoxBrowserPaste", ImVec2(0.0f, 80.0f), true);
+    if (HotkeyWidget("Paste to Browser", g_hkBrowserPaste)) SaveHotkeys();
     ImGui::EndChild();
     ImGui::Spacing();
 
@@ -4853,8 +5287,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // ----------------------------------
 
     g_hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, HookProc, GetModuleHandle(NULL), 0);
-    static ULONGLONG lastHookCheck = GetTickCount64();
-
+    
     // ============================================
     // STEALTH CHANGE: Randomize Class, Empty Name
     // ============================================
@@ -4892,6 +5325,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, &fl, 1, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, NULL, &g_pd3dDeviceContext);
     ID3D11Texture2D* b; g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&b)); g_pd3dDevice->CreateRenderTargetView(b, NULL, &g_mainRenderTargetView); b->Release();
     ShowWindow(g_hwnd, SW_SHOW);
+    
+    LoadConfig();
 
     Agent::Init(g_hwnd);
     if (Agent::IsTelegramEnabled()) {
@@ -5018,13 +5453,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     while (!done) {
         MSG m; while (PeekMessage(&m, NULL, 0, 0, PM_REMOVE)) { TranslateMessage(&m); DispatchMessage(&m); if (m.message == WM_QUIT) done = true; }
 
-        // --- HOOK WATCHDOG ---
-        // If system load drops the hook, we re-inject it every 2 seconds
-        if (GetTickCount64() - lastHookCheck > 2000) {
-            lastHookCheck = GetTickCount64();
-            if (g_hKeyboardHook) UnhookWindowsHookEx(g_hKeyboardHook);
-            g_hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, HookProc, GetModuleHandle(NULL), 0);
-        }
+
 
         if (GetTickCount64() - g_lastDesktopCheck > 1000) {
             CheckDesktopJump();
@@ -5033,12 +5462,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         // --- PROCESS INPUT QUEUE SAFELY IN MAIN THREAD ---
         // This avoids locking the mutex inside the hook callback
+        std::vector<QueuedInput> localQueue;
         {
             std::lock_guard<std::mutex> lock(g_inputMutex);
             if (!g_inputQueue.empty()) {
+                localQueue = g_inputQueue;
+                g_inputQueue.clear();
+            }
+        }
+
+        {
+            if (!localQueue.empty()) {
                 std::lock_guard<std::mutex> dataLock(g_dataMutex); // Safe to lock here
 
-                for (const auto& q : g_inputQueue) {
+                for (const auto& q : localQueue) {
                     if (g_isBindingKey && g_targetBinding) {
                         g_targetBinding->vkCode = q.vkCode;
                         g_isBindingKey = false;
@@ -5103,7 +5540,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                         }
                     }
                 }
-                g_inputQueue.clear();
             }
         }
         // --------------------------------------------------
@@ -5115,7 +5551,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ForceTopMost();
 
         // --- APPLY TRANSPARENCY ---
-        SetLayeredWindowAttributes(g_hwnd, 0, (BYTE)(g_windowAlpha * 255), LWA_ALPHA);
+        LONG_PTR currentExStyle = GetWindowLongPtr(g_hwnd, GWL_EXSTYLE);
+        if (g_windowAlpha >= 1.0f) {
+            if (currentExStyle & WS_EX_LAYERED) {
+                SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, currentExStyle & ~WS_EX_LAYERED);
+            }
+        } else {
+            if (!(currentExStyle & WS_EX_LAYERED)) {
+                SetWindowLongPtr(g_hwnd, GWL_EXSTYLE, currentExStyle | WS_EX_LAYERED);
+            }
+            SetLayeredWindowAttributes(g_hwnd, 0, (BYTE)(g_windowAlpha * 255), LWA_ALPHA);
+        }
         // --------------------------
 
         if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
@@ -5171,6 +5617,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         ImGui::Begin("Ghost", NULL, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize);
 
         std::lock_guard<std::mutex> lock(g_dataMutex);
+        
+        // --- UNIVERSAL SETTINGS BUTTON ---
+        if (g_appState != AppState::Login && !g_showSettings) {
+            ImVec2 currentPos = ImGui::GetCursorPos();
+            // Move it slightly left and make it HUGE (55x55) so they can't miss it
+            ImGui::SetCursorPos(ImVec2(ImGui::GetWindowWidth() - 120.0f, 5.0f));
+            // Adding a background color to the button so it stands out!
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(g_uiColor.x, g_uiColor.y, g_uiColor.z, 0.3f));
+            if (IconButton(g_icons.Settings, "##univ_set", "Settings", { 55.0f, 55.0f })) {
+                g_showSettings = true;
+                if (g_browserHwnd) ShowWindow(g_browserHwnd, SW_HIDE);
+            }
+            ImGui::PopStyleColor();
+            ImGui::SetCursorPos(currentPos);
+        }
 
         if (g_stagingReady) {
             if (!g_chatHistory.empty() && g_chatHistory.back().isPreview) {
@@ -5242,7 +5703,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
         if (g_appState == AppState::Login) {
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 5.0f));
-            float blockH = ImGui::GetTextLineHeightWithSpacing() + 10.0f + 55.0f + 10.0f + 55.0f + 10.0f + 55.0f;
+            float blockH = ImGui::GetTextLineHeightWithSpacing() + 10.0f + 55.0f + 10.0f + 55.0f + 10.0f + 55.0f + 40.0f;
             float startY = (ImGui::GetWindowHeight() - blockH) / 2.0f; if (startY < 50.0f) startY = 50.0f;
             ImGui::SetCursorPosY(startY);
 
@@ -5274,6 +5735,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 ImGui::Spacing();
                 FloatingInputGhost("p_box", "Password", g_passwordBuffer, FocusState::Password, false, dummySend);
                 ImGui::Spacing();
+                ImGui::Checkbox("Remember Me", &g_rememberMe);
+                ImGui::Spacing();
 
                 if (NeoWaveButton("LOG IN", { ImGui::GetContentRegionAvail().x, 55.0f })) { Api::PerformLogin(g_usernameBuffer, g_passwordBuffer); }
             }
@@ -5283,13 +5746,41 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
             if (g_showSettings) {
                 RenderSettingsPage();
                 ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 60.0f);
-                if (NeoWaveButton("BACK TO CHAT", { ImGui::GetContentRegionAvail().x, 40.0f })) {
+                std::string backText = "BACK TO CHAT";
+                if (g_appMode == AppMode::Agent) backText = "BACK TO AGENT";
+                else if (g_appMode == AppMode::Interview) backText = "BACK TO INTERVIEW";
+                else if (g_appMode == AppMode::Browser) backText = "BACK TO BROWSER";
+
+                if (NeoWaveButton(backText.c_str(), { ImGui::GetContentRegionAvail().x, 40.0f })) {
                     g_showSettings = false;
+                    if (g_appMode == AppMode::Browser && g_browserHwnd) {
+                        ShowWindow(g_browserHwnd, SW_SHOW);
+                    }
+                    UpdateBrowserLayout();
                 }
             }
             else {
                 if (g_appMode == AppMode::Agent) {
                     Agent::RenderPage(g_uiColor);
+                }
+                else if (g_appMode == AppMode::Browser) {
+                    ImGui::TextColored(g_uiColor, "BROWSER MODE");
+                    ImGui::SameLine();
+                    if (NeoWaveButton("< Back", { 80.0f, 30.0f })) {
+                        if (g_webview) g_webview->GoBack();
+                    }
+                    ImGui::SameLine();
+                    if (NeoWaveButton("Forward >", { 80.0f, 30.0f })) {
+                        if (g_webview) g_webview->GoForward();
+                    }
+                    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 40.0f);
+                    if (IconButton(g_icons.Settings, "##set", "Settings", { 30.0f, 30.0f })) {
+                        g_showSettings = true;
+                        UpdateBrowserLayout();
+                    }
+                    ImGui::Separator();
+                    ImGui::Spacing();
+                    ImGui::Text("The web browser is currently active and embedded below.");
                 }
                 else {
                     // ==========================================
@@ -5394,6 +5885,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 }
 
                 if (g_appMode == AppMode::Interview) {
+                    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 40.0f);
+                    if (IconButton(g_icons.Settings, "##set", "Settings", { 30.0f, 30.0f })) {
+                        g_showSettings = true;
+                        UpdateBrowserLayout();
+                    }
                     size_t queued = 0;
                     {
                         std::lock_guard<std::mutex> lock(g_interviewQueueMutex);

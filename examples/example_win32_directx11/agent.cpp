@@ -1,4 +1,5 @@
 #include "agent.h"
+extern bool g_showSettings;
 #include "ai_types.h"
 #include "imgui.h"
 #include "nlohmann/json.hpp"
@@ -2060,23 +2061,18 @@ private:
             std::vector<std::wstring> heads;
 
             if (prov.type == AIProvider::OpenAIUser && useOauth) {
-                domain = L"chatgpt.com"; path = L"/backend-api/codex/responses";
+                domain = L"chatgpt.com"; path = L"/backend-api/codex/chat/completions";
                 heads.push_back(L"Authorization: Bearer " + s2ws(auth.access));
                 heads.push_back(L"Accept: text/event-stream");
                 if (!auth.accountId.empty()) heads.push_back(L"ChatGPT-Account-Id: " + s2ws(auth.accountId));
 
                 json reqBody;
                 reqBody["model"] = modelID;
-                reqBody["instructions"] = sysTxt;
-                reqBody["store"] = false;
                 reqBody["stream"] = true;
-                reqBody["input"] = json::array();
+                reqBody["messages"] = json::array();
+                if (!sysTxt.empty()) reqBody["messages"].push_back({ {"role", "system"}, {"content", sysTxt} });
 
-                json last;
-                last["role"] = "user";
-                last["content"] = json::array();
-                last["content"].push_back({ {"type", "input_text"}, {"text", prompt} });
-                reqBody["input"].push_back(last);
+                reqBody["messages"].push_back({ {"role", "user"}, {"content", prompt} });
 
                 std::string res = AgentHttpRequest(domain, path, "POST", reqBody.dump(), heads);
                 rawResOrError = res;
@@ -3373,6 +3369,7 @@ Status GetStatus() {
     return s;
 }
 
+
 void RenderPage(const ImVec4& accentColor) {
     CleanupFinishedSubAgents();
     RenderProcessSelector(accentColor);
@@ -3381,7 +3378,9 @@ void RenderPage(const ImVec4& accentColor) {
     ImGui::SameLine();
     ImGui::TextDisabled("(Beta) | Workers: %d", CountRunningSubAgents());
 
-    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 120);
+    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 180);
+    if (ImGui::Button("Settings")) ::g_showSettings = true;
+    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 100);
     if (ImGui::Button(g_targetWindow ? "Change App" : "Attach App")) {
         RefreshProcessList();
         g_showProcessSelector = true;
